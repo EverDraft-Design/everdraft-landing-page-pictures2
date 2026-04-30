@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "everdraft-landing-page-pictures2",
+  "compatibility_date": "2026-04-30",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "everdraft-site"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
