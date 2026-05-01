@@ -105,6 +105,14 @@ button:disabled { opacity: .6; cursor: wait; }
   align-items: center;
   justify-content: center;
 }
+
+.feature-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .progress { padding: 1.4rem 0 3rem; }
 .progress h2 { font-size: 1.2rem; margin-bottom: 1rem; }
 .progress-list { list-style:none; padding:0; margin:0; display:grid; gap:.75rem; }
@@ -155,5 +163,8 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   width: min(260px, 80%);
   height: auto;
   display: block;
-  margin: 0 auto; }
+  margin: 0 auto; 
+.footer-logo {
+  background: transparent; }
+}
 }
