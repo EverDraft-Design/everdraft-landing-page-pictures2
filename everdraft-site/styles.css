@@ -17,20 +17,25 @@ body {
   background: linear-gradient(180deg, var(--bg-deep), var(--bg-dark));
   min-height: 100vh;
 }
+.parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .site-bg {
   position: fixed;
   inset: 0;
   z-index: -2;
   background:
     linear-gradient(rgba(7, 3, 15, 0.45), rgba(7, 3, 15, 0.9)),
-    url("/assets/hero-bg.jpg") center/cover no-repeat,
+    url/assets/hero-bg.jpg center/cover no-repeat,
     linear-gradient(180deg, var(--bg-deep), var(--bg-dark));
 }
 
 .site-bg {
   position: fixed;
   inset: 0;
-  background: url("/assets/hero-bg.jpg") center/cover no-repeat;
+  background: url /assets/hero-bg.jpg center/cover no-repeat;
   z-index: -2;
 }
 
