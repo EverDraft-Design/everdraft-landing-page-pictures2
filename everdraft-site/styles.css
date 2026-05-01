@@ -42,7 +42,7 @@ body {
 .site-bg {
   background:
     linear-gradient(#130621, #07030f),
-    url("/assets/hero-bg.jpg") center/cover no-repeat;
+    url("/assets/hero-bg.png") center/cover no-repeat;
 }
 
 .navbar, main, .site-footer { width: min(1120px, 92%); margin-inline: auto; }
