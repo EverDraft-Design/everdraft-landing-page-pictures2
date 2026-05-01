@@ -107,6 +107,9 @@ button:disabled { opacity: .6; cursor: wait; }
   align-items: center;
   justify-content: center;
 }
+.feature-icon img {
+  transition: transform 0.2s ease;
+}
 .progress { padding: 1.4rem 0 3rem; }
 .progress h2 { font-size: 1.2rem; margin-bottom: 1rem; }
 .progress-list { list-style:none; padding:0; margin:0; display:grid; gap:.75rem; }
@@ -160,5 +163,27 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   margin: 0 auto; 
 .footer-logo {
   background: transparent; }
+/* base */
+.feature-icon img {
+  width: 72%;
+  height: 72%;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+/* scale up smaller icons */
+.icon-write {
+  transform: scale(1.25);
+}
+
+.icon-grow {
+  transform: scale(1.25);
+}
+
+/* leave connect as-is */
+.icon-connect {
+  transform: scale(1);
 }
 }
+
