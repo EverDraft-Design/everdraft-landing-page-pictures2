@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "everdraft-landing-page-pictures2",
+  "main": "src/index.js",
   "compatibility_date": "2026-04-30",
   "observability": {
     "enabled": true
@@ -8,6 +9,13 @@
   "assets": {
     "directory": "everdraft-site"
   },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "everdraft-waitlist",
+      "database_id": "0e652de2-8944-4fec-a4a8-a2a73981ae7c"
+    }
+  ],
   "compatibility_flags": [
     "nodejs_compat"
   ]
