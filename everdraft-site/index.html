@@ -17,15 +17,10 @@
     <header class="navbar">
       <a href="#" class="brand" aria-label="EverDraft home">
         <img
-          src="/assets/favicon/favicon.png"
           src="/favicon/favicon.png"
           alt="EverDraft logo"
           class="brand-logo"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"
-        />
-          <span 
-            class="brand-text">EverDraft</span>
-      </a>
+          </a>
       <nav aria-label="Social links" class="social-nav">
         <a href="#" aria-label="EverDraft on X" class="social-icon">✦</a>
         <a href="#" aria-label="EverDraft on Instagram" class="social-icon">◉</a>
@@ -49,3 +44,85 @@
           <button type="submit" id="notifyButton">Join the Waitlist</button>
         </form>
       </section>
+
+      <section class="features" aria-label="Platform features">
+        <article class="feature-card">
+          <div class="feature-icon">
+  <img src="/assets/icons/write.png" alt="Write icon" />
+</div>
+          <h2>WRITE</h2>
+          <p>Publish your stories chapter by chapter in a space made for storytellers.</p>
+        </article>
+        <article class="feature-card">
+         <div class="feature-icon">
+  <img src="/assets/icons/grow.png" alt="Write icon" />
+</div>
+          <h2>GROW</h2>
+          <p>Be read. Receive constructive feedback, gain confidence and grow your audience.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">
+  <img src="/assets/icons/connect.png" alt="Write icon" />
+</div>
+          <h2>CONNECT</h2>
+          <p>Find readers and future collaborators.</p>
+        </article>
+      </section>
+
+      <section class="progress" aria-labelledby="progress-title">
+        <h2 id="progress-title">We’re working hard behind the scenes.</h2>
+        <ol class="progress-list">
+          <li class="active">Building Now</li>
+          <li>Testing - Invites Sent</li>
+          <li>Launch Imminent</li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+     <img src="/assets/footer-logo.png" alt="EverDraft logo" class="footer-logo" />
+    </footer>
+
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+      <div class="modal-panel">
+        <button type="button" class="close-btn" id="closeModal" aria-label="Close waitlist form">×</button>
+        <h2 id="modal-title">Join the EverDraft Waitlist</h2>
+        <p class="modal-copy">Tell us a little about your writing journey.</p>
+
+        <form id="waitlistForm" class="waitlist-form">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" required />
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required />
+
+          <fieldset>
+            <legend>Role</legend>
+            <label><input type="radio" name="role" value="Writer" required /> Writer</label>
+            <label><input type="radio" name="role" value="Reader" /> Reader</label>
+            <label><input type="radio" name="role" value="Both" /> Both</label>
+          </fieldset>
+
+          <label for="genres">Favourite genres</label>
+          <input id="genres" name="genres" type="text" placeholder="Fantasy, Mystery, Sci-Fi..." />
+
+          <fieldset>
+            <legend>Beta access</legend>
+            <label><input type="radio" name="betaAccess" value="Yes" required /> Yes</label>
+            <label><input type="radio" name="betaAccess" value="No" /> No</label>
+          </fieldset>
+
+          <label for="notes">Notes (optional)</label>
+          <textarea id="notes" name="notes" rows="3"></textarea>
+
+          <button type="submit" id="submitWaitlist">Submit</button>
+          <p id="formStatus" class="form-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+  </body>
+</html>
