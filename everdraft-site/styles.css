@@ -48,6 +48,16 @@ body {
 }
 .brand { color: var(--gold-soft); text-decoration: none; display:flex; align-items:center; line-height:0; }
 .brand-logo { width: 96px; height: 96px; object-fit: contain; border-radius: 999px; display:block; }
+.primary-nav { display: flex; justify-content: center; flex: 1; }
+.nav-link {
+  color: var(--gold-soft);
+  text-decoration: none;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+}
+.nav-link:hover,
+.nav-link:focus-visible { color: var(--gold); }
+.social-nav { display: flex; gap: 0.55rem; }
 .social-icon {
   display:grid; place-items:center; width:2rem; height:2rem; border-radius:999px;
   border:1px solid var(--border); color: var(--gold-soft); text-decoration:none;
