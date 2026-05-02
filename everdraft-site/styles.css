@@ -56,6 +56,17 @@ body {
   background: rgba(212,175,55,0.08);
 }
 
+
+/* Center all primary marketing copy */
+main, .features, .progress, .site-footer {
+  text-align: center;
+}
+
+.feature-card p,
+.progress-list li {
+  margin-inline: auto;
+}
+
 .hero { text-align: center; padding: 3.5rem 0 3rem; }
 .eyebrow { color: var(--gold); letter-spacing: .2em; font-size: .8rem; }
 h1 { font-size: clamp(2rem, 7vw, 4rem); margin: .25rem 0 1rem; }
