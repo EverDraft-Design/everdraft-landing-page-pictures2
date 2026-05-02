@@ -24,21 +24,21 @@ body {
   z-index: -2;
   background:
     linear-gradient(rgba(7, 3, 15, 0.45), rgba(7, 3, 15, 0.9)),
-    url("/assets/hero-bg.jpg") center/cover no-repeat,
+    url("/assets/hero-bg.png") center/cover no-repeat,
     linear-gradient(180deg, var(--bg-deep), var(--bg-dark));
 }
 
 .site-bg {
   position: fixed;
   inset: 0;
-  background: url("/assets/hero-bg.jpg") center/cover no-repeat;
+  background: url("/assets/hero-bg.png") center/cover no-repeat;
   z-index: -2;
 }
 
 .site-bg {
   background:
     linear-gradient(#130621, #07030f),
-    url("/assets/hero-bg.jpg") center/cover no-repeat;
+    url("/assets/hero-bg.png") center/cover no-repeat;
 }
 
 .navbar, main, .site-footer { width: min(1120px, 92%); margin-inline: auto; }
@@ -100,7 +100,7 @@ button:disabled { opacity: .6; cursor: wait; }
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: #000;
+  background: #0d0618;
   box-shadow:
     0 0 18px rgba(212,175,55,0.28),
     inset 0 0 12px rgba(212,175,55,0.12);
