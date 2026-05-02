@@ -54,9 +54,18 @@ body {
   text-decoration: none;
   font-size: 1rem;
   letter-spacing: 0.04em;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  background: rgba(212, 175, 55, 0.08);
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 .nav-link:hover,
-.nav-link:focus-visible { color: var(--gold); }
+.nav-link:focus-visible {
+  color: var(--gold);
+  background: rgba(212, 175, 55, 0.16);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
+}
 .social-nav { display: flex; gap: 0.55rem; }
 .social-icon {
   display:grid; place-items:center; width:2rem; height:2rem; border-radius:999px;
