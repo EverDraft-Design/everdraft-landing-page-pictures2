@@ -46,9 +46,8 @@ body {
   display: flex; justify-content: space-between; align-items: center;
   padding: 1.2rem 0;
 }
-.brand { color: var(--gold-soft); text-decoration: none; font-weight: 700; letter-spacing: 0.06em; display:flex; align-items:center; gap:.6rem; }
-.brand-logo { width: 42px; height: 42px; object-fit: contain; border-radius: 999px; }
-.brand-text { display: none; font-size: 1.1rem; }
+.brand { color: var(--gold-soft); text-decoration: none; display:flex; align-items:center; line-height:0; }
+.brand-logo { width: 32px; height: 32px; object-fit: contain; border-radius: 999px; display:block; }
 .social-nav { display:flex; gap:.6rem; }
 .social-icon {
   display:grid; place-items:center; width:2rem; height:2rem; border-radius:999px;
