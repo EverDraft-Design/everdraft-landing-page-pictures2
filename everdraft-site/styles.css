@@ -66,6 +66,11 @@ body {
   background: rgba(212, 175, 55, 0.16);
   box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
 }
+.nav-link-primary {
+  background: linear-gradient(120deg, rgba(212,175,55,.95), rgba(247,223,138,.95));
+  color: #2f1b03;
+  font-weight: 700;
+}
 .social-nav { display: flex; gap: 0.55rem; }
 .social-icon {
   display:grid; place-items:center; width:2rem; height:2rem; border-radius:999px;
@@ -100,6 +105,25 @@ button {
   background: linear-gradient(120deg, var(--gold), var(--gold-soft)); color:#2f1b03;
 }
 button:disabled { opacity: .6; cursor: wait; }
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  color: #2f1b03;
+  text-decoration: none;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  border-radius: .7rem;
+  padding: .85rem 1rem;
+  background: linear-gradient(120deg, var(--gold), var(--gold-soft));
+}
+.button-link:hover,
+.button-link:focus-visible,
+button:hover,
+button:focus-visible {
+  box-shadow: 0 0 22px rgba(212,175,55,.22);
+}
 
 .features { display:grid; grid-template-columns:1fr; gap: 1rem; padding: 2.4rem 0; }
 .feature-card {
@@ -145,6 +169,78 @@ button:disabled { opacity: .6; cursor: wait; }
 }
 .progress-list .active { border-color: var(--gold); box-shadow: 0 0 18px rgba(212,175,55,.18); }
 
+.journal-main { padding-bottom: 3rem; }
+.journal-hero { padding-bottom: 2rem; }
+.journal-subtitle { margin-bottom: 1rem; }
+.journal-intro {
+  max-width: 760px;
+  margin: 0 auto;
+  color: var(--text);
+  line-height: 1.75;
+  font-size: 1.05rem;
+}
+.journal-section { padding: 1.5rem 0; }
+.journal-featured-card,
+.journal-note,
+.journal-cta {
+  background: linear-gradient(180deg, rgba(19,6,33,.9), rgba(10,5,18,.84));
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  box-shadow: 0 18px 44px rgba(0,0,0,.28), 0 0 24px rgba(212,175,55,.08);
+}
+.journal-featured-card {
+  display: grid;
+  gap: 1rem;
+}
+.journal-featured-card h2,
+.journal-note h2,
+.section-heading h2,
+.journal-cta h2 {
+  margin: .25rem 0 .65rem;
+  font-size: clamp(1.55rem, 4vw, 2.4rem);
+}
+.journal-featured-card p,
+.journal-note p,
+.journal-card p,
+.journal-cta p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+.journal-date {
+  margin: 0;
+  color: var(--gold-soft);
+  font-size: .95rem;
+}
+.journal-note {
+  margin: 1.5rem 0;
+}
+.section-heading {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+.journal-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+.journal-card h3 {
+  margin: 0 0 .65rem;
+  color: var(--gold-soft);
+  font-size: 1.15rem;
+}
+.journal-cta {
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: .65rem;
+  margin-top: 1.5rem;
+}
+.journal-cta p {
+  max-width: 660px;
+  margin: 0 0 .75rem;
+}
+
 .site-footer { border-top:1px solid rgba(247,223,138,.2); padding: 1.4rem 0 2rem; color: var(--muted); }
 .footer-brand { margin: 0 0 .3rem; color: var(--gold-soft); font-weight:700; }
 .footer-logo {
@@ -173,6 +269,7 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 @media (min-width: 740px) {
   .hero-form { grid-template-columns: 1fr auto; }
   .features { grid-template-columns: repeat(3, 1fr); }
+  .journal-card-grid { grid-template-columns: repeat(3, 1fr); }
 
 .decor-left {
   position: absolute;
