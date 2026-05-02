@@ -47,7 +47,7 @@ body {
   padding: 1.2rem 0;
 }
 .brand { color: var(--gold-soft); text-decoration: none; display:flex; align-items:center; line-height:0; }
-.brand-logo { width: 32px; height: 32px; object-fit: contain; border-radius: 999px; display:block; }
+.brand-logo { width: 96px; height: 96px; object-fit: contain; border-radius: 999px; display:block; }
 .social-nav { display:flex; gap:.6rem; }
 .social-icon {
   display:grid; place-items:center; width:2rem; height:2rem; border-radius:999px;
