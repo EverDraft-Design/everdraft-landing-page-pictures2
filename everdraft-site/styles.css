@@ -291,3 +291,66 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   display: block;
   margin: 0 auto; }
 }
+.journal-entry {
+
+  max-width: 860px;
+
+  margin: 0 auto;
+
+  padding: 4rem 1.5rem;
+
+}
+
+.journal-entry-header {
+
+  text-align: center;
+
+  margin-bottom: 3rem;
+
+}
+
+.journal-entry-header h1 {
+
+  margin: 0.5rem 0 1rem;
+
+}
+
+.journal-date {
+
+  opacity: 0.75;
+
+}
+
+.journal-entry-content {
+
+  line-height: 1.8;
+
+  font-size: 1.05rem;
+
+}
+
+.journal-entry-content p {
+
+  margin-bottom: 1.35rem;
+
+}
+
+.journal-signoff {
+
+  margin-top: 2rem;
+
+  font-weight: 600;
+
+}
+
+.journal-cta {
+
+  margin-top: 4rem;
+
+  padding: 2rem;
+
+  border-radius: 24px;
+
+  text-align: center;
+
+}
