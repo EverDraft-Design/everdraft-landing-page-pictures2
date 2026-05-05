@@ -19,6 +19,7 @@ const bioInput = document.getElementById('bio');
 const status = document.getElementById('profileStatus');
 const saveButton = document.getElementById('saveProfileButton');
 const logoutButton = document.getElementById('logoutButton');
+const myStoriesLink = document.getElementById('myStoriesLink');
 
 function fillProfile(profile) {
   displayNameInput.value = profile.display_name || '';
@@ -27,6 +28,7 @@ function fillProfile(profile) {
   bioInput.value = profile.bio || '';
   avatarUrl.textContent = profile.avatar_url || 'Not set';
   profileState.textContent = isProfileComplete(profile) ? 'Ready for early testing' : 'Needs a few details';
+  myStoriesLink.hidden = !['writer', 'both'].includes(profile.role);
   form.hidden = false;
 }
 

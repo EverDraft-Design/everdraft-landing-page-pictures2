@@ -137,3 +137,67 @@ The onboarding page helps a signed-in user complete their basic `profiles` row w
 New signups with an immediate session are sent to `/onboarding/`. If Supabase email confirmation is enabled, the user will still need to confirm their email and sign in before onboarding can run.
 
 No Phase 1B migration was needed. The existing `profiles` table and RLS policies already support this flow.
+
+## Phase 2A: Writer Story Dashboard
+
+Phase 2A adds a minimal protected writer area for story metadata:
+
+- `/my/stories/` lists the signed-in writer's own stories.
+- `/my/stories/new/` creates a story shell.
+- `/my/stories/:storyId/edit/` edits story metadata for the author.
+
+Only users with profile role `writer` or `both` can create or edit stories. Reader-only users see a friendly message directing them to update their profile role first.
+
+The story form supports:
+
+- title
+- slug
+- blurb
+- genre
+- status
+- cover URL
+- banner URL
+
+Slugs are auto-generated from the title when left blank. New stories use `publication_mode = none` and `is_readable = true`. Publication Mode, KDP/KU controls, image upload, chapter posting, public story pages, discovery, follows, comments, and ratings are not part of this phase.
+
+To test locally:
+
+1. Add `SUPABASE_URL` and `SUPABASE_ANON_KEY` to `.dev.vars`.
+2. Run `npm run dev`.
+3. Sign in as a user whose profile role is `writer` or `both`.
+4. Open `/my/stories/`.
+5. Create a story at `/my/stories/new/`.
+6. Edit the story metadata from the list.
+
+No Phase 2A database migration was needed because the existing `stories` table and RLS policies already support author-owned story creation and updates.
+
+## Phase 2B: Private Chapter Drafts
+
+Phase 2B adds private chapter drafting under an author's own story:
+
+- `/my/stories/chapters/?storyId=...` lists chapters for one owned story.
+- `/my/stories/chapters/new/?storyId=...` creates a private chapter draft.
+- `/my/stories/:storyId/chapters/:chapterId/edit/` edits an owned chapter draft.
+
+Only users with profile role `writer` or `both` can use these pages, and the chapter helpers verify the parent story belongs to the current author before reading or writing chapters.
+
+The chapter form supports:
+
+- title
+- chapter number
+- status
+- content
+
+This phase still does not add public reader chapter pages, comments, follows, ratings, discovery, payments, badges, admin tools, or Writer's Nook. No Phase 2B migration was needed because the existing `chapters` table and RLS policies already support author-owned chapter creation and updates.
+
+## Phase 2C: Private Author Preview
+
+Phase 2C adds an author-only story preview route:
+
+- `/my/stories/:storyId/preview/`
+
+The preview shows story metadata and the author's own non-archived chapter drafts in a reader-like layout, but it is still protected behind login, writer/both role checks, and story ownership checks. It is not a public story page and is not linked from the homepage.
+
+Use this route from the private story list or story edit page to review draft presentation before any future public reader experience exists.
+
+This phase still does not add public discovery, public story pages, public chapter reading, comments, follows, ratings, payments, badges, admin tools, or Writer's Nook. No Phase 2C migration was needed.

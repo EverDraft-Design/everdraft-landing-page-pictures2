@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Chapter — EverDraft</title>
+    <meta name="description" content="Edit a private EverDraft chapter draft." />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+      </a>
+      <nav aria-label="Primary navigation" class="social-nav">
+        <a id="backToChaptersLink" href="/my/stories/" class="nav-link">Chapters</a>
+        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      </nav>
+    </header>
+    <main class="auth-main story-main">
+      <section class="auth-panel story-panel" aria-labelledby="edit-chapter-title">
+        <p class="eyebrow">PRIVATE CHAPTER</p>
+        <h1 id="edit-chapter-title">Edit Chapter Draft</h1>
+        <p class="hero-copy">Private chapter drafting only. No public reader view is open yet.</p>
+        <div id="readerNotice" class="notice-panel" hidden>Chapter drafting is available to writer accounts. Update your profile role to Writer or Both to begin.</div>
+        <div id="missingNotice" class="notice-panel" hidden>This chapter was not found, or it does not belong to your story.</div>
+        <form id="chapterForm" class="auth-form story-form" hidden>
+          <label for="title">Chapter title</label>
+          <input id="title" name="title" type="text" required />
+          <div class="form-grid">
+            <div>
+              <label for="chapterNumber">Chapter number</label>
+              <input id="chapterNumber" name="chapterNumber" type="number" min="1" step="1" required />
+            </div>
+            <div>
+              <label for="status">Status</label>
+              <select id="status" name="status">
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="hidden">Hidden</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+          <label for="content">Content</label>
+          <textarea id="content" name="content" rows="14"></textarea>
+          <div class="auth-actions">
+            <button type="submit" id="saveChapterButton">Save Chapter</button>
+            <button type="button" id="archiveChapterButton" class="secondary-button">Archive Chapter</button>
+          </div>
+          <p id="chapterStatus" class="form-status" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+    <script type="module" src="/my/stories/chapters/edit/edit-chapter.js"></script>
+  </body>
+</html>

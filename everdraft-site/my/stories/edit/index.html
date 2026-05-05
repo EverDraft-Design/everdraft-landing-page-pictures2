@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Story — EverDraft</title>
+    <meta name="description" content="Edit private EverDraft story metadata." />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+      </a>
+      <nav aria-label="Primary navigation" class="social-nav">
+        <a href="/my/stories/" class="nav-link">My Stories</a>
+        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      </nav>
+    </header>
+
+    <main class="auth-main story-main">
+      <section class="auth-panel story-panel" aria-labelledby="edit-story-title">
+        <p class="eyebrow">STORY METADATA</p>
+        <h1 id="edit-story-title">Edit Story</h1>
+        <p class="hero-copy">
+          Keep the public-facing story details ready. Chapter tools are not part of this phase.
+        </p>
+
+        <div id="readerNotice" class="notice-panel" hidden>
+          Story creation is available to writer accounts. Update your profile role to Writer or Both to begin.
+        </div>
+
+        <div id="missingNotice" class="notice-panel" hidden>
+          This story was not found, or it does not belong to your account.
+        </div>
+
+        <form id="storyForm" class="auth-form story-form" hidden>
+          <label for="title">Title</label>
+          <input id="title" name="title" type="text" required />
+
+          <label for="slug">Slug</label>
+          <input id="slug" name="slug" type="text" required />
+
+          <label for="blurb">Blurb</label>
+          <textarea id="blurb" name="blurb" rows="4"></textarea>
+
+          <div class="form-grid">
+            <div>
+              <label for="genre">Genre</label>
+              <input id="genre" name="genre" type="text" />
+            </div>
+            <div>
+              <label for="status">Status</label>
+              <select id="status" name="status">
+                <option value="draft">Draft</option>
+                <option value="ongoing">Ongoing</option>
+                <option value="complete">Complete</option>
+                <option value="hiatus">Hiatus</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+
+          <label for="coverUrl">Cover URL</label>
+          <input id="coverUrl" name="coverUrl" type="url" />
+
+          <label for="bannerUrl">Banner URL</label>
+          <input id="bannerUrl" name="bannerUrl" type="url" />
+
+          <div class="auth-actions">
+            <button type="submit" id="saveStoryButton">Save Story</button>
+            <a class="button-link secondary-link" id="manageChaptersLink" href="/my/stories/">Manage Chapters</a>
+            <a class="button-link secondary-link" id="previewStoryLink" href="/my/stories/">Preview Story</a>
+            <button type="button" id="archiveStoryButton" class="secondary-button">Archive Story</button>
+          </div>
+          <p id="storyStatus" class="form-status" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <script type="module" src="/my/stories/edit/edit-story.js"></script>
+  </body>
+</html>
