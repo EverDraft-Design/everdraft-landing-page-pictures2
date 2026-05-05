@@ -1,8 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.105.1';
 
 let clientPromise;
-const PROFILE_SELECT = 'id, user_id, display_name, pen_name, role, bio, avatar_url, created_at, updated_at';
+const PROFILE_SELECT = 'id, user_id, username, display_name, pen_name, role, bio, avatar_url, created_at, updated_at';
 const VALID_PROFILE_ROLES = new Set(['reader', 'writer', 'both']);
+const USERNAME_PATTERN = /^[a-z0-9_-]{3,30}$/;
 
 function getRedirectPath(fallback = '/account/') {
   const params = new URLSearchParams(window.location.search);
@@ -19,6 +20,12 @@ export function friendlyAuthError(error) {
   }
   if (message.includes('supabase configuration could not be loaded')) {
     return 'Supabase configuration could not be loaded. Check the deployed Worker and Cloudflare environment variables.';
+  }
+  if (message.includes('duplicate') && message.includes('username')) {
+    return 'That EverDraft username is already taken. Please choose another.';
+  }
+  if (message.includes('profiles_username')) {
+    return 'That EverDraft username is already taken. Please choose another.';
   }
   if (message.includes('already') || message.includes('registered')) {
     return `Supabase: ${rawMessage}`;
@@ -54,9 +61,33 @@ function requireValidProfileFields({ displayName, role }) {
   };
 }
 
-function requireValidProfileInput({ userId, displayName, role }) {
+export function normalizeUsername(username) {
+  return String(username || '').trim().toLowerCase();
+}
+
+export function validateUsername(username) {
+  const rawUsername = String(username || '').trim();
+  const cleanUsername = rawUsername.toLowerCase();
+
+  if (!cleanUsername) {
+    throw new Error('Username is required. Choose a permanent EverDraft handle.');
+  }
+
+  if (rawUsername !== cleanUsername) {
+    throw new Error('Username must be lowercase.');
+  }
+
+  if (!USERNAME_PATTERN.test(cleanUsername)) {
+    throw new Error('Username must be 3-30 characters using lowercase letters, numbers, hyphens, or underscores only.');
+  }
+
+  return cleanUsername;
+}
+
+function requireValidProfileInput({ userId, username, displayName, role, requireUsername = true }) {
   const cleanUserId = String(userId || '').trim();
   const profileFields = requireValidProfileFields({ displayName, role });
+  const cleanUsername = requireUsername ? validateUsername(username) : normalizeUsername(username);
 
   if (!cleanUserId) {
     throw new Error('Signup beta error: Supabase Auth did not return a user id, so no profile was created.');
@@ -64,6 +95,7 @@ function requireValidProfileInput({ userId, displayName, role }) {
 
   return {
     userId: cleanUserId,
+    username: cleanUsername || null,
     ...profileFields
   };
 }
@@ -115,8 +147,9 @@ export async function requireSession() {
   return session;
 }
 
-export async function signUpWithEmail({ email, password, displayName, role }) {
+export async function signUpWithEmail({ email, password, username, displayName, role }) {
   const supabase = await getSupabaseBrowserClient();
+  const cleanUsername = validateUsername(username);
   const profileFields = requireValidProfileFields({
     displayName,
     role
@@ -127,6 +160,7 @@ export async function signUpWithEmail({ email, password, displayName, role }) {
     password: String(password || ''),
     options: {
       data: {
+        username: cleanUsername,
         display_name: profileFields.displayName,
         intended_role: profileFields.role
       }
@@ -150,6 +184,7 @@ export async function signUpWithEmail({ email, password, displayName, role }) {
   const profile = await createProfileForAuthUser({
     supabase,
     userId: data.user.id,
+    username: cleanUsername,
     displayName: profileFields.displayName,
     role: profileFields.role,
     penName: profileFields.displayName
@@ -197,14 +232,17 @@ export async function getCurrentProfile() {
 export async function createProfileForAuthUser({
   supabase,
   userId,
+  username,
   displayName,
   role = 'reader',
   penName,
-  bio = ''
+  bio = '',
+  requireUsername = true
 }) {
-  const profileInput = requireValidProfileInput({ userId, displayName, role });
+  const profileInput = requireValidProfileInput({ userId, username, displayName, role, requireUsername });
   const profile = {
     user_id: profileInput.userId,
+    username: profileInput.username,
     display_name: profileInput.displayName,
     pen_name: String(penName ?? profileInput.displayName).trim() || profileInput.displayName,
     role: profileInput.role,
@@ -230,10 +268,12 @@ export async function createProfileForCurrentUser({ displayName, role = 'reader'
   return createProfileForAuthUser({
     supabase,
     userId: user.id,
+    username: user.user_metadata?.username || '',
     displayName: displayName || user.user_metadata?.display_name || user.email,
     role: role || user.user_metadata?.intended_role || 'reader',
     penName: penName ?? displayName ?? user.user_metadata?.display_name ?? '',
-    bio
+    bio,
+    requireUsername: false
   }).catch((profileError) => {
     throw new Error(
       `Profile creation failed: ${profileError.message}. Check public.profiles RLS allows insert where user_id = auth.uid().`
@@ -241,26 +281,38 @@ export async function createProfileForCurrentUser({ displayName, role = 'reader'
   });
 }
 
-export async function updateCurrentProfile({ displayName, penName, role, bio }) {
+export async function updateCurrentProfile({ username, displayName, penName, role, bio }) {
   const supabase = await getSupabaseBrowserClient();
   const user = await getCurrentUser();
 
   if (!user?.id) throw new Error('You need to be signed in to update your profile.');
 
-  const profileInput = requireValidProfileInput({
-    userId: user.id,
-    displayName,
-    role
-  });
+  const profileFields = requireValidProfileFields({ displayName, role });
+
+  const existingProfile = await getCurrentProfile();
+  if (!existingProfile) {
+    throw new Error('Profile not found. Please reload and try again.');
+  }
+
+  const cleanUsername = normalizeUsername(username);
+  const updatePayload = {
+    display_name: profileFields.displayName,
+    pen_name: String(penName || '').trim(),
+    role: profileFields.role,
+    bio: String(bio || '').trim()
+  };
+
+  if (!existingProfile.username && cleanUsername) {
+    updatePayload.username = validateUsername(cleanUsername);
+  }
+
+  if (existingProfile.username && cleanUsername && cleanUsername !== existingProfile.username) {
+    throw new Error('Your username is your locked EverDraft identity and cannot be changed.');
+  }
 
   const { data, error } = await supabase
     .from('profiles')
-    .update({
-      display_name: profileInput.displayName,
-      pen_name: String(penName || '').trim(),
-      role: profileInput.role,
-      bio: String(bio || '').trim()
-    })
+    .update(updatePayload)
     .eq('user_id', user.id)
     .select(PROFILE_SELECT)
     .single();
@@ -272,6 +324,7 @@ export async function updateCurrentProfile({ displayName, penName, role, bio }) 
 export function isProfileComplete(profile) {
   return Boolean(
     profile
+      && profile.username
       && profile.display_name
       && profile.role
       && (profile.pen_name || profile.bio)

@@ -9,9 +9,12 @@ import {
 } from '/auth.js';
 
 const email = document.getElementById('accountEmail');
+const accountUsername = document.getElementById('accountUsername');
 const avatarUrl = document.getElementById('avatarUrl');
 const profileState = document.getElementById('profileState');
 const form = document.getElementById('profileForm');
+const usernameInput = document.getElementById('username');
+const usernameHelp = document.getElementById('usernameHelp');
 const displayNameInput = document.getElementById('displayName');
 const penNameInput = document.getElementById('penName');
 const roleSelect = document.getElementById('role');
@@ -24,6 +27,13 @@ const writerTools = document.getElementById('writerTools');
 const readerTools = document.getElementById('readerTools');
 
 function fillProfile(profile) {
+  usernameInput.value = profile.username || '';
+  usernameInput.readOnly = Boolean(profile.username);
+  usernameInput.required = !profile.username;
+  accountUsername.textContent = profile.username ? `@${profile.username}` : 'Not set';
+  usernameHelp.textContent = profile.username
+    ? 'Your username is your locked EverDraft identity and cannot be changed.'
+    : 'Choose your permanent EverDraft username. Use 3-30 lowercase letters, numbers, hyphens, or underscores.';
   displayNameInput.value = profile.display_name || '';
   penNameInput.value = profile.pen_name || '';
   roleSelect.value = profile.role || 'reader';
@@ -63,6 +73,7 @@ form.addEventListener('submit', async (event) => {
   status.textContent = '';
 
   const formData = new FormData(form);
+  const username = String(formData.get('username') || '').trim();
   const displayName = String(formData.get('displayName') || '').trim();
   const penName = String(formData.get('penName') || '').trim();
   const role = String(formData.get('role') || 'reader');
@@ -73,11 +84,16 @@ form.addEventListener('submit', async (event) => {
     return;
   }
 
+  if (usernameInput.required && !username) {
+    status.textContent = 'Username is required before your profile can be completed.';
+    return;
+  }
+
   saveButton.disabled = true;
   saveButton.textContent = 'Saving...';
 
   try {
-    const profile = await updateCurrentProfile({ displayName, penName, role, bio });
+    const profile = await updateCurrentProfile({ username, displayName, penName, role, bio });
     fillProfile(profile);
     status.textContent = 'Profile saved.';
   } catch (error) {

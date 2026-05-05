@@ -119,6 +119,10 @@ During beta testing, signup and login pages display the actual Supabase error me
 
 Signup must create the Supabase Auth user first. Only after Auth returns a real user id does EverDraft upsert the matching `public.profiles` row with `user_id`, `display_name`, `role`, and `pen_name`. If email confirmation is enabled and Supabase does not return an active session immediately, the browser cannot create the profile row under RLS until the user confirms their email and signs in.
 
+For email-confirmation projects, apply `supabase/migrations/003_create_profile_on_auth_signup.sql`. It adds a Postgres trigger on `auth.users` that creates the matching `public.profiles` row from signup metadata as soon as Supabase Auth creates the user, and backfills Auth users that were created before the trigger existed.
+
+EverDraft account identity now includes a locked public username. New signups must choose a lowercase username using 3-30 letters, numbers, hyphens, or underscores. The username is saved to `public.profiles.username`, must be unique, and cannot be changed after creation. Existing beta users whose profile has no username can set one once from `/account/` or `/onboarding/`. The admin role is not selectable in the UI.
+
 To test locally:
 
 1. Copy `.dev.vars.example` to `.dev.vars`.
@@ -221,8 +225,20 @@ The signup flow expects the deployed Cloudflare variables `SUPABASE_URL` and `SU
 A safety migration is available at:
 
 - `supabase/migrations/002_fix_profiles_auth_signup.sql`
+- `supabase/migrations/003_create_profile_on_auth_signup.sql`
+- `supabase/migrations/004_add_locked_username_to_profiles.sql`
 
-Review and apply it manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies. It recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. It does not delete existing data.
+Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, or if Auth users are being created without profile rows. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. None of these migrations delete existing data.
+
+To test locked usernames:
+
+1. Apply migration 004 in Supabase SQL Editor after migrations 002 and 003.
+2. Open `/signup/`.
+3. Try an invalid username with spaces or uppercase letters and confirm it is rejected.
+4. Create an account with a valid username such as `first_draft`.
+5. Confirm `public.profiles.username` is saved.
+6. Try another signup with the same username and confirm Supabase rejects it.
+7. Open `/account/` and confirm the username is read-only after it is set.
 
 If old blank beta rows already exist in `public.profiles`, remove them manually from Supabase **Table Editor > profiles** after confirming they are test rows. Look for rows with an empty `display_name`, missing `user_id`, or a role that does not match a real test account. Do not delete profiles for real users.
 

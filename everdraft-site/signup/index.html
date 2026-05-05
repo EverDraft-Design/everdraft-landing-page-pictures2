@@ -33,6 +33,20 @@
           <label for="displayName">Display name</label>
           <input id="displayName" name="displayName" type="text" autocomplete="name" required />
 
+          <label for="username">Username</label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            placeholder="lowercase-handle"
+            minlength="3"
+            maxlength="30"
+            pattern="[a-z0-9_-]{3,30}"
+            required
+          />
+          <p class="field-note">Your EverDraft username is permanent. Use 3-30 lowercase letters, numbers, hyphens, or underscores.</p>
+
           <label for="email">Email</label>
           <input id="email" name="email" type="email" autocomplete="email" required />
 
