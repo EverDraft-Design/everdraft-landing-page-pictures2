@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Stories — EverDraft</title>
+    <meta name="description" content="Manage your private EverDraft story drafts." />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+      </a>
+      <nav aria-label="Primary navigation" class="social-nav">
+        <a href="/account/" class="nav-link">Account</a>
+        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      </nav>
+    </header>
+
+    <main class="auth-main story-main">
+      <section class="auth-panel story-panel" aria-labelledby="stories-title">
+        <p class="eyebrow">WRITER SHELF</p>
+        <h1 id="stories-title">My Stories</h1>
+        <p class="hero-copy">
+          A private draft shelf for story metadata. Chapters and public discovery are not open yet.
+        </p>
+
+        <div id="readerNotice" class="notice-panel" hidden>
+          Story creation is available to writer accounts. Update your profile role to Writer or Both to begin.
+        </div>
+
+        <div id="storyActions" class="story-actions" hidden>
+          <a class="button-link" href="/my/stories/new/">Create New Story</a>
+        </div>
+
+        <div id="storyList" class="story-list" aria-live="polite"></div>
+        <p id="storiesStatus" class="form-status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <script type="module" src="/my/stories/stories-index.js"></script>
+  </body>
+</html>
