@@ -46,7 +46,7 @@
             autocomplete="username"
             minlength="3"
             maxlength="30"
-            pattern="[a-z0-9_-]{3,30}"
+            pattern="[a-z0-9_\-]{3,30}"
           />
           <p id="usernameHelp" class="field-note">Your username is your EverDraft identity and cannot be changed after creation.</p>
 
@@ -72,30 +72,25 @@
 
         <div id="writerTools" class="notice-panel account-tools" hidden>
           <p class="eyebrow">WRITER TESTING</p>
-          <h2>Your private writer tools are open for testing</h2>
+          <h2>Writer tools are coming later</h2>
           <p>
-            Use My Stories to create story foundations, manage private chapter drafts, and preview
-            your own work before public reader pages exist.
+            You can test account and profile editing now. Story creation, chapters, and author
+            previews will stay out of the public beta surface until they are ready.
           </p>
-          <div class="auth-actions">
-            <a class="button-link" href="/my/stories/">Go to My Stories</a>
-            <a class="button-link secondary-link" href="/my/stories/new/">Create New Story</a>
-          </div>
         </div>
 
         <div id="readerTools" class="notice-panel account-tools" hidden>
           <p class="eyebrow">READER TESTING</p>
           <h2>Reader tools are coming later</h2>
           <p>
-            You can test account and profile editing now. If you want to try story creation,
-            change your role to Writer or Both and save your profile.
+            You can test account and profile editing now. Reader features will open in a later
+            beta phase.
           </p>
         </div>
 
         <div class="auth-actions">
           <a class="button-link secondary-link" href="/beta/">Beta Access</a>
           <a class="button-link secondary-link" href="/onboarding/">Review Onboarding</a>
-          <a class="button-link secondary-link" id="myStoriesLink" href="/my/stories/" hidden>My Stories</a>
           <button type="button" id="logoutButton">Log Out</button>
         </div>
       </section>
