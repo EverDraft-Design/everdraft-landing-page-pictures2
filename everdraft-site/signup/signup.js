@@ -1,4 +1,4 @@
-import { friendlyAuthError, redirectAfterAuth, signUpWithEmail } from '/auth.js';
+import { friendlyAuthError, redirectAfterAuth, signUpWithEmail, validateUsername } from '/auth.js';
 
 const form = document.getElementById('signupForm');
 const button = document.getElementById('signupButton');
@@ -11,13 +11,21 @@ form.addEventListener('submit', async (event) => {
 
   const formData = new FormData(form);
   const displayName = String(formData.get('displayName') || '').trim();
+  const username = String(formData.get('username') || '').trim();
   const email = String(formData.get('email') || '').trim();
   const password = String(formData.get('password') || '');
   const confirmPassword = String(formData.get('confirmPassword') || '');
   const role = String(formData.get('role') || 'reader');
 
-  if (!displayName || !email || !password) {
+  if (!displayName || !username || !email || !password) {
     status.textContent = 'Please complete the required fields.';
+    return;
+  }
+
+  try {
+    validateUsername(username);
+  } catch (error) {
+    status.textContent = friendlyAuthError(error);
     return;
   }
 
@@ -35,10 +43,10 @@ form.addEventListener('submit', async (event) => {
   button.textContent = 'Creating...';
 
   try {
-    const data = await signUpWithEmail({ email, password, displayName, role });
+    const data = await signUpWithEmail({ email, password, username, displayName, role });
 
     if (data.profilePendingEmailConfirmation) {
-      status.textContent = 'Supabase created the Auth user, but no active session was returned. Please confirm the email address, then sign in so EverDraft can create the matching profile row.';
+      status.textContent = 'Supabase created the Auth user, but no active session was returned because email confirmation may be enabled. The database profile trigger should create your profile row; if it does not appear, apply migration 003_create_profile_on_auth_signup.sql.';
       form.reset();
       return;
     }

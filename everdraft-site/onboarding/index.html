@@ -36,6 +36,18 @@
         </ol>
 
         <form id="onboardingForm" class="auth-form">
+          <label for="username">Username</label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            minlength="3"
+            maxlength="30"
+            pattern="[a-z0-9_-]{3,30}"
+          />
+          <p id="usernameHelp" class="field-note">Your username is your EverDraft identity and cannot be changed after creation.</p>
+
           <label for="displayName">Display name</label>
           <input id="displayName" name="displayName" type="text" autocomplete="name" required />
 

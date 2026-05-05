@@ -32,11 +32,24 @@
 
         <div class="account-summary" aria-live="polite">
           <p><strong>Email:</strong> <span id="accountEmail">Loading...</span></p>
+          <p><strong>Username:</strong> <span id="accountUsername">Checking...</span></p>
           <p><strong>Profile:</strong> <span id="profileState">Checking...</span></p>
           <p><strong>Avatar URL:</strong> <span id="avatarUrl">Not set</span></p>
         </div>
 
         <form id="profileForm" class="auth-form" hidden>
+          <label for="username">Username</label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            autocomplete="username"
+            minlength="3"
+            maxlength="30"
+            pattern="[a-z0-9_-]{3,30}"
+          />
+          <p id="usernameHelp" class="field-note">Your username is your EverDraft identity and cannot be changed after creation.</p>
+
           <label for="displayName">Display name</label>
           <input id="displayName" name="displayName" type="text" autocomplete="name" required />
 
