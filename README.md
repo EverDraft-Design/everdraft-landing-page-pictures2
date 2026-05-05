@@ -55,6 +55,8 @@ Add these same variables in Cloudflare:
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 
+These exact names are what the deployed Cloudflare Worker reads. The browser receives them only through the Worker endpoint at `/api/supabase-config`; this project does not use `VITE_`, `NEXT_PUBLIC_`, or other frontend-prefixed Supabase variable names.
+
 The Supabase anon/public key is intended for public client usage when Row Level Security is configured correctly. The Supabase service role key must never be exposed in frontend code, static assets, public environment variables, or browser-delivered JavaScript.
 
 ## Optional Developer Check
@@ -106,6 +108,10 @@ The browser auth helper lives at `everdraft-site/auth.js`. It loads the Supabase
 SUPABASE_URL=
 SUPABASE_ANON_KEY=
 ```
+
+During beta testing, signup and login pages display the actual Supabase error message returned by Auth or profile creation so configuration, email confirmation, RLS, and duplicate-account issues are easier to diagnose.
+
+Signup must create the Supabase Auth user first. Only after Auth returns a real user id does EverDraft upsert the matching `public.profiles` row with `user_id`, `display_name`, `role`, and `pen_name`. If email confirmation is enabled and Supabase does not return an active session immediately, the browser cannot create the profile row under RLS until the user confirms their email and signs in.
 
 To test locally:
 
@@ -201,6 +207,18 @@ The preview shows story metadata and the author's own non-archived chapter draft
 Use this route from the private story list or story edit page to review draft presentation before any future public reader experience exists.
 
 This phase still does not add public discovery, public story pages, public chapter reading, comments, follows, ratings, payments, badges, admin tools, or Writer's Nook. No Phase 2C migration was needed.
+
+## Signup Repair Notes
+
+The signup flow expects the deployed Cloudflare variables `SUPABASE_URL` and `SUPABASE_ANON_KEY`. It calls Supabase Auth first, then creates or updates the matching profile row using `profiles.user_id = auth.users.id`.
+
+A safety migration is available at:
+
+- `supabase/migrations/002_fix_profiles_auth_signup.sql`
+
+Review and apply it manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies. It recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. It does not delete existing data.
+
+If old blank beta rows already exist in `public.profiles`, remove them manually from Supabase **Table Editor > profiles** after confirming they are test rows. Look for rows with an empty `display_name`, missing `user_id`, or a role that does not match a real test account. Do not delete profiles for real users.
 
 ## Beta Testing Pathway
 
