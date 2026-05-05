@@ -1,0 +1,6 @@
+# Copy this file to .dev.vars for local Wrangler development.
+# Do not commit .dev.vars with real values.
+
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+ENABLE_SUPABASE_DEV_CHECK=false

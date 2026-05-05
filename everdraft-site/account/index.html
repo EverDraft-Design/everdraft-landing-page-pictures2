@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account — EverDraft</title>
+    <meta name="description" content="Manage your basic EverDraft account profile." />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+      </a>
+      <nav aria-label="Primary navigation" class="social-nav">
+        <a href="/journal" class="nav-link">Journal</a>
+        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      </nav>
+    </header>
+
+    <main class="auth-main">
+      <section class="auth-panel" aria-labelledby="account-title">
+        <p class="eyebrow">ACCOUNT FOUNDATION</p>
+        <h1 id="account-title">Your EverDraft Account</h1>
+        <p class="hero-copy">
+          This is a small profile foundation only. Story tools are not open yet.
+        </p>
+
+        <div class="account-summary" aria-live="polite">
+          <p><strong>Email:</strong> <span id="accountEmail">Loading...</span></p>
+          <p><strong>Profile:</strong> <span id="profileState">Checking...</span></p>
+          <p><strong>Avatar URL:</strong> <span id="avatarUrl">Not set</span></p>
+        </div>
+
+        <form id="profileForm" class="auth-form" hidden>
+          <label for="displayName">Display name</label>
+          <input id="displayName" name="displayName" type="text" autocomplete="name" required />
+
+          <label for="penName">Pen name</label>
+          <input id="penName" name="penName" type="text" autocomplete="off" />
+
+          <label for="role">Role</label>
+          <select id="role" name="role">
+            <option value="reader">Reader</option>
+            <option value="writer">Writer</option>
+            <option value="both">Both</option>
+          </select>
+
+          <label for="bio">Bio</label>
+          <textarea id="bio" name="bio" rows="4"></textarea>
+
+          <button type="submit" id="saveProfileButton">Save Profile</button>
+          <p id="profileStatus" class="form-status" aria-live="polite"></p>
+        </form>
+
+        <div class="auth-actions">
+          <a class="button-link secondary-link" href="/onboarding/">Review Onboarding</a>
+          <button type="button" id="logoutButton">Log Out</button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/account/account.js"></script>
+  </body>
+</html>
