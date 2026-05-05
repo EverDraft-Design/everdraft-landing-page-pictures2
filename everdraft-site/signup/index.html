@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up — EverDraft</title>
+    <meta name="description" content="Create an EverDraft account for early profile testing." />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+      </a>
+      <nav aria-label="Primary navigation" class="social-nav">
+        <a href="/journal" class="nav-link">Journal</a>
+        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      </nav>
+    </header>
+
+    <main class="auth-main">
+      <section class="auth-panel" aria-labelledby="signup-title">
+        <p class="eyebrow">PHASE 1A</p>
+        <h1 id="signup-title">Create Your EverDraft Account</h1>
+        <p class="hero-copy">
+          A quiet account foundation for early testing. The public launch is still waitlist-first.
+        </p>
+
+        <form id="signupForm" class="auth-form">
+          <label for="displayName">Display name</label>
+          <input id="displayName" name="displayName" type="text" autocomplete="name" required />
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required />
+
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="new-password" required minlength="6" />
+
+          <label for="confirmPassword">Confirm password</label>
+          <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" required minlength="6" />
+
+          <fieldset class="auth-choice-group">
+            <legend>Intended role</legend>
+            <label><input type="radio" name="role" value="reader" checked /> Reader</label>
+            <label><input type="radio" name="role" value="writer" /> Writer</label>
+            <label><input type="radio" name="role" value="both" /> Both</label>
+          </fieldset>
+
+          <button type="submit" id="signupButton">Sign Up</button>
+          <p id="signupStatus" class="form-status" aria-live="polite"></p>
+        </form>
+
+        <p class="auth-switch">Already have an account? <a href="/login/">Sign in</a>.</p>
+      </section>
+    </main>
+
+    <script type="module" src="/signup/signup.js"></script>
+  </body>
+</html>

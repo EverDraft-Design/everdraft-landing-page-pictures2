@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Onboarding — EverDraft</title>
+    <meta name="description" content="Complete your basic EverDraft profile for early account testing." />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+      </a>
+      <nav aria-label="Primary navigation" class="social-nav">
+        <a href="/journal" class="nav-link">Journal</a>
+        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      </nav>
+    </header>
+
+    <main class="auth-main">
+      <section class="auth-panel" aria-labelledby="onboarding-title">
+        <p class="eyebrow">PHASE 1B</p>
+        <h1 id="onboarding-title">Shape Your EverDraft Profile</h1>
+        <p class="hero-copy">
+          A short profile step for early testing only. Story tools are still closed.
+        </p>
+
+        <ol class="onboarding-steps" aria-label="Profile readiness">
+          <li id="stepAccount">Account session</li>
+          <li id="stepProfile">Basic profile</li>
+          <li id="stepReady">Ready for future invitations</li>
+        </ol>
+
+        <form id="onboardingForm" class="auth-form">
+          <label for="displayName">Display name</label>
+          <input id="displayName" name="displayName" type="text" autocomplete="name" required />
+
+          <label for="penName">Pen name</label>
+          <input id="penName" name="penName" type="text" autocomplete="off" />
+
+          <label for="role">Role</label>
+          <select id="role" name="role">
+            <option value="reader">Reader</option>
+            <option value="writer">Writer</option>
+            <option value="both">Both</option>
+          </select>
+
+          <label for="bio">A short note about you</label>
+          <textarea id="bio" name="bio" rows="4" placeholder="A sentence or two is enough for now."></textarea>
+
+          <button type="submit" id="onboardingButton">Complete Profile</button>
+          <p id="onboardingStatus" class="form-status" aria-live="polite"></p>
+        </form>
+
+        <p class="auth-switch">
+          Prefer to keep it sparse? <a href="/account/">Go to account</a>.
+        </p>
+      </section>
+    </main>
+
+    <script type="module" src="/onboarding/onboarding.js"></script>
+  </body>
+</html>
