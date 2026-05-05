@@ -201,3 +201,61 @@ The preview shows story metadata and the author's own non-archived chapter draft
 Use this route from the private story list or story edit page to review draft presentation before any future public reader experience exists.
 
 This phase still does not add public discovery, public story pages, public chapter reading, comments, follows, ratings, payments, badges, admin tools, or Writer's Nook. No Phase 2C migration was needed.
+
+## Beta Testing Pathway
+
+The public EverDraft site remains waitlist-first, but the current beta routes are now easier to find for manual testing:
+
+- `/beta/` is the testing hub for the current early platform tools.
+- `/signup/` creates a Supabase Auth account.
+- `/login/` signs in to an existing account.
+- `/account/` manages the basic profile and links to role-appropriate beta tools.
+- `/onboarding/` gives the same profile setup flow in a guided format.
+- `/my/stories/` lists the signed-in writer's own private stories.
+- `/my/stories/new/` creates a private story shell.
+- Story edit, chapter management, chapter draft editing, and author preview links are reached from the private My Stories flow after a story exists.
+
+Current working beta features:
+
+- Reader/writer account creation and login.
+- Basic profile editing with display name, pen name, role, and bio.
+- Writer story dashboard for users with role `writer` or `both`.
+- Private story metadata creation and editing.
+- Private chapter drafts for owned stories.
+- Author-only story preview.
+
+Coming later:
+
+- Public story reading pages.
+- Public story discovery.
+- Follows.
+- Guided feedback comments.
+- Completion ratings.
+- Storymarks and badges.
+- Publication Mode controls.
+- Writer's Nook.
+- Payments and admin tools.
+
+Manual writer/both testing flow:
+
+1. Run `npm run dev`.
+2. Open `/beta/`.
+3. Create an account at `/signup/`.
+4. Choose role `writer` or `both`.
+5. Visit `/account/` and save profile details.
+6. Open `/my/stories/`.
+7. Create a story at `/my/stories/new/`.
+8. Edit the story from the My Stories list.
+9. Manage private chapters from the story edit page.
+10. Preview the private author-only story view.
+11. Sign out, then sign back in at `/login/`.
+
+Manual reader testing flow:
+
+1. Create or update an account with role `reader`.
+2. Open `/account/`.
+3. Confirm profile editing works.
+4. Open `/my/stories/`.
+5. Confirm the reader-only message appears instead of story creation tools.
+
+The homepage now acknowledges that private beta platform tools are being built, but "Join the Waitlist" remains the primary public call to action. Do not describe EverDraft as publicly launched until public story reading and discovery are intentionally added.
