@@ -15,7 +15,7 @@ export function friendlyAuthError(error) {
 
   if (!message) return 'Something went wrong. Please try again.';
   if (message.includes('supabase is not configured')) {
-    return 'Supabase is not configured. Cloudflare must provide SUPABASE_URL and SUPABASE_ANON_KEY.';
+    return 'Supabase is not configured. The Worker is not receiving SUPABASE_URL and SUPABASE_ANON_KEY. ENABLE_SUPABASE_DEV_CHECK does not enable auth; it only controls the optional diagnostic endpoint.';
   }
   if (message.includes('supabase configuration could not be loaded')) {
     return 'Supabase configuration could not be loaded. Check the deployed Worker and Cloudflare environment variables.';

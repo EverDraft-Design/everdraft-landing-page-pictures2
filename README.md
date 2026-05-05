@@ -57,11 +57,15 @@ Add these same variables in Cloudflare:
 
 These exact names are what the deployed Cloudflare Worker reads. The browser receives them only through the Worker endpoint at `/api/supabase-config`; this project does not use `VITE_`, `NEXT_PUBLIC_`, or other frontend-prefixed Supabase variable names.
 
+The Wrangler config uses `keep_vars: true` so dashboard-managed Cloudflare variables are preserved on deploy. Do not add real Supabase values to `wrangler.jsonc`.
+
 The Supabase anon/public key is intended for public client usage when Row Level Security is configured correctly. The Supabase service role key must never be exposed in frontend code, static assets, public environment variables, or browser-delivered JavaScript.
 
 ## Optional Developer Check
 
 The Worker includes a temporary developer-only check at `/api/dev/supabase-check`. It is disabled by default.
+
+`ENABLE_SUPABASE_DEV_CHECK` only controls that diagnostic endpoint. It does not enable or disable Supabase Auth, `/signup/`, `/login/`, `/account/`, or `/api/supabase-config`.
 
 To enable it locally, set:
 
@@ -70,6 +74,8 @@ ENABLE_SUPABASE_DEV_CHECK=true
 ```
 
 The check reports whether Supabase variables are configured and whether the Worker can initialise the Supabase client. It does not return key values.
+
+For live beta testing, leave `ENABLE_SUPABASE_DEV_CHECK=false` unless you intentionally want the public diagnostic endpoint available for a short troubleshooting window.
 
 ## Database Migrations
 

@@ -6,13 +6,9 @@
   "observability": {
     "enabled": true
   },
+  "keep_vars": true,
   "assets": {
     "directory": "everdraft-site"
-  },
-  "vars": {
-    "SUPABASE_URL": "",
-    "SUPABASE_ANON_KEY": "",
-    "ENABLE_SUPABASE_DEV_CHECK": "false"
   },
   "d1_databases": [
     {
