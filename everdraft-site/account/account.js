@@ -20,6 +20,8 @@ const status = document.getElementById('profileStatus');
 const saveButton = document.getElementById('saveProfileButton');
 const logoutButton = document.getElementById('logoutButton');
 const myStoriesLink = document.getElementById('myStoriesLink');
+const writerTools = document.getElementById('writerTools');
+const readerTools = document.getElementById('readerTools');
 
 function fillProfile(profile) {
   displayNameInput.value = profile.display_name || '';
@@ -28,7 +30,10 @@ function fillProfile(profile) {
   bioInput.value = profile.bio || '';
   avatarUrl.textContent = profile.avatar_url || 'Not set';
   profileState.textContent = isProfileComplete(profile) ? 'Ready for early testing' : 'Needs a few details';
-  myStoriesLink.hidden = !['writer', 'both'].includes(profile.role);
+  const canTestWriterTools = ['writer', 'both'].includes(profile.role);
+  myStoriesLink.hidden = !canTestWriterTools;
+  writerTools.hidden = !canTestWriterTools;
+  readerTools.hidden = canTestWriterTools;
   form.hidden = false;
 }
 
