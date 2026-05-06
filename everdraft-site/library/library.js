@@ -25,13 +25,19 @@ function formatStatus(value) {
   return value || 'Story';
 }
 
-function renderImage(story) {
-  const imageUrl = story.cover_url || story.banner_url;
-  if (!imageUrl) return '';
+function renderCover(story) {
+  if (!story.cover_url) {
+    const initial = String(story.title || 'E').trim().charAt(0).toUpperCase() || 'E';
+    return `
+      <div class="library-cover-frame library-cover-placeholder" aria-hidden="true">
+        <span>${escapeHtml(initial)}</span>
+      </div>
+    `;
+  }
 
   return `
-    <div class="library-card-media">
-      <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(story.title)} artwork" loading="lazy" />
+    <div class="library-cover-frame">
+      <img src="${escapeHtml(story.cover_url)}" alt="${escapeHtml(story.title)} cover art" loading="lazy" />
     </div>
   `;
 }
@@ -62,19 +68,21 @@ function renderStories(stories) {
 
     return `
       <article class="story-card library-card">
-        ${renderImage(story)}
-        <div>
-          <p class="eyebrow">${escapeHtml(formatStatus(story.status))}</p>
-          <h2>${escapeHtml(story.title)}</h2>
-          <p class="library-byline">By ${escapeHtml(authorName)}</p>
-        </div>
-        <p>${escapeHtml(snippet(story.blurb))}</p>
-        <dl class="story-meta">
-          <div><dt>Genre</dt><dd>${escapeHtml(story.genre || 'Genre not set')}</dd></div>
-          <div><dt>Chapters</dt><dd>${chapterCount} ${chapterCount === 1 ? 'chapter' : 'chapters'}</dd></div>
-        </dl>
-        <div class="auth-actions">
-          <a class="button-link secondary-link" href="/story/${story.slug}/">Read Story</a>
+        ${renderCover(story)}
+        <div class="library-card-body">
+          <div>
+            <p class="eyebrow">${escapeHtml(formatStatus(story.status))}</p>
+            <h2>${escapeHtml(story.title)}</h2>
+            <p class="library-byline">By ${escapeHtml(authorName)}</p>
+          </div>
+          <p>${escapeHtml(snippet(story.blurb))}</p>
+          <dl class="story-meta">
+            <div><dt>Genre</dt><dd>${escapeHtml(story.genre || 'Genre not set')}</dd></div>
+            <div><dt>Chapters</dt><dd>${chapterCount} ${chapterCount === 1 ? 'chapter' : 'chapters'}</dd></div>
+          </dl>
+          <div class="auth-actions">
+            <a class="button-link secondary-link" href="/story/${story.slug}/">Read Story</a>
+          </div>
         </div>
       </article>
     `;

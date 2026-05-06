@@ -31,6 +31,10 @@ assert.match(libraryJs, /\/story\/\$\{story\.slug\}\//);
 assert.match(libraryJs, /Read Story|View Story/);
 assert.match(libraryJs, /chapter_count/);
 assert.match(libraryJs, /pen_name \|\| author\.display_name \|\| author\.username \|\| 'EverDraft Writer'/);
+assert.match(libraryJs, /library-cover-frame/);
+assert.match(libraryJs, /library-cover-placeholder/);
+assert.match(libraryJs, /story\.cover_url/);
+assert.doesNotMatch(libraryJs, /story\.cover_url \|\| story\.banner_url/);
 assert.doesNotMatch(libraryJs, /email|service_role|secret|token|comment|follow|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
 
 const storiesHelper = read('everdraft-site/stories.js');
@@ -67,5 +71,11 @@ assert.match(readme, /ongoing/);
 assert.match(readme, /complete/);
 assert.match(readme, /is_readable = true/);
 assert.match(readme, /no search yet/i);
+
+const styles = read('everdraft-site/styles.css');
+assert.match(styles, /library-cover-frame/);
+assert.match(styles, /aspect-ratio:\s*2\s*\/\s*3/);
+assert.match(styles, /object-fit:\s*contain/);
+assert.match(styles, /library-card-body/);
 
 console.log('Phase 2C Library checks passed.');
