@@ -457,7 +457,7 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 .library-card {
   display: grid;
   gap: 1rem;
-  align-items: start;
+  align-items: center;
 }
 
 .library-cover-frame {
@@ -760,8 +760,14 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   .form-grid { grid-template-columns: 1fr 1fr; }
   .beta-grid { grid-template-columns: repeat(3, 1fr); }
   .library-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .library-card { grid-template-columns: 150px minmax(0, 1fr); }
-  .library-cover-frame { justify-self: start; }
+  .library-card {
+    grid-template-columns: 150px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 1.2rem;
+  }
+  .library-cover-frame {
+    justify-self: start;
+  }
 
 .decor-left {
   position: absolute;

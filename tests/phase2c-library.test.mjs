@@ -77,5 +77,8 @@ assert.match(styles, /library-cover-frame/);
 assert.match(styles, /aspect-ratio:\s*2\s*\/\s*3/);
 assert.match(styles, /object-fit:\s*contain/);
 assert.match(styles, /library-card-body/);
+assert.match(styles, /\.library-card\s*\{[^}]*align-items:\s*center/s);
+assert.match(styles, /\.library-card\s*\{\s*grid-template-columns:\s*150px minmax\(0, 1fr\);[^}]*align-items:\s*center/s);
+assert.match(styles, /\.library-cover-frame\s*\{\s*justify-self:\s*start/s);
 
 console.log('Phase 2C Library checks passed.');
