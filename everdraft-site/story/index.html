@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Story — EverDraft</title>
+    <meta name="description" content="Read a public EverDraft story." />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+      </a>
+      <nav aria-label="Primary navigation" class="social-nav">
+        <a href="/journal/" class="nav-link">Journal</a>
+        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      </nav>
+    </header>
+    <main class="auth-main story-main">
+      <article class="auth-panel story-panel public-story-panel" aria-labelledby="story-title">
+        <div id="bannerWrap" class="story-media" hidden></div>
+        <p class="eyebrow">EVERDRAFT STORY</p>
+        <h1 id="story-title">Loading story...</h1>
+        <p id="storyByline" class="hero-copy"></p>
+        <div id="coverWrap" class="story-cover" hidden></div>
+        <div id="storyMeta" class="preview-summary" hidden></div>
+        <div id="unreadableNotice" class="notice-panel" hidden>This story is not currently readable on EverDraft.</div>
+        <section aria-labelledby="chapters-title">
+          <h2 id="chapters-title">Chapters</h2>
+          <div id="chapterList" class="story-list" aria-live="polite"></div>
+        </section>
+        <p id="storyStatus" class="form-status" aria-live="polite"></p>
+      </article>
+    </main>
+    <script type="module" src="/story/story-public.js"></script>
+  </body>
+</html>
