@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const read = (path) => readFileSync(path, 'utf8');
 
@@ -12,6 +12,7 @@ const editStoryJs = read('everdraft-site/my/stories/edit/edit-story.js');
 const worker = read('src/index.js');
 const readme = read('README.md');
 const migration005 = read('supabase/migrations/005_remove_member_role_gate.sql');
+const migration006Path = 'supabase/migrations/006_fix_story_ownership_rls.sql';
 
 assert.match(myStoriesHtml, /My Stories/);
 assert.match(newStoryHtml, /Create Story/);
@@ -37,6 +38,10 @@ assert.doesNotMatch(storiesHelper, /auth\.user|user\.id.*author_id|profiles\.rol
 assert.match(storiesHelper, /publication_mode: 'none'/);
 assert.match(storiesHelper, /is_readable: true/);
 assert.match(storiesHelper, /\.eq\('author_id', profile\.id\)/);
+assert.match(storiesHelper, /getStoryByIdForAuthor\(storyId\)/);
+assert.match(storiesHelper, /story\.author_id !== profile\.id/);
+assert.match(storiesHelper, /Supabase story permission error:/);
+assert.match(storiesHelper, /Please complete your account profile before creating a story/);
 assert.match(storiesHelper, /function cleanStoryPayload/);
 
 assert.doesNotMatch(editStoryJs, /chapter|preview/i);
@@ -45,6 +50,17 @@ assert.doesNotMatch(worker, /chapterEditPage|storyPreviewPage|isChapterEditRoute
 assert.match(migration005, /drop policy if exists "Writers can create their own stories"/);
 assert.match(migration005, /create policy "Members can create their own stories"/);
 assert.doesNotMatch(migration005, /profiles\.role in \('writer', 'both'/);
+
+assert.equal(existsSync(migration006Path), true, 'story ownership RLS repair migration should be present');
+const migration006 = read(migration006Path);
+assert.match(migration006, /drop policy if exists "Writers can create their own stories"/);
+assert.match(migration006, /drop policy if exists "Members can create their own stories"/);
+assert.match(migration006, /create policy "Members can create their own stories"/);
+assert.match(migration006, /create policy "Authors can update their own stories"/);
+assert.match(migration006, /author_id in \(/);
+assert.match(migration006, /select profiles\.id/);
+assert.match(migration006, /profiles\.user_id = \(select auth\.uid\(\)\)/);
+assert.doesNotMatch(migration006, /profiles\.role in|author_id = \(select auth\.uid\(\)\)/);
 
 assert.match(readme, /Phase 2A/);
 assert.doesNotMatch(readme, /Phase 2B|Phase 2C|chapter management|author preview links/i);

@@ -1,4 +1,4 @@
-import { getCurrentProfile, getSupabaseBrowserClient } from '/auth.js';
+import { getCurrentProfile, getCurrentSession, getSupabaseBrowserClient } from '/auth.js';
 
 const STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, banner_url, is_readable, publication_mode, external_book_url, published_at, created_at, updated_at';
 const VALID_STORY_STATUSES = new Set(['draft', 'ongoing', 'complete', 'hiatus', 'archived']);
@@ -19,10 +19,16 @@ export function canManageStories(profile) {
 }
 
 export async function requireMemberProfile() {
+  const session = await getCurrentSession();
+
+  if (!session) {
+    throw new Error('Please sign in to continue.');
+  }
+
   const profile = await getCurrentProfile();
 
   if (!profile) {
-    throw new Error('Complete your profile before creating stories.');
+    throw new Error('Please complete your account profile before creating a story. Open /account/ to finish your profile.');
   }
 
   return {
@@ -32,19 +38,36 @@ export async function requireMemberProfile() {
 }
 
 export function friendlyStoryError(error) {
-  const message = (error && error.message ? error.message : '').toLowerCase();
+  const rawMessage = error && error.message ? String(error.message).trim() : '';
+  const message = rawMessage.toLowerCase();
+
+  if (!message) {
+    return 'The story could not be saved. Please try again.';
+  }
 
   if (message.includes('duplicate') || message.includes('stories_slug_key')) {
-    return 'That slug is already in use. Try a more specific one.';
+    return `That slug is already in use. Try a more specific one. Supabase: ${rawMessage}`;
+  }
+  if (message.includes('sign in')) {
+    return 'Please sign in to continue.';
+  }
+  if (message.includes('complete your account profile') || message.includes('profile')) {
+    return rawMessage;
   }
   if (message.includes('row-level security') || message.includes('permission')) {
-    return 'You do not have permission to change this story.';
+    return `Supabase story permission error: ${rawMessage}. If you are creating your own story, apply supabase/migrations/006_fix_story_ownership_rls.sql in Supabase.`;
   }
   if (message.includes('slug')) {
-    return 'Please add a valid story slug.';
+    return rawMessage;
+  }
+  if (message.includes('only edit stories you created') || message.includes('belongs to another')) {
+    return 'You can only edit stories you created.';
+  }
+  if (message.includes('required') || message.includes('valid story status')) {
+    return rawMessage;
   }
 
-  return 'The story could not be saved. Please check the fields and try again.';
+  return `The story could not be saved. Supabase: ${rawMessage}`;
 }
 
 export async function getMyStories() {
@@ -74,10 +97,17 @@ export async function getStoryByIdForAuthor(storyId) {
     .from('stories')
     .select(STORY_SELECT)
     .eq('id', storyId)
-    .eq('author_id', profile.id)
     .maybeSingle();
 
   if (error) throw error;
+
+  if (data && data.author_id !== profile.id) {
+    return {
+      profile,
+      canWrite,
+      story: null
+    };
+  }
 
   return {
     profile,
@@ -151,6 +181,16 @@ export async function updateStory(storyId, input) {
     throw new Error('You can only edit stories you created.');
   }
 
+  const { story: existingStory } = await getStoryByIdForAuthor(storyId);
+
+  if (!existingStory) {
+    throw new Error('This story was not found, or it belongs to another profile.');
+  }
+
+  if (existingStory.author_id !== profile.id) {
+    throw new Error('You can only edit stories you created.');
+  }
+
   const story = cleanStoryPayload(input);
 
   const { data, error } = await supabase
@@ -170,6 +210,12 @@ export async function archiveStory(storyId) {
   const { profile, canWrite } = await requireMemberProfile();
 
   if (!canWrite) {
+    throw new Error('You can only edit stories you created.');
+  }
+
+  const { story } = await getStoryByIdForAuthor(storyId);
+
+  if (!story || story.author_id !== profile.id) {
     throw new Error('You can only edit stories you created.');
   }
 

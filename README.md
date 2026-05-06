@@ -185,7 +185,7 @@ To test locally:
 5. Create a story at `/my/stories/new/`.
 6. Edit the story metadata from the list.
 
-Migration `supabase/migrations/005_remove_member_role_gate.sql` must be applied if the live database still has the original writer/both story insert gate. It replaces that policy with member-owned story creation while preserving ownership checks. No additional Phase 2A migration is needed beyond that role-gate repair.
+Migration `supabase/migrations/006_fix_story_ownership_rls.sql` repairs live story permissions if Supabase still rejects story saves with a row-level security or permission error. It recreates story read/create/update policies so `public.stories.author_id` is checked against the signed-in member's `public.profiles.id`, found through `profiles.user_id = auth.uid()`. Apply it manually after the earlier profile/account migrations. It does not delete story data.
 
 ## Signup Repair Notes
 
@@ -197,8 +197,9 @@ A safety migration is available at:
 - `supabase/migrations/003_create_profile_on_auth_signup.sql`
 - `supabase/migrations/004_add_locked_username_to_profiles.sql`
 - `supabase/migrations/005_remove_member_role_gate.sql`
+- `supabase/migrations/006_fix_story_ownership_rls.sql`
 
-Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, or if Auth users are being created without profile rows. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. Migration 005 keeps `profiles.role` as a legacy/internal field, prevents browser self-service role changes, removes the story creation role gate, and updates the Auth trigger so new profiles no longer depend on intended-role metadata. None of these migrations delete existing data.
+Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, if Auth users are being created without profile rows, or if story saves fail with a permission/RLS error. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. Migration 005 keeps `profiles.role` as a legacy/internal field, prevents browser self-service role changes, removes the original story creation role gate, and updates the Auth trigger so new profiles no longer depend on intended-role metadata. Migration 006 recreates story metadata policies around profile ownership instead of legacy role values. None of these migrations delete existing data.
 
 To test locked usernames:
 
