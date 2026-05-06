@@ -17,13 +17,11 @@ const usernameInput = document.getElementById('username');
 const usernameHelp = document.getElementById('usernameHelp');
 const displayNameInput = document.getElementById('displayName');
 const penNameInput = document.getElementById('penName');
-const roleSelect = document.getElementById('role');
 const bioInput = document.getElementById('bio');
 const status = document.getElementById('profileStatus');
 const saveButton = document.getElementById('saveProfileButton');
 const logoutButton = document.getElementById('logoutButton');
-const writerTools = document.getElementById('writerTools');
-const readerTools = document.getElementById('readerTools');
+const memberTools = document.getElementById('memberTools');
 
 function fillProfile(profile) {
   usernameInput.value = profile.username || '';
@@ -35,13 +33,10 @@ function fillProfile(profile) {
     : 'Choose your permanent EverDraft username. Use 3-30 lowercase letters, numbers, hyphens, or underscores.';
   displayNameInput.value = profile.display_name || '';
   penNameInput.value = profile.pen_name || '';
-  roleSelect.value = profile.role || 'reader';
   bioInput.value = profile.bio || '';
   avatarUrl.textContent = profile.avatar_url || 'Not set';
   profileState.textContent = isProfileComplete(profile) ? 'Ready for early testing' : 'Needs a few details';
-  const isWriterProfile = ['writer', 'both'].includes(profile.role);
-  writerTools.hidden = !isWriterProfile;
-  readerTools.hidden = isWriterProfile;
+  memberTools.hidden = false;
   form.hidden = false;
 }
 
@@ -55,8 +50,7 @@ async function loadAccount() {
     let profile = await getCurrentProfile();
     if (!profile) {
       profile = await createProfileForCurrentUser({
-        displayName: session.user.user_metadata?.display_name || session.user.email || 'EverDraft reader',
-        role: session.user.user_metadata?.intended_role || 'reader'
+        displayName: session.user.user_metadata?.display_name || session.user.email || 'EverDraft member'
       });
     }
 
@@ -74,7 +68,6 @@ form.addEventListener('submit', async (event) => {
   const username = String(formData.get('username') || '').trim();
   const displayName = String(formData.get('displayName') || '').trim();
   const penName = String(formData.get('penName') || '').trim();
-  const role = String(formData.get('role') || 'reader');
   const bio = String(formData.get('bio') || '').trim();
 
   if (!displayName) {
@@ -91,7 +84,7 @@ form.addEventListener('submit', async (event) => {
   saveButton.textContent = 'Saving...';
 
   try {
-    const profile = await updateCurrentProfile({ username, displayName, penName, role, bio });
+    const profile = await updateCurrentProfile({ username, displayName, penName, bio });
     fillProfile(profile);
     status.textContent = 'Profile saved.';
   } catch (error) {

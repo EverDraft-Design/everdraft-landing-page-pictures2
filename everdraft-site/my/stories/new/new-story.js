@@ -1,5 +1,5 @@
 import { friendlyAuthError, requireSession } from '/auth.js';
-import { createStory, friendlyStoryError, requireWriterProfile, slugifyTitle } from '/stories.js';
+import { createStory, friendlyStoryError, requireMemberProfile, slugifyTitle } from '/stories.js';
 
 const form = document.getElementById('storyForm');
 const titleInput = document.getElementById('title');
@@ -13,7 +13,7 @@ async function loadNewStory() {
     const session = await requireSession();
     if (!session) return;
 
-    const { canWrite } = await requireWriterProfile();
+    const { canWrite } = await requireMemberProfile();
 
     if (!canWrite) {
       readerNotice.hidden = false;

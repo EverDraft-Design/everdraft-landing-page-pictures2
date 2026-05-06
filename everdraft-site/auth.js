@@ -2,7 +2,6 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.105.1';
 
 let clientPromise;
 const PROFILE_SELECT = 'id, user_id, username, display_name, pen_name, role, bio, avatar_url, created_at, updated_at';
-const VALID_PROFILE_ROLES = new Set(['reader', 'writer', 'both']);
 const USERNAME_PATTERN = /^[a-z0-9_-]{3,30}$/;
 
 function getRedirectPath(fallback = '/account/') {
@@ -43,21 +42,15 @@ export function friendlyAuthError(error) {
   return `Supabase: ${rawMessage}`;
 }
 
-function requireValidProfileFields({ displayName, role }) {
+function requireValidProfileFields({ displayName }) {
   const cleanDisplayName = String(displayName || '').trim();
-  const cleanRole = String(role || '').trim();
 
   if (!cleanDisplayName) {
     throw new Error('Display name is required before an EverDraft profile can be created.');
   }
 
-  if (!VALID_PROFILE_ROLES.has(cleanRole)) {
-    throw new Error('Please choose Reader, Writer, or Both before creating an EverDraft profile.');
-  }
-
   return {
-    displayName: cleanDisplayName,
-    role: cleanRole
+    displayName: cleanDisplayName
   };
 }
 
@@ -84,9 +77,9 @@ export function validateUsername(username) {
   return cleanUsername;
 }
 
-function requireValidProfileInput({ userId, username, displayName, role, requireUsername = true }) {
+function requireValidProfileInput({ userId, username, displayName, requireUsername = true }) {
   const cleanUserId = String(userId || '').trim();
-  const profileFields = requireValidProfileFields({ displayName, role });
+  const profileFields = requireValidProfileFields({ displayName });
   const cleanUsername = requireUsername ? validateUsername(username) : normalizeUsername(username);
 
   if (!cleanUserId) {
@@ -147,13 +140,10 @@ export async function requireSession() {
   return session;
 }
 
-export async function signUpWithEmail({ email, password, username, displayName, role }) {
+export async function signUpWithEmail({ email, password, username, displayName }) {
   const supabase = await getSupabaseBrowserClient();
   const cleanUsername = validateUsername(username);
-  const profileFields = requireValidProfileFields({
-    displayName,
-    role
-  });
+  const profileFields = requireValidProfileFields({ displayName });
 
   const { data, error } = await supabase.auth.signUp({
     email: String(email || '').trim(),
@@ -161,8 +151,7 @@ export async function signUpWithEmail({ email, password, username, displayName, 
     options: {
       data: {
         username: cleanUsername,
-        display_name: profileFields.displayName,
-        intended_role: profileFields.role
+        display_name: profileFields.displayName
       }
     }
   });
@@ -186,7 +175,6 @@ export async function signUpWithEmail({ email, password, username, displayName, 
     userId: data.user.id,
     username: cleanUsername,
     displayName: profileFields.displayName,
-    role: profileFields.role,
     penName: profileFields.displayName
   }).catch((profileError) => {
     throw new Error(
@@ -234,18 +222,16 @@ export async function createProfileForAuthUser({
   userId,
   username,
   displayName,
-  role = 'reader',
   penName,
   bio = '',
   requireUsername = true
 }) {
-  const profileInput = requireValidProfileInput({ userId, username, displayName, role, requireUsername });
+  const profileInput = requireValidProfileInput({ userId, username, displayName, requireUsername });
   const profile = {
     user_id: profileInput.userId,
     username: profileInput.username,
     display_name: profileInput.displayName,
     pen_name: String(penName ?? profileInput.displayName).trim() || profileInput.displayName,
-    role: profileInput.role,
     bio: String(bio || '').trim()
   };
 
@@ -259,7 +245,7 @@ export async function createProfileForAuthUser({
   return data;
 }
 
-export async function createProfileForCurrentUser({ displayName, role = 'reader', penName, bio = '' } = {}) {
+export async function createProfileForCurrentUser({ displayName, penName, bio = '' } = {}) {
   const supabase = await getSupabaseBrowserClient();
   const user = await getCurrentUser();
 
@@ -270,7 +256,6 @@ export async function createProfileForCurrentUser({ displayName, role = 'reader'
     userId: user.id,
     username: user.user_metadata?.username || '',
     displayName: displayName || user.user_metadata?.display_name || user.email,
-    role: role || user.user_metadata?.intended_role || 'reader',
     penName: penName ?? displayName ?? user.user_metadata?.display_name ?? '',
     bio,
     requireUsername: false
@@ -281,13 +266,13 @@ export async function createProfileForCurrentUser({ displayName, role = 'reader'
   });
 }
 
-export async function updateCurrentProfile({ username, displayName, penName, role, bio }) {
+export async function updateCurrentProfile({ username, displayName, penName, bio }) {
   const supabase = await getSupabaseBrowserClient();
   const user = await getCurrentUser();
 
   if (!user?.id) throw new Error('You need to be signed in to update your profile.');
 
-  const profileFields = requireValidProfileFields({ displayName, role });
+  const profileFields = requireValidProfileFields({ displayName });
 
   const existingProfile = await getCurrentProfile();
   if (!existingProfile) {
@@ -298,7 +283,6 @@ export async function updateCurrentProfile({ username, displayName, penName, rol
   const updatePayload = {
     display_name: profileFields.displayName,
     pen_name: String(penName || '').trim(),
-    role: profileFields.role,
     bio: String(bio || '').trim()
   };
 
@@ -326,7 +310,6 @@ export function isProfileComplete(profile) {
     profile
       && profile.username
       && profile.display_name
-      && profile.role
       && (profile.pen_name || profile.bio)
   );
 }

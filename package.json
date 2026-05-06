@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
+    "test": "node tests/phase1-member-access.test.mjs",
     "build": "wrangler deploy --dry-run",
     "deploy": "wrangler deploy"
   },

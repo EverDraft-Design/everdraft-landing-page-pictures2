@@ -138,8 +138,8 @@ function chapterEditPage() {
       <section class="auth-panel story-panel" aria-labelledby="edit-chapter-title">
         <p class="eyebrow">PRIVATE CHAPTER</p>
         <h1 id="edit-chapter-title">Edit Chapter Draft</h1>
-        <p class="hero-copy">Private chapter drafting only. No public reader view is open yet.</p>
-        <div id="readerNotice" class="notice-panel" hidden>Chapter drafting is available to writer accounts. Update your profile role to Writer or Both to begin.</div>
+        <p class="hero-copy">Private chapter drafting only. No public reading view is open yet.</p>
+        <div id="readerNotice" class="notice-panel" hidden>You can only edit chapters for stories you created.</div>
         <div id="missingNotice" class="notice-panel" hidden>This chapter was not found, or it does not belong to your story.</div>
         <form id="chapterForm" class="auth-form story-form" hidden>
           <label for="title">Chapter title</label>
@@ -206,7 +206,7 @@ function storyPreviewPage() {
         <p class="eyebrow">PRIVATE PREVIEW</p>
         <h1 id="preview-title">Story Preview</h1>
         <p id="previewMeta" class="hero-copy">Loading story...</p>
-        <div id="readerNotice" class="notice-panel" hidden>Story preview is available to writer accounts. Update your profile role to Writer or Both to begin.</div>
+        <div id="readerNotice" class="notice-panel" hidden>You can only preview stories you created.</div>
         <div id="missingNotice" class="notice-panel" hidden>This story was not found, or it does not belong to your account.</div>
         <section id="storyPreview" class="preview-body" hidden>
           <div id="storySummary" class="preview-summary"></div>
@@ -252,7 +252,7 @@ function storyEditPage() {
         <p class="eyebrow">STORY METADATA</p>
         <h1 id="edit-story-title">Edit Story</h1>
         <p class="hero-copy">Keep the public-facing story details ready. Chapter tools are not part of this phase.</p>
-        <div id="readerNotice" class="notice-panel" hidden>Story creation is available to writer accounts. Update your profile role to Writer or Both to begin.</div>
+        <div id="readerNotice" class="notice-panel" hidden>You can only edit stories you created.</div>
         <div id="missingNotice" class="notice-panel" hidden>This story was not found, or it does not belong to your account.</div>
         <form id="storyForm" class="auth-form story-form" hidden>
           <label for="title">Title</label>

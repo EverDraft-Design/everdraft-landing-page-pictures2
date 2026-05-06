@@ -27,7 +27,7 @@
         <p class="eyebrow">ACCOUNT FOUNDATION</p>
         <h1 id="account-title">Your EverDraft Account</h1>
         <p class="hero-copy">
-          Manage your early EverDraft profile and find the private beta tools available for your role.
+          Manage your early EverDraft profile and member tools.
         </p>
 
         <div class="account-summary" aria-live="polite">
@@ -56,13 +56,6 @@
           <label for="penName">Pen name</label>
           <input id="penName" name="penName" type="text" autocomplete="off" />
 
-          <label for="role">Role</label>
-          <select id="role" name="role">
-            <option value="reader">Reader</option>
-            <option value="writer">Writer</option>
-            <option value="both">Both</option>
-          </select>
-
           <label for="bio">Bio</label>
           <textarea id="bio" name="bio" rows="4"></textarea>
 
@@ -70,22 +63,16 @@
           <p id="profileStatus" class="form-status" aria-live="polite"></p>
         </form>
 
-        <div id="writerTools" class="notice-panel account-tools" hidden>
-          <p class="eyebrow">WRITER TESTING</p>
-          <h2>Writer tools are coming later</h2>
+        <div id="memberTools" class="notice-panel account-tools" hidden>
+          <p class="eyebrow">MEMBER TESTING</p>
+          <h2>Member tools</h2>
           <p>
-            You can test account and profile editing now. Story creation, chapters, and author
-            previews will stay out of the public beta surface until they are ready.
+            Signed-in members can test account and profile editing now. Story tools are available
+            to signed-in members when those routes are enabled.
           </p>
-        </div>
-
-        <div id="readerTools" class="notice-panel account-tools" hidden>
-          <p class="eyebrow">READER TESTING</p>
-          <h2>Reader tools are coming later</h2>
-          <p>
-            You can test account and profile editing now. Reader features will open in a later
-            beta phase.
-          </p>
+          <div class="auth-actions">
+            <a class="button-link" href="/my/stories/">My Stories</a>
+          </div>
         </div>
 
         <div class="auth-actions">
