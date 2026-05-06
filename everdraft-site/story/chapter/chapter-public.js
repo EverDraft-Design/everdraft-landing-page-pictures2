@@ -7,6 +7,7 @@ const chapterMeta = document.getElementById('chapterMeta');
 const unavailableNotice = document.getElementById('unavailableNotice');
 const chapterContent = document.getElementById('chapterContent');
 const previousChapterLink = document.getElementById('previousChapterLink');
+const chapterBackToStoryLink = document.getElementById('chapterBackToStoryLink');
 const nextChapterLink = document.getElementById('nextChapterLink');
 const status = document.getElementById('chapterStatus');
 
@@ -47,6 +48,7 @@ function setNavLink(link, story, chapter, text) {
 async function loadChapter() {
   const { slug, chapterNumber } = getRouteParts();
   backToStoryLink.href = `/story/${slug}/`;
+  chapterBackToStoryLink.href = `/story/${slug}/`;
 
   try {
     const { story, chapter, previousChapter, nextChapter } = await getPublicChapterBySlugAndNumber(slug, chapterNumber);
