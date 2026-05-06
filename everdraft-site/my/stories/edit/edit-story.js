@@ -81,9 +81,8 @@ form.addEventListener('submit', async (event) => {
   saveButton.textContent = 'Saving...';
 
   try {
-    const story = await updateStory(getStoryIdFromPath(), payload);
-    fillStory(story);
-    status.textContent = 'Story saved.';
+    await updateStory(getStoryIdFromPath(), payload);
+    window.location.assign('/my/stories/');
   } catch (error) {
     status.textContent = friendlyStoryError(error);
   } finally {

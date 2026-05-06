@@ -46,6 +46,7 @@ assert.match(storiesHelper, /Please complete your account profile before creatin
 assert.match(storiesHelper, /function cleanStoryPayload/);
 
 assert.doesNotMatch(editStoryJs, /preview/i);
+assert.match(editStoryJs, /window\.location\.assign\('\/my\/stories\/'\)/);
 assert.doesNotMatch(worker, /storyPreviewPage|isStoryPreviewRoute|\/preview\//);
 
 assert.match(migration005, /drop policy if exists "Writers can create their own stories"/);
