@@ -199,7 +199,7 @@ Phase 2B adds private chapter management for owned stories plus basic public rea
 
 Chapter ownership is enforced through the parent story: the signed-in Auth user must have a `public.profiles` row where `profiles.user_id = auth.uid()`, and that profile id must match `stories.author_id`. Chapters do not store Auth user ids.
 
-Chapter forms support `chapter_number`, title, content, and status. Status values are `draft`, `published`, `hidden`, and `archived`. Publishing requires content; when a chapter is first saved as `published`, `published_at` is set if it was empty. Moving a chapter away from `published` does not erase `published_at`, so the original publish date remains available for beta review.
+Chapter forms support `chapter_number`, title, content, and status. Status values are `draft`, `published`, `hidden`, and `archived`. The chapter editor intentionally uses a calm plain-text writing area for this beta phase, with word count, Save Draft, a last-saved note, and a browser warning for unsaved changes. Plain text avoids unsafe HTML while preserving line breaks and paragraph spacing on public reading pages. Publishing requires content; when a chapter is first saved as `published`, `published_at` is set if it was empty. Moving a chapter away from `published` does not erase `published_at`, so the original publish date remains available for beta review.
 
 Public story pages show story metadata, cover/banner image URLs when present, author pen name or display name, and only published chapters while `stories.is_readable = true`. If a story is not readable, EverDraft shows the metadata and a gentle unavailable message without chapter content.
 
@@ -245,7 +245,9 @@ The public EverDraft site remains waitlist-first, but the current beta routes ar
 - `/onboarding/` gives the same profile setup flow in a guided format.
 - `/my/stories/` lists the signed-in member's own private stories.
 - `/my/stories/new/` creates a private story shell.
-- Story edit and chapter management links are reached from the private My Stories flow after a story exists.
+- `/my/stories/:storyId/` manages an owned story and opens its chapter shelf.
+- `/my/stories/:storyId/chapters/new/` opens the Add Chapter form.
+- `/my/stories/:storyId/chapters/:chapterId/edit/` edits an owned chapter.
 - `/story/:slug/` and `/story/:slug/chapter/:chapterNumber/` are public reading routes for published readable chapters.
 
 Current working beta features:

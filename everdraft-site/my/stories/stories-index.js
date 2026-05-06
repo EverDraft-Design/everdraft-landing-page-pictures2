@@ -40,8 +40,9 @@ function renderStories(stories) {
         <div><dt>Updated</dt><dd>${formatDate(story.updated_at)}</dd></div>
       </dl>
       <div class="auth-actions">
-        <a class="button-link secondary-link" href="/my/stories/${story.id}/">Open Story</a>
-        <a class="button-link secondary-link" href="/my/stories/${story.id}/edit/">Edit</a>
+        <a class="button-link secondary-link" href="/my/stories/${story.id}/">Manage Story</a>
+        <a class="button-link secondary-link" href="/my/stories/${story.id}/edit/">Edit Details</a>
+        <a class="button-link secondary-link" href="/my/stories/${story.id}/chapters/new/">Add Chapter</a>
       </div>
     </article>
   `).join('');

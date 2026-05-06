@@ -46,12 +46,16 @@ assert.doesNotMatch(chaptersHelper, /service_role|profiles\.role in|author_id = 
 const myStoriesIndex = read('everdraft-site/my/stories/stories-index.js');
 assert.equal(myStoriesIndex.includes('/my/stories/${story.id}/'), true, 'My Stories should link to story management');
 assert.equal(myStoriesIndex.includes('/my/stories/${story.id}/edit/'), true, 'My Stories should retain edit details link');
+assert.equal(myStoriesIndex.includes('/my/stories/${story.id}/chapters/new/'), true, 'My Stories should link directly to chapter creation');
+assert.match(myStoriesIndex, /Manage Story/);
+assert.match(myStoriesIndex, /Edit Details/);
+assert.match(myStoriesIndex, /Add Chapter/);
 
 const storyShowHtml = read('everdraft-site/my/stories/show/index.html');
 const storyShowJs = read('everdraft-site/my/stories/show/story-show.js');
 assert.match(storyShowJs, /This story is waiting for its first chapter\./);
-assert.match(storyShowJs, /\/my\/stories\/chapters\/new\/\?storyId=/);
-assert.match(storyShowJs, /\/my\/stories\/chapters\/edit\/\?storyId=/);
+assert.match(storyShowJs, /\/my\/stories\/\$\{story\.id\}\/chapters\/new\//);
+assert.match(storyShowJs, /\/my\/stories\/\$\{storyId\}\/chapters\/\$\{chapter\.id\}\/edit\//);
 assert.match(storyShowHtml, /Add Chapter/);
 assert.match(storyShowHtml, /Edit Details/);
 
@@ -62,6 +66,17 @@ const editChapterJs = read('everdraft-site/my/stories/chapters/edit/edit-chapter
 assert.match(newChapterJs, /URLSearchParams\(window\.location\.search\)\.get\('storyId'\)/);
 assert.match(editChapterJs, /params\.get\('storyId'\)/);
 assert.match(editChapterJs, /params\.get\('chapterId'\)/);
+for (const source of [newChapterHtml, editChapterHtml]) {
+  assert.match(source, /chapter-editor/);
+  assert.match(source, /wordCount/);
+  assert.match(source, /Last saved/);
+  assert.match(source, /Save Draft/);
+}
+for (const source of [newChapterJs, editChapterJs]) {
+  assert.match(source, /beforeunload/);
+  assert.match(source, /updateWordCount/);
+  assert.match(source, /lastSaved/);
+}
 for (const source of [newChapterHtml, editChapterHtml]) {
   for (const field of ['chapterNumber', 'title', 'content', 'status']) {
     assert.match(source, new RegExp(`name="${field}"`), `${field} should be present`);
@@ -90,6 +105,9 @@ for (const routePattern of [
 ]) {
   assert.match(worker, new RegExp(routePattern), `${routePattern} should be routed`);
 }
+assert.match(worker, /storyManagePage/);
+assert.match(worker, /chapterNewPage/);
+assert.match(worker, /chapterEditPage/);
 
 const migration007 = read('supabase/migrations/007_fix_chapter_ownership_rls.sql');
 assert.match(migration007, /public\.chapters enable row level security/);

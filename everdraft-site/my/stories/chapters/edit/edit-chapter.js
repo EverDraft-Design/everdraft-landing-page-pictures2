@@ -12,6 +12,10 @@ const readerNotice = document.getElementById('readerNotice');
 const status = document.getElementById('chapterStatus');
 const saveButton = document.getElementById('saveChapterButton');
 const archiveButton = document.getElementById('archiveChapterButton');
+const wordCount = document.getElementById('wordCount');
+const lastSaved = document.getElementById('lastSaved');
+
+let hasUnsavedChanges = false;
 
 function getIds() {
   const match = window.location.pathname.match(/^\/my\/stories\/([^/]+)\/chapters\/([^/]+)\/edit\/?$/);
@@ -22,6 +26,21 @@ function getIds() {
   };
 }
 
+function countWords(value) {
+  const words = String(value || '').trim().match(/\S+/g);
+  return words ? words.length : 0;
+}
+
+function updateWordCount() {
+  const count = countWords(contentInput.value);
+  wordCount.textContent = `${count} ${count === 1 ? 'word' : 'words'}`;
+}
+
+function markSaved(message = 'Last saved just now.') {
+  hasUnsavedChanges = false;
+  lastSaved.textContent = message;
+}
+
 function fillChapter(story, chapter) {
   storySummary.textContent = `${story.title || 'Untitled story'} · Chapter ${chapter.chapter_number}`;
   chapterNumberInput.value = chapter.chapter_number || 1;
@@ -29,6 +48,8 @@ function fillChapter(story, chapter) {
   contentInput.value = chapter.content || '';
   statusInput.value = chapter.status || 'draft';
   form.hidden = false;
+  updateWordCount();
+  markSaved(chapter.updated_at ? `Last saved ${new Date(chapter.updated_at).toLocaleString()}` : 'Last saved: not yet');
 }
 
 async function loadChapter() {
@@ -51,6 +72,17 @@ async function loadChapter() {
   }
 }
 
+form.addEventListener('input', () => {
+  hasUnsavedChanges = true;
+  updateWordCount();
+});
+
+window.addEventListener('beforeunload', (event) => {
+  if (!hasUnsavedChanges) return;
+  event.preventDefault();
+  event.returnValue = '';
+});
+
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   status.textContent = '';
@@ -62,12 +94,13 @@ form.addEventListener('submit', async (event) => {
     const chapter = await updateChapter(storyId, chapterId, Object.fromEntries(new FormData(form).entries()));
     const { story } = await getChapterForAuthor(chapter.id, storyId);
     fillChapter(story, chapter);
+    markSaved('Last saved just now.');
     status.textContent = 'Chapter saved.';
   } catch (error) {
     status.textContent = friendlyChapterError(error);
   } finally {
     saveButton.disabled = false;
-    saveButton.textContent = 'Save Chapter';
+    saveButton.textContent = 'Save Draft';
   }
 });
 
@@ -81,6 +114,7 @@ archiveButton.addEventListener('click', async () => {
     const chapter = await archiveChapter(storyId, chapterId);
     const { story } = await getChapterForAuthor(chapter.id, storyId);
     fillChapter(story, chapter);
+    markSaved('Last saved just now.');
     status.textContent = 'Chapter archived.';
   } catch (error) {
     status.textContent = friendlyChapterError(error);

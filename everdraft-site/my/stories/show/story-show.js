@@ -13,7 +13,8 @@ const status = document.getElementById('storyStatus');
 
 function getStoryId() {
   const match = window.location.pathname.match(/^\/my\/stories\/([^/]+)\/?$/);
-  return match ? decodeURIComponent(match[1]) : '';
+  if (match) return decodeURIComponent(match[1]);
+  return new URLSearchParams(window.location.search).get('storyId') || '';
 }
 
 function formatDate(value) {
@@ -48,7 +49,7 @@ function renderChapters(storyId, chapters) {
         <div><dt>Updated</dt><dd>${formatDate(chapter.updated_at)}</dd></div>
       </dl>
       <div class="auth-actions">
-        <a class="button-link secondary-link" href="/my/stories/chapters/edit/?storyId=${encodeURIComponent(storyId)}&chapterId=${encodeURIComponent(chapter.id)}">Edit Chapter</a>
+        <a class="button-link secondary-link" href="/my/stories/${storyId}/chapters/${chapter.id}/edit/">Edit Chapter</a>
       </div>
     </article>
   `).join('');
@@ -71,7 +72,7 @@ async function loadStory() {
 
     title.textContent = story.title || 'Untitled story';
     summary.textContent = `${story.genre || 'Genre not set'} · ${story.status || 'draft'} · ${story.slug || 'no-slug'}`;
-    addChapterLink.href = `/my/stories/chapters/new/?storyId=${encodeURIComponent(story.id)}`;
+    addChapterLink.href = `/my/stories/${story.id}/chapters/new/`;
     editStoryLink.href = `/my/stories/${story.id}/edit/`;
     publicStoryLink.href = story.slug ? `/story/${story.slug}/` : '/my/stories/';
     storyActions.hidden = false;

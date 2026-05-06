@@ -539,6 +539,34 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   max-width: 640px;
 }
 
+.chapter-editor {
+  min-height: clamp(22rem, 48vh, 36rem);
+  line-height: 1.75;
+  font-size: 1.05rem;
+  background: linear-gradient(180deg, rgba(14, 8, 24, .96), rgba(8, 5, 15, .94));
+  border-color: rgba(247, 223, 138, .24);
+  box-shadow: inset 0 0 28px rgba(0, 0, 0, .24);
+  resize: vertical;
+}
+
+.chapter-editor:focus {
+  outline: 2px solid rgba(212, 175, 55, .38);
+  outline-offset: 2px;
+}
+
+.editor-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: .5rem;
+  color: var(--muted);
+  font-size: .92rem;
+}
+
+.editor-note {
+  margin-top: -.15rem;
+}
+
 .form-grid {
   display: grid;
   gap: .75rem;
