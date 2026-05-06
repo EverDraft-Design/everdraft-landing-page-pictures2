@@ -1,6 +1,8 @@
 import { getCurrentProfile, getSupabaseBrowserClient } from '/auth.js';
 
 const STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, banner_url, is_readable, publication_mode, external_book_url, published_at, created_at, updated_at';
+const VALID_STORY_STATUSES = new Set(['draft', 'ongoing', 'complete', 'hiatus', 'archived']);
+const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export function slugifyTitle(value) {
   return String(value || '')
@@ -87,6 +89,7 @@ export async function getStoryByIdForAuthor(storyId) {
 function cleanStoryPayload(input) {
   const title = String(input.title || '').trim();
   const slug = slugifyTitle(input.slug || title);
+  const status = String(input.status || 'draft').trim() || 'draft';
 
   if (!title) {
     throw new Error('A story title is required.');
@@ -96,12 +99,20 @@ function cleanStoryPayload(input) {
     throw new Error('A story slug is required.');
   }
 
+  if (!SLUG_PATTERN.test(slug)) {
+    throw new Error('A story slug can only use lowercase letters, numbers, and single hyphens.');
+  }
+
+  if (!VALID_STORY_STATUSES.has(status)) {
+    throw new Error('Please choose a valid story status.');
+  }
+
   return {
     title,
     slug,
     blurb: String(input.blurb || '').trim(),
     genre: String(input.genre || '').trim(),
-    status: input.status || 'draft',
+    status,
     cover_url: String(input.coverUrl || '').trim(),
     banner_url: String(input.bannerUrl || '').trim()
   };

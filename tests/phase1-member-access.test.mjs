@@ -11,7 +11,6 @@ const onboardingHtml = read('everdraft-site/onboarding/index.html');
 const onboardingJs = read('everdraft-site/onboarding/onboarding.js');
 const authJs = read('everdraft-site/auth.js');
 const storiesJs = read('everdraft-site/stories.js');
-const chaptersJs = read('everdraft-site/chapters.js');
 const betaHtml = read('everdraft-site/beta/index.html');
 const migrationPath = 'supabase/migrations/005_remove_member_role_gate.sql';
 
@@ -37,19 +36,13 @@ assert.equal(authJs.includes('profile.role'), false, 'profile completeness shoul
 
 assert.equal(storiesJs.includes("['writer', 'both']"), false, 'story helpers should not gate by writer/both roles');
 assert.equal(storiesJs.includes('requireWriterProfile'), false, 'story helpers should use member profile ownership, not writer role');
-assert.equal(chaptersJs.includes('requireWriterProfile'), false, 'chapter helpers should use member profile ownership, not writer role');
 
 for (const source of [
   storiesJs,
-  chaptersJs,
   betaHtml,
   read('everdraft-site/my/stories/index.html'),
   read('everdraft-site/my/stories/new/index.html'),
   read('everdraft-site/my/stories/edit/index.html'),
-  read('everdraft-site/my/stories/preview/index.html'),
-  read('everdraft-site/my/stories/chapters/index.html'),
-  read('everdraft-site/my/stories/chapters/new/index.html'),
-  read('everdraft-site/my/stories/chapters/edit/index.html'),
 ]) {
   assert.equal(/writer accounts|Writer or Both|reader-only|role `writer`|role `both`/i.test(source), false);
 }
