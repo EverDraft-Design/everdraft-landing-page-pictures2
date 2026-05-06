@@ -20,6 +20,7 @@ assert.match(editStoryHtml, /Edit Story/);
 
 assert.match(storiesIndex, /story\.slug/);
 assert.match(storiesIndex, /Your shelf is waiting for its first draft\./);
+assert.equal(storiesIndex.includes('/my/stories/${story.id}/'), true);
 assert.equal(storiesIndex.includes('/my/stories/${story.id}/edit/'), true);
 assert.doesNotMatch(storiesIndex, /preview/i);
 
@@ -44,8 +45,8 @@ assert.match(storiesHelper, /Supabase story permission error:/);
 assert.match(storiesHelper, /Please complete your account profile before creating a story/);
 assert.match(storiesHelper, /function cleanStoryPayload/);
 
-assert.doesNotMatch(editStoryJs, /chapter|preview/i);
-assert.doesNotMatch(worker, /chapterEditPage|storyPreviewPage|isChapterEditRoute|isStoryPreviewRoute|chapters\/edit|\/preview\//);
+assert.doesNotMatch(editStoryJs, /preview/i);
+assert.doesNotMatch(worker, /storyPreviewPage|isStoryPreviewRoute|\/preview\//);
 
 assert.match(migration005, /drop policy if exists "Writers can create their own stories"/);
 assert.match(migration005, /create policy "Members can create their own stories"/);
@@ -63,6 +64,6 @@ assert.match(migration006, /profiles\.user_id = \(select auth\.uid\(\)\)/);
 assert.doesNotMatch(migration006, /profiles\.role in|author_id = \(select auth\.uid\(\)\)/);
 
 assert.match(readme, /Phase 2A/);
-assert.doesNotMatch(readme, /Phase 2B|Phase 2C|chapter management|author preview links/i);
+assert.doesNotMatch(readme, /Phase 2C|author preview links/i);
 
 console.log('Phase 2A story metadata checks passed.');

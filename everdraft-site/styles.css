@@ -591,6 +591,55 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   gap: 1rem;
 }
 
+.story-media,
+.story-cover {
+  margin-bottom: 1rem;
+}
+
+.story-banner-image,
+.story-cover-image {
+  width: 100%;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  object-fit: cover;
+}
+
+.story-banner-image {
+  max-height: 280px;
+}
+
+.story-cover-image {
+  max-width: 220px;
+  margin: 0 auto;
+}
+
+.reading-panel {
+  width: min(820px, 100%);
+  text-align: left;
+}
+
+.reading-panel > .eyebrow,
+.reading-panel > h1,
+.reading-panel > .hero-copy,
+.reading-panel > .form-status {
+  text-align: center;
+}
+
+.reading-content {
+  max-width: 68ch;
+  margin: 0 auto;
+  font-size: 1.08rem;
+}
+
+.reader-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
 @media (min-width: 740px) {
   .hero-form { grid-template-columns: 1fr auto; }
   .features { grid-template-columns: repeat(3, 1fr); }

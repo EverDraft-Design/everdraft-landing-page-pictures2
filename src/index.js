@@ -190,6 +190,11 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const isStoryEditRoute = /^\/my\/stories\/[^/]+\/edit\/?$/.test(url.pathname);
+    const isStoryManageRoute = /^\/my\/stories\/[^/]+\/?$/.test(url.pathname);
+    const isChapterNewRoute = /^\/my\/stories\/[^/]+\/chapters\/new\/?$/.test(url.pathname);
+    const isChapterEditRoute = /^\/my\/stories\/[^/]+\/chapters\/[^/]+\/edit\/?$/.test(url.pathname);
+    const isPublicChapterRoute = /^\/story\/[^/]+\/chapter\/[^/]+\/?$/.test(url.pathname);
+    const isPublicStoryRoute = /^\/story\/[^/]+\/?$/.test(url.pathname);
 
     if (url.pathname === '/api/supabase-config') {
       if (request.method !== 'GET') {
@@ -216,8 +221,28 @@ export default {
     }
 
     if (env.ASSETS) {
+      if (isPublicChapterRoute) {
+        return env.ASSETS.fetch(rewriteAssetRequest(request, '/story/chapter/index.html'));
+      }
+
+      if (isPublicStoryRoute) {
+        return env.ASSETS.fetch(rewriteAssetRequest(request, '/story/index.html'));
+      }
+
+      if (isChapterEditRoute) {
+        return env.ASSETS.fetch(rewriteAssetRequest(request, '/my/stories/chapters/edit/index.html'));
+      }
+
+      if (isChapterNewRoute) {
+        return env.ASSETS.fetch(rewriteAssetRequest(request, '/my/stories/chapters/new/index.html'));
+      }
+
       if (isStoryEditRoute) {
         return env.ASSETS.fetch(rewriteAssetRequest(request, '/my/stories/edit/index.html'));
+      }
+
+      if (isStoryManageRoute) {
+        return env.ASSETS.fetch(rewriteAssetRequest(request, '/my/stories/show/index.html'));
       }
 
       return env.ASSETS.fetch(request);

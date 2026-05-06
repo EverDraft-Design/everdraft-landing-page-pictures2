@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter — EverDraft</title>
+    <meta name="description" content="Read a public EverDraft chapter." />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+      </a>
+      <nav aria-label="Primary navigation" class="social-nav">
+        <a id="backToStoryLink" href="/story/" class="nav-link">Story</a>
+        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      </nav>
+    </header>
+    <main class="auth-main story-main">
+      <article class="auth-panel story-panel reading-panel" aria-labelledby="chapter-title">
+        <p id="storyTitle" class="eyebrow">EVERDRAFT STORY</p>
+        <h1 id="chapter-title">Loading chapter...</h1>
+        <p id="chapterMeta" class="hero-copy"></p>
+        <div id="unavailableNotice" class="notice-panel" hidden>This chapter is not currently available on EverDraft.</div>
+        <section id="chapterContent" class="chapter-content reading-content" hidden></section>
+        <nav class="reader-nav" aria-label="Chapter navigation">
+          <a id="previousChapterLink" class="button-link secondary-link" href="#" hidden>Previous Chapter</a>
+          <a id="nextChapterLink" class="button-link secondary-link" href="#" hidden>Next Chapter</a>
+        </nav>
+        <p id="chapterStatus" class="form-status" aria-live="polite"></p>
+      </article>
+    </main>
+    <script type="module" src="/story/chapter/chapter-public.js"></script>
+  </body>
+</html>

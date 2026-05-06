@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Story — EverDraft</title>
+    <meta name="description" content="Manage private EverDraft story chapters." />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+      </a>
+      <nav aria-label="Primary navigation" class="social-nav">
+        <a href="/my/stories/" class="nav-link">My Stories</a>
+        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      </nav>
+    </header>
+    <main class="auth-main story-main">
+      <section class="auth-panel story-panel" aria-labelledby="story-title">
+        <p class="eyebrow">STORY DRAFT</p>
+        <h1 id="story-title">Loading story...</h1>
+        <p id="storySummary" class="hero-copy">Checking chapter shelf...</p>
+        <div id="readerNotice" class="notice-panel" hidden>This story was not found, or it does not belong to your account.</div>
+        <div id="storyActions" class="story-actions" hidden>
+          <a class="button-link" id="addChapterLink" href="/my/stories/">Add Chapter</a>
+          <a class="button-link secondary-link" id="editStoryLink" href="/my/stories/">Edit Details</a>
+          <a class="button-link secondary-link" id="publicStoryLink" href="/my/stories/">Public Story</a>
+        </div>
+        <div id="chapterList" class="story-list" aria-live="polite"></div>
+        <p id="storyStatus" class="form-status" aria-live="polite"></p>
+      </section>
+    </main>
+    <script type="module" src="/my/stories/show/story-show.js"></script>
+  </body>
+</html>

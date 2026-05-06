@@ -40,6 +40,7 @@ function renderStories(stories) {
         <div><dt>Updated</dt><dd>${formatDate(story.updated_at)}</dd></div>
       </dl>
       <div class="auth-actions">
+        <a class="button-link secondary-link" href="/my/stories/${story.id}/">Open Story</a>
         <a class="button-link secondary-link" href="/my/stories/${story.id}/edit/">Edit</a>
       </div>
     </article>
