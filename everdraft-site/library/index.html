@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The EverDraft Library</title>
+    <meta
+      name="description"
+      content="The EverDraft Library is an early public shelf for readable stories beginning to find their readers."
+    />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+      </a>
+      <nav aria-label="Primary navigation" class="social-nav">
+        <a href="/journal/" class="nav-link">Journal</a>
+        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      </nav>
+    </header>
+
+    <main class="auth-main library-main">
+      <section class="auth-panel library-panel" aria-labelledby="library-title">
+        <p class="eyebrow">EARLY STORY SHELF</p>
+        <h1 id="library-title">The EverDraft Library</h1>
+        <p class="hero-copy">A quiet shelf for stories beginning to find their readers.</p>
+        <p class="library-note">The Library is opening gradually as EverDraft’s story tools are built.</p>
+
+        <div id="libraryList" class="library-grid" aria-live="polite"></div>
+        <p id="libraryStatus" class="form-status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <script type="module" src="/library/library.js"></script>
+  </body>
+</html>

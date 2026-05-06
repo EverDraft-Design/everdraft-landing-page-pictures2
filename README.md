@@ -207,6 +207,27 @@ Known limitations: no comments, follows, ratings, Storymarks, image upload, paym
 
 Migration `supabase/migrations/007_fix_chapter_ownership_rls.sql` refreshes chapter RLS policies for public reads and owner-only authoring. Apply it manually in the Supabase SQL Editor after migration 006 if your live project has older chapter policies.
 
+## Phase 2C: EverDraft Library
+
+Phase 2C adds the first public Library route:
+
+- `/library/` shows an early public shelf for readable stories.
+
+The homepage remains waitlist-first. The Library is linked from navigation and footer areas as a secondary public route, but "Join the Waitlist" stays the primary homepage action.
+
+Library stories are selected from existing public story data. A story appears in the Library when it has:
+
+- `stories.status` of `ongoing` or `complete`
+- `stories.is_readable = true`
+- a title
+- a slug
+
+Archived stories, unreadable stories, draft-only stories, and stories without a slug are not listed. Library cards request only safe author display fields from `public.profiles`: `username`, `display_name`, and `pen_name`. The display name preference is pen name, then display name, then username, then "EverDraft Writer". Emails and private Auth data are not queried.
+
+Library cards show the story title, author name, genre, status, blurb snippet, cover or banner artwork when present, published chapter count when available, and a `Read Story` link to `/story/:slug/`.
+
+Known limitations: no search yet, no filters yet, no comments, no follows, no ratings, no badges or Storymarks, no image upload, no Publication Mode UI, and no Writer's Nook. No new migration is required for the Library if migrations 006 and 007 have already been applied; those policies already allow public story metadata and published readable chapter reads while preserving owner-only writes.
+
 ## Signup Repair Notes
 
 The signup flow expects the deployed Cloudflare variables `SUPABASE_URL` and `SUPABASE_ANON_KEY`. It calls Supabase Auth first, then creates or updates the matching profile row using `profiles.user_id = auth.users.id`.
@@ -243,6 +264,7 @@ The public EverDraft site remains waitlist-first, but the current beta routes ar
 - `/login/` signs in to an existing account.
 - `/account/` manages the basic profile and links to member beta tools.
 - `/onboarding/` gives the same profile setup flow in a guided format.
+- `/library/` shows the first public Library shelf for readable ongoing/complete stories.
 - `/my/stories/` lists the signed-in member's own private stories.
 - `/my/stories/new/` creates a private story shell.
 - `/my/stories/:storyId/` manages an owned story and opens its chapter shelf.

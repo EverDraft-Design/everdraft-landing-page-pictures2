@@ -332,9 +332,71 @@ function chapterEditPage() {
   });
 }
 
+function libraryPage() {
+  return fallbackHtmlPage({
+    title: 'The EverDraft Library',
+    description: 'The EverDraft Library is an early public shelf for readable stories beginning to find their readers.',
+    navLink: '<a href="/journal/" class="nav-link">Journal</a>',
+    eyebrow: 'EARLY STORY SHELF',
+    heading: 'The EverDraft Library',
+    headingId: 'library-title',
+    copy: 'A quiet shelf for stories beginning to find their readers.',
+    body: `<p class="library-note">The Library is opening gradually as EverDraft’s story tools are built.</p>
+        <div id="libraryList" class="library-grid" aria-live="polite"></div>
+        <p id="libraryStatus" class="form-status" aria-live="polite"></p>`,
+    script: '/library/library.js'
+  });
+}
+
+function publicStoryPage() {
+  return fallbackHtmlPage({
+    title: 'Story',
+    description: 'Read a public EverDraft story.',
+    navLink: '<a href="/library/" class="nav-link">Library</a>',
+    eyebrow: 'EVERDRAFT STORY',
+    heading: 'Loading story...',
+    headingId: 'story-title',
+    copy: '',
+    body: `<div id="bannerWrap" class="story-media" hidden></div>
+        <p id="storyByline" class="hero-copy"></p>
+        <div id="coverWrap" class="story-cover" hidden></div>
+        <div id="storyMeta" class="preview-summary" hidden></div>
+        <div id="unreadableNotice" class="notice-panel" hidden>This story is not currently readable on EverDraft.</div>
+        <section aria-labelledby="chapters-title">
+          <h2 id="chapters-title">Chapters</h2>
+          <div id="chapterList" class="story-list" aria-live="polite"></div>
+        </section>
+        <p id="storyStatus" class="form-status" aria-live="polite"></p>`,
+    script: '/story/story-public.js'
+  });
+}
+
+function publicChapterPage() {
+  return fallbackHtmlPage({
+    title: 'Chapter',
+    description: 'Read a public EverDraft chapter.',
+    navLink: '<a id="backToStoryLink" href="/story/" class="nav-link">Story</a>',
+    eyebrow: 'EVERDRAFT STORY',
+    heading: 'Loading chapter...',
+    headingId: 'chapter-title',
+    copy: '',
+    body: `<p id="storyTitle" class="eyebrow">EVERDRAFT STORY</p>
+        <p id="chapterMeta" class="hero-copy"></p>
+        <div id="unavailableNotice" class="notice-panel" hidden>This chapter is not currently available on EverDraft.</div>
+        <section id="chapterContent" class="chapter-content reading-content" hidden></section>
+        <nav class="reader-nav" aria-label="Chapter navigation">
+          <a id="previousChapterLink" class="button-link secondary-link" href="#" hidden>Previous Chapter</a>
+          <a id="nextChapterLink" class="button-link secondary-link" href="#" hidden>Next Chapter</a>
+        </nav>
+        <p id="chapterStatus" class="form-status" aria-live="polite"></p>`,
+    script: '/story/chapter/chapter-public.js'
+  });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const isLibraryRoute = /^\/library\/?$/.test(url.pathname);
     const isStoryEditRoute = /^\/my\/stories\/[^/]+\/edit\/?$/.test(url.pathname);
     const isStoryManageRoute = /^\/my\/stories\/[^/]+\/?$/.test(url.pathname);
     const isChapterNewRoute = /^\/my\/stories\/[^/]+\/chapters\/new\/?$/.test(url.pathname);
@@ -367,6 +429,10 @@ export default {
     }
 
     if (env.ASSETS) {
+      if (isLibraryRoute) {
+        return env.ASSETS.fetch(rewriteAssetRequest(request, '/library/index.html'));
+      }
+
       if (isPublicChapterRoute) {
         return env.ASSETS.fetch(rewriteAssetRequest(request, '/story/chapter/index.html'));
       }
@@ -396,6 +462,18 @@ export default {
 
     if (isStoryEditRoute) {
       return storyEditPage();
+    }
+
+    if (isLibraryRoute) {
+      return libraryPage();
+    }
+
+    if (isPublicChapterRoute) {
+      return publicChapterPage();
+    }
+
+    if (isPublicStoryRoute) {
+      return publicStoryPage();
     }
 
     if (isStoryManageRoute) {
