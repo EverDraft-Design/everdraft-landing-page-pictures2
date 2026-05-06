@@ -11,7 +11,8 @@ const button = document.getElementById('saveChapterButton');
 
 function getStoryId() {
   const match = window.location.pathname.match(/^\/my\/stories\/([^/]+)\/chapters\/new\/?$/);
-  return match ? decodeURIComponent(match[1]) : '';
+  if (match) return decodeURIComponent(match[1]);
+  return new URLSearchParams(window.location.search).get('storyId') || '';
 }
 
 async function loadNewChapter() {
@@ -47,7 +48,7 @@ form.addEventListener('submit', async (event) => {
   try {
     const payload = Object.fromEntries(new FormData(form).entries());
     const chapter = await createChapter(getStoryId(), payload);
-    window.location.assign(`/my/stories/${getStoryId()}/chapters/${chapter.id}/edit/`);
+    window.location.assign(`/my/stories/chapters/edit/?storyId=${encodeURIComponent(getStoryId())}&chapterId=${encodeURIComponent(chapter.id)}`);
   } catch (error) {
     status.textContent = friendlyChapterError(error);
   } finally {

@@ -50,11 +50,18 @@ assert.equal(myStoriesIndex.includes('/my/stories/${story.id}/edit/'), true, 'My
 const storyShowHtml = read('everdraft-site/my/stories/show/index.html');
 const storyShowJs = read('everdraft-site/my/stories/show/story-show.js');
 assert.match(storyShowJs, /This story is waiting for its first chapter\./);
+assert.match(storyShowJs, /\/my\/stories\/chapters\/new\/\?storyId=/);
+assert.match(storyShowJs, /\/my\/stories\/chapters\/edit\/\?storyId=/);
 assert.match(storyShowHtml, /Add Chapter/);
 assert.match(storyShowHtml, /Edit Details/);
 
 const newChapterHtml = read('everdraft-site/my/stories/chapters/new/index.html');
+const newChapterJs = read('everdraft-site/my/stories/chapters/new/new-chapter.js');
 const editChapterHtml = read('everdraft-site/my/stories/chapters/edit/index.html');
+const editChapterJs = read('everdraft-site/my/stories/chapters/edit/edit-chapter.js');
+assert.match(newChapterJs, /URLSearchParams\(window\.location\.search\)\.get\('storyId'\)/);
+assert.match(editChapterJs, /params\.get\('storyId'\)/);
+assert.match(editChapterJs, /params\.get\('chapterId'\)/);
 for (const source of [newChapterHtml, editChapterHtml]) {
   for (const field of ['chapterNumber', 'title', 'content', 'status']) {
     assert.match(source, new RegExp(`name="${field}"`), `${field} should be present`);

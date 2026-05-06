@@ -15,9 +15,10 @@ const archiveButton = document.getElementById('archiveChapterButton');
 
 function getIds() {
   const match = window.location.pathname.match(/^\/my\/stories\/([^/]+)\/chapters\/([^/]+)\/edit\/?$/);
+  const params = new URLSearchParams(window.location.search);
   return {
-    storyId: match ? decodeURIComponent(match[1]) : '',
-    chapterId: match ? decodeURIComponent(match[2]) : ''
+    storyId: match ? decodeURIComponent(match[1]) : params.get('storyId') || '',
+    chapterId: match ? decodeURIComponent(match[2]) : params.get('chapterId') || ''
   };
 }
 
