@@ -44,8 +44,13 @@
           <label for="title">Title</label>
           <input id="title" name="title" type="text" required />
           <label for="content">Content</label>
-          <textarea id="content" name="content" rows="14"></textarea>
-          <button type="submit" id="saveChapterButton">Create Chapter</button>
+          <textarea id="content" name="content" rows="18" class="chapter-editor" placeholder="Begin the chapter here..."></textarea>
+          <div class="editor-meta">
+            <span id="wordCount">0 words</span>
+            <span id="lastSaved">Last saved: not yet</span>
+          </div>
+          <p class="field-note editor-note">Plain text is safest for this beta editor. Line breaks and paragraph spacing will be preserved on public reading pages.</p>
+          <button type="submit" id="saveChapterButton">Save Draft</button>
           <p id="chapterStatus" class="form-status" aria-live="polite"></p>
         </form>
       </section>
