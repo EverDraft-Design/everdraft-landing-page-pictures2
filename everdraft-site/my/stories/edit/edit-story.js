@@ -21,8 +21,6 @@ const missingNotice = document.getElementById('missingNotice');
 const status = document.getElementById('storyStatus');
 const saveButton = document.getElementById('saveStoryButton');
 const archiveButton = document.getElementById('archiveStoryButton');
-const manageChaptersLink = document.getElementById('manageChaptersLink');
-const previewStoryLink = document.getElementById('previewStoryLink');
 
 function getStoryIdFromPath() {
   const match = window.location.pathname.match(/^\/my\/stories\/([^/]+)\/edit\/?$/);
@@ -37,8 +35,6 @@ function fillStory(story) {
   statusInput.value = story.status || 'draft';
   coverUrlInput.value = story.cover_url || '';
   bannerUrlInput.value = story.banner_url || '';
-  manageChaptersLink.href = `/my/stories/chapters/?storyId=${encodeURIComponent(story.id)}`;
-  previewStoryLink.href = `/my/stories/${story.id}/preview/`;
   form.hidden = false;
 }
 

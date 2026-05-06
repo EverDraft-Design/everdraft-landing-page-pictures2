@@ -112,119 +112,6 @@ function rewriteAssetRequest(request, pathname) {
   return new Request(url.toString(), request);
 }
 
-function chapterEditPage() {
-  return new Response(`<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edit Chapter — EverDraft</title>
-    <meta name="description" content="Edit a private EverDraft chapter draft." />
-    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
-    <link rel="stylesheet" href="/styles.css" />
-  </head>
-  <body>
-    <div class="site-bg" aria-hidden="true"></div>
-    <header class="navbar">
-      <a href="/" class="brand" aria-label="EverDraft home">
-        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
-      </a>
-      <nav aria-label="Primary navigation" class="social-nav">
-        <a id="backToChaptersLink" href="/my/stories/" class="nav-link">Chapters</a>
-        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
-      </nav>
-    </header>
-    <main class="auth-main story-main">
-      <section class="auth-panel story-panel" aria-labelledby="edit-chapter-title">
-        <p class="eyebrow">PRIVATE CHAPTER</p>
-        <h1 id="edit-chapter-title">Edit Chapter Draft</h1>
-        <p class="hero-copy">Private chapter drafting only. No public reading view is open yet.</p>
-        <div id="readerNotice" class="notice-panel" hidden>You can only edit chapters for stories you created.</div>
-        <div id="missingNotice" class="notice-panel" hidden>This chapter was not found, or it does not belong to your story.</div>
-        <form id="chapterForm" class="auth-form story-form" hidden>
-          <label for="title">Chapter title</label>
-          <input id="title" name="title" type="text" required />
-          <div class="form-grid">
-            <div>
-              <label for="chapterNumber">Chapter number</label>
-              <input id="chapterNumber" name="chapterNumber" type="number" min="1" step="1" required />
-            </div>
-            <div>
-              <label for="status">Status</label>
-              <select id="status" name="status">
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="hidden">Hidden</option>
-                <option value="archived">Archived</option>
-              </select>
-            </div>
-          </div>
-          <label for="content">Content</label>
-          <textarea id="content" name="content" rows="14"></textarea>
-          <div class="auth-actions">
-            <button type="submit" id="saveChapterButton">Save Chapter</button>
-            <button type="button" id="archiveChapterButton" class="secondary-button">Archive Chapter</button>
-          </div>
-          <p id="chapterStatus" class="form-status" aria-live="polite"></p>
-        </form>
-      </section>
-    </main>
-    <script type="module" src="/my/stories/chapters/edit/edit-chapter.js"></script>
-  </body>
-</html>`, {
-    headers: {
-      'Content-Type': 'text/html; charset=UTF-8',
-      'Cache-Control': 'no-store'
-    }
-  });
-}
-
-function storyPreviewPage() {
-  return new Response(`<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Story Preview — EverDraft</title>
-    <meta name="description" content="Preview a private EverDraft story draft." />
-    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
-    <link rel="stylesheet" href="/styles.css" />
-  </head>
-  <body>
-    <div class="site-bg" aria-hidden="true"></div>
-    <header class="navbar">
-      <a href="/" class="brand" aria-label="EverDraft home">
-        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
-      </a>
-      <nav aria-label="Primary navigation" class="social-nav">
-        <a id="editStoryLink" href="/my/stories/" class="nav-link">Edit Story</a>
-        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
-      </nav>
-    </header>
-    <main class="auth-main story-main">
-      <article class="auth-panel story-panel preview-panel" aria-labelledby="preview-title">
-        <p class="eyebrow">PRIVATE PREVIEW</p>
-        <h1 id="preview-title">Story Preview</h1>
-        <p id="previewMeta" class="hero-copy">Loading story...</p>
-        <div id="readerNotice" class="notice-panel" hidden>You can only preview stories you created.</div>
-        <div id="missingNotice" class="notice-panel" hidden>This story was not found, or it does not belong to your account.</div>
-        <section id="storyPreview" class="preview-body" hidden>
-          <div id="storySummary" class="preview-summary"></div>
-          <div id="chapterPreviewList" class="chapter-preview-list"></div>
-        </section>
-        <p id="previewStatus" class="form-status" aria-live="polite"></p>
-      </article>
-    </main>
-    <script type="module" src="/my/stories/preview/preview-story.js"></script>
-  </body>
-</html>`, {
-    headers: {
-      'Content-Type': 'text/html; charset=UTF-8',
-      'Cache-Control': 'no-store'
-    }
-  });
-}
-
 function storyEditPage() {
   return new Response(`<!DOCTYPE html>
 <html lang="en">
@@ -283,8 +170,6 @@ function storyEditPage() {
           <input id="bannerUrl" name="bannerUrl" type="url" />
           <div class="auth-actions">
             <button type="submit" id="saveStoryButton">Save Story</button>
-            <a class="button-link secondary-link" id="manageChaptersLink" href="/my/stories/">Manage Chapters</a>
-            <a class="button-link secondary-link" id="previewStoryLink" href="/my/stories/">Preview Story</a>
             <button type="button" id="archiveStoryButton" class="secondary-button">Archive Story</button>
           </div>
           <p id="storyStatus" class="form-status" aria-live="polite"></p>
@@ -305,8 +190,6 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const isStoryEditRoute = /^\/my\/stories\/[^/]+\/edit\/?$/.test(url.pathname);
-    const isStoryPreviewRoute = /^\/my\/stories\/[^/]+\/preview\/?$/.test(url.pathname);
-    const isChapterEditRoute = /^\/my\/stories\/[^/]+\/chapters\/[^/]+\/edit\/?$/.test(url.pathname);
 
     if (url.pathname === '/api/supabase-config') {
       if (request.method !== 'GET') {
@@ -333,27 +216,11 @@ export default {
     }
 
     if (env.ASSETS) {
-      if (isStoryPreviewRoute) {
-        return env.ASSETS.fetch(rewriteAssetRequest(request, '/my/stories/preview/index.html'));
-      }
-
-      if (isChapterEditRoute) {
-        return env.ASSETS.fetch(rewriteAssetRequest(request, '/my/stories/chapters/edit/index.html'));
-      }
-
       if (isStoryEditRoute) {
         return env.ASSETS.fetch(rewriteAssetRequest(request, '/my/stories/edit/index.html'));
       }
 
       return env.ASSETS.fetch(request);
-    }
-
-    if (isChapterEditRoute) {
-      return chapterEditPage();
-    }
-
-    if (isStoryPreviewRoute) {
-      return storyPreviewPage();
     }
 
     if (isStoryEditRoute) {

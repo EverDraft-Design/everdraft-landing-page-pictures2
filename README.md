@@ -154,7 +154,7 @@ New signups with an immediate session are sent to `/onboarding/`. If Supabase em
 
 No Phase 1B migration was needed. The existing `profiles` table and RLS policies already support this flow.
 
-## Phase 2A: Writer Story Dashboard
+## Phase 2A: Member Story Dashboard
 
 Phase 2A adds a minimal protected member area for story metadata:
 
@@ -185,38 +185,7 @@ To test locally:
 5. Create a story at `/my/stories/new/`.
 6. Edit the story metadata from the list.
 
-No Phase 2A database migration was needed because the existing `stories` table and RLS policies already support author-owned story creation and updates.
-
-## Phase 2B: Private Chapter Drafts
-
-Phase 2B adds private chapter drafting under an author's own story:
-
-- `/my/stories/chapters/?storyId=...` lists chapters for one owned story.
-- `/my/stories/chapters/new/?storyId=...` creates a private chapter draft.
-- `/my/stories/:storyId/chapters/:chapterId/edit/` edits an owned chapter draft.
-
-Any signed-in member can use these pages for their own stories, and the chapter helpers verify the parent story belongs to the current author before reading or writing chapters.
-
-The chapter form supports:
-
-- title
-- chapter number
-- status
-- content
-
-This phase still does not add public reader chapter pages, comments, follows, ratings, discovery, payments, badges, admin tools, or Writer's Nook. No Phase 2B migration was needed because the existing `chapters` table and RLS policies already support author-owned chapter creation and updates.
-
-## Phase 2C: Private Author Preview
-
-Phase 2C adds an author-only story preview route:
-
-- `/my/stories/:storyId/preview/`
-
-The preview shows story metadata and the author's own non-archived chapter drafts in a reader-like layout, but it is still protected behind login and story ownership checks. It is not a public story page and is not linked from the homepage.
-
-Use this route from the private story list or story edit page to review draft presentation before any future public reader experience exists.
-
-This phase still does not add public discovery, public story pages, public chapter reading, comments, follows, ratings, payments, badges, admin tools, or Writer's Nook. No Phase 2C migration was needed.
+Migration `supabase/migrations/006_fix_story_ownership_rls.sql` repairs live story permissions if Supabase still rejects story saves with a row-level security or permission error. It recreates story read/create/update policies so `public.stories.author_id` is checked against the signed-in member's `public.profiles.id`, found through `profiles.user_id = auth.uid()`. Apply it manually after the earlier profile/account migrations. It does not delete story data.
 
 ## Signup Repair Notes
 
@@ -228,8 +197,9 @@ A safety migration is available at:
 - `supabase/migrations/003_create_profile_on_auth_signup.sql`
 - `supabase/migrations/004_add_locked_username_to_profiles.sql`
 - `supabase/migrations/005_remove_member_role_gate.sql`
+- `supabase/migrations/006_fix_story_ownership_rls.sql`
 
-Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, or if Auth users are being created without profile rows. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. Migration 005 keeps `profiles.role` as a legacy/internal field, prevents browser self-service role changes, removes the story creation role gate, and updates the Auth trigger so new profiles no longer depend on intended-role metadata. None of these migrations delete existing data.
+Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, if Auth users are being created without profile rows, or if story saves fail with a permission/RLS error. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. Migration 005 keeps `profiles.role` as a legacy/internal field, prevents browser self-service role changes, removes the original story creation role gate, and updates the Auth trigger so new profiles no longer depend on intended-role metadata. Migration 006 recreates story metadata policies around profile ownership instead of legacy role values. None of these migrations delete existing data.
 
 To test locked usernames:
 
@@ -254,7 +224,7 @@ The public EverDraft site remains waitlist-first, but the current beta routes ar
 - `/onboarding/` gives the same profile setup flow in a guided format.
 - `/my/stories/` lists the signed-in member's own private stories.
 - `/my/stories/new/` creates a private story shell.
-- Story edit, chapter management, chapter draft editing, and author preview links are reached from the private My Stories flow after a story exists.
+- Story edit links are reached from the private My Stories flow after a story exists.
 
 Current working beta features:
 
@@ -262,12 +232,11 @@ Current working beta features:
 - Basic profile editing with display name, pen name, and bio.
 - Story dashboard for signed-in members when story routes are enabled.
 - Private story metadata creation and editing.
-- Private chapter drafts for owned stories.
-- Author-only story preview.
 
 Coming later:
 
 - Public story reading pages.
+- Private chapter drafts.
 - Public story discovery.
 - Follows.
 - Guided feedback comments.
@@ -287,8 +256,6 @@ Manual member testing flow:
 6. Open `/my/stories/` if private story routes are enabled.
 7. Create a story at `/my/stories/new/` if that route is enabled.
 8. Edit the story from the My Stories list.
-9. Manage private chapters from the story edit page if chapter routes are enabled.
-10. Preview the private author-only story view.
-11. Sign out, then sign back in at `/login/`.
+9. Sign out, then sign back in at `/login/`.
 
 The homepage now acknowledges that private beta platform tools are being built, but "Join the Waitlist" remains the primary public call to action. Do not describe EverDraft as publicly launched until public story reading and discovery are intentionally added.
