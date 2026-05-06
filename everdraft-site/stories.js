@@ -1,6 +1,7 @@
 import { getCurrentProfile, getCurrentSession, getSupabaseBrowserClient } from '/auth.js';
 
 const STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, banner_url, is_readable, publication_mode, external_book_url, published_at, created_at, updated_at';
+const LIBRARY_STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, banner_url, is_readable, published_at, created_at, updated_at';
 const VALID_STORY_STATUSES = new Set(['draft', 'ongoing', 'complete', 'hiatus', 'archived']);
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -229,4 +230,57 @@ export async function archiveStory(storyId) {
 
   if (error) throw error;
   return data;
+}
+
+export async function getLibraryStories() {
+  const supabase = await getSupabaseBrowserClient();
+
+  const { data: stories, error } = await supabase
+    .from('stories')
+    .select(LIBRARY_STORY_SELECT)
+    .in('status', ['ongoing', 'complete'])
+    .eq('is_readable', true)
+    .not('title', 'is', null)
+    .not('slug', 'is', null)
+    .order('updated_at', { ascending: false });
+
+  if (error) throw error;
+
+  const publicStories = (stories || []).filter((story) => (
+    story.title?.trim()
+    && story.slug?.trim()
+    && story.status !== 'archived'
+  ));
+
+  if (!publicStories.length) return [];
+
+  const authorIds = [...new Set(publicStories.map((story) => story.author_id).filter(Boolean))];
+  const storyIds = publicStories.map((story) => story.id);
+
+  const { data: authors, error: authorError } = await supabase
+    .from('profiles')
+    .select('id, username, display_name, pen_name')
+    .in('id', authorIds);
+
+  if (authorError) throw authorError;
+
+  const { data: chapters, error: chapterError } = await supabase
+    .from('chapters')
+    .select('id, story_id, status')
+    .in('story_id', storyIds)
+    .eq('status', 'published');
+
+  if (chapterError) throw chapterError;
+
+  const authorsById = new Map((authors || []).map((author) => [author.id, author]));
+  const chapterCounts = (chapters || []).reduce((counts, chapter) => {
+    counts.set(chapter.story_id, (counts.get(chapter.story_id) || 0) + 1);
+    return counts;
+  }, new Map());
+
+  return publicStories.map((story) => ({
+    ...story,
+    author: authorsById.get(story.author_id) || null,
+    chapter_count: chapterCounts.get(story.id) || 0
+  }));
 }

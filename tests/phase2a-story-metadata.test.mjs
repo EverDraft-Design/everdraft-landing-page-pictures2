@@ -64,6 +64,6 @@ assert.match(migration006, /profiles\.user_id = \(select auth\.uid\(\)\)/);
 assert.doesNotMatch(migration006, /profiles\.role in|author_id = \(select auth\.uid\(\)\)/);
 
 assert.match(readme, /Phase 2A/);
-assert.doesNotMatch(readme, /Phase 2C|author preview links/i);
+assert.doesNotMatch(readme, /author preview links/i);
 
 console.log('Phase 2A story metadata checks passed.');
