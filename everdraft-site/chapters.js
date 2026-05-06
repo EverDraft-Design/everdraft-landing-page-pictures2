@@ -1,5 +1,5 @@
 import { getSupabaseBrowserClient } from '/auth.js';
-import { getStoryByIdForAuthor, requireWriterProfile } from '/stories.js';
+import { getStoryByIdForAuthor, requireMemberProfile } from '/stories.js';
 
 const CHAPTER_SELECT = 'id, story_id, title, chapter_number, content, status, published_at, created_at, updated_at';
 
@@ -20,7 +20,7 @@ export function friendlyChapterError(error) {
 }
 
 export async function requireAuthorStory(storyId) {
-  const { canWrite } = await requireWriterProfile();
+  const { canWrite } = await requireMemberProfile();
 
   if (!canWrite) {
     return {

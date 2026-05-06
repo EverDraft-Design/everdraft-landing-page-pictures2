@@ -117,11 +117,11 @@ SUPABASE_ANON_KEY=
 
 During beta testing, signup and login pages display the actual Supabase error message returned by Auth or profile creation so configuration, email confirmation, RLS, and duplicate-account issues are easier to diagnose.
 
-Signup must create the Supabase Auth user first. Only after Auth returns a real user id does EverDraft upsert the matching `public.profiles` row with `user_id`, `display_name`, `role`, and `pen_name`. If email confirmation is enabled and Supabase does not return an active session immediately, the browser cannot create the profile row under RLS until the user confirms their email and signs in.
+Signup must create the Supabase Auth user first. Only after Auth returns a real user id does EverDraft upsert the matching `public.profiles` row with `user_id`, `username`, `display_name`, and `pen_name`. If email confirmation is enabled and Supabase does not return an active session immediately, the browser cannot create the profile row under RLS until the user confirms their email and signs in.
 
 For email-confirmation projects, apply `supabase/migrations/003_create_profile_on_auth_signup.sql`. It adds a Postgres trigger on `auth.users` that creates the matching `public.profiles` row from signup metadata as soon as Supabase Auth creates the user, and backfills Auth users that were created before the trigger existed.
 
-EverDraft account identity now includes a locked public username. New signups must choose a lowercase username using 3-30 letters, numbers, hyphens, or underscores. The username is saved to `public.profiles.username`, must be unique, and cannot be changed after creation. Existing beta users whose profile has no username can set one once from `/account/` or `/onboarding/`. The admin role is not selectable in the UI.
+EverDraft account identity now includes a locked public username. New signups must choose a lowercase username using 3-30 letters, numbers, hyphens, or underscores. The username is saved to `public.profiles.username`, must be unique, and cannot be changed after creation. Existing beta users whose profile has no username can set one once from `/account/` or `/onboarding/`. Users do not choose reader/writer/both roles, and admin status is not selectable in the UI.
 
 To test locally:
 
@@ -140,7 +140,7 @@ Supabase Auth settings to check:
 - Email confirmation is configured the way you want for testing.
 - The `profiles` table migration has been applied and RLS policies are present.
 
-No Phase 1A database migration was needed because the existing `profiles` table already supports `user_id`, `display_name`, `pen_name`, `role`, `bio`, and `avatar_url`, and its RLS policies already allow users to create and update their own profile.
+The legacy `profiles.role` column may remain in the database for compatibility, but it is no longer shown to users or used for normal member access.
 
 ## Phase 1B: Profile Onboarding
 
@@ -148,7 +148,7 @@ Phase 1B adds a small protected onboarding route:
 
 - `/onboarding/`
 
-The onboarding page helps a signed-in user complete their basic `profiles` row with display name, pen name, role, and bio. It does not add story uploads, dashboards, discovery, payments, Writer's Nook, or public profile pages.
+The onboarding page helps a signed-in user complete their basic `profiles` row with display name, pen name, and bio. It does not add story uploads, discovery, payments, Writer's Nook, or public profile pages.
 
 New signups with an immediate session are sent to `/onboarding/`. If Supabase email confirmation is enabled, the user will still need to confirm their email and sign in before onboarding can run.
 
@@ -156,13 +156,13 @@ No Phase 1B migration was needed. The existing `profiles` table and RLS policies
 
 ## Phase 2A: Writer Story Dashboard
 
-Phase 2A adds a minimal protected writer area for story metadata:
+Phase 2A adds a minimal protected member area for story metadata:
 
-- `/my/stories/` lists the signed-in writer's own stories.
+- `/my/stories/` lists the signed-in member's own stories.
 - `/my/stories/new/` creates a story shell.
 - `/my/stories/:storyId/edit/` edits story metadata for the author.
 
-Only users with profile role `writer` or `both` can create or edit stories. Reader-only users see a friendly message directing them to update their profile role first.
+Any signed-in member with a profile can create or edit their own stories. Access is based on authentication and ownership, not reader/writer/both role values.
 
 The story form supports:
 
@@ -180,7 +180,7 @@ To test locally:
 
 1. Add `SUPABASE_URL` and `SUPABASE_ANON_KEY` to `.dev.vars`.
 2. Run `npm run dev`.
-3. Sign in as a user whose profile role is `writer` or `both`.
+3. Sign in as any member account with a completed profile.
 4. Open `/my/stories/`.
 5. Create a story at `/my/stories/new/`.
 6. Edit the story metadata from the list.
@@ -195,7 +195,7 @@ Phase 2B adds private chapter drafting under an author's own story:
 - `/my/stories/chapters/new/?storyId=...` creates a private chapter draft.
 - `/my/stories/:storyId/chapters/:chapterId/edit/` edits an owned chapter draft.
 
-Only users with profile role `writer` or `both` can use these pages, and the chapter helpers verify the parent story belongs to the current author before reading or writing chapters.
+Any signed-in member can use these pages for their own stories, and the chapter helpers verify the parent story belongs to the current author before reading or writing chapters.
 
 The chapter form supports:
 
@@ -212,7 +212,7 @@ Phase 2C adds an author-only story preview route:
 
 - `/my/stories/:storyId/preview/`
 
-The preview shows story metadata and the author's own non-archived chapter drafts in a reader-like layout, but it is still protected behind login, writer/both role checks, and story ownership checks. It is not a public story page and is not linked from the homepage.
+The preview shows story metadata and the author's own non-archived chapter drafts in a reader-like layout, but it is still protected behind login and story ownership checks. It is not a public story page and is not linked from the homepage.
 
 Use this route from the private story list or story edit page to review draft presentation before any future public reader experience exists.
 
@@ -227,8 +227,9 @@ A safety migration is available at:
 - `supabase/migrations/002_fix_profiles_auth_signup.sql`
 - `supabase/migrations/003_create_profile_on_auth_signup.sql`
 - `supabase/migrations/004_add_locked_username_to_profiles.sql`
+- `supabase/migrations/005_remove_member_role_gate.sql`
 
-Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, or if Auth users are being created without profile rows. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. None of these migrations delete existing data.
+Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, or if Auth users are being created without profile rows. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. Migration 005 keeps `profiles.role` as a legacy/internal field, prevents browser self-service role changes, removes the story creation role gate, and updates the Auth trigger so new profiles no longer depend on intended-role metadata. None of these migrations delete existing data.
 
 To test locked usernames:
 
@@ -240,7 +241,7 @@ To test locked usernames:
 6. Try another signup with the same username and confirm Supabase rejects it.
 7. Open `/account/` and confirm the username is read-only after it is set.
 
-If old blank beta rows already exist in `public.profiles`, remove them manually from Supabase **Table Editor > profiles** after confirming they are test rows. Look for rows with an empty `display_name`, missing `user_id`, or a role that does not match a real test account. Do not delete profiles for real users.
+If old blank beta rows already exist in `public.profiles`, remove them manually from Supabase **Table Editor > profiles** after confirming they are test rows. Look for rows with an empty `display_name` or missing `user_id`. Do not delete profiles for real users.
 
 ## Beta Testing Pathway
 
@@ -249,17 +250,17 @@ The public EverDraft site remains waitlist-first, but the current beta routes ar
 - `/beta/` is the testing hub for the current early platform tools.
 - `/signup/` creates a Supabase Auth account.
 - `/login/` signs in to an existing account.
-- `/account/` manages the basic profile and links to role-appropriate beta tools.
+- `/account/` manages the basic profile and links to member beta tools.
 - `/onboarding/` gives the same profile setup flow in a guided format.
-- `/my/stories/` lists the signed-in writer's own private stories.
+- `/my/stories/` lists the signed-in member's own private stories.
 - `/my/stories/new/` creates a private story shell.
 - Story edit, chapter management, chapter draft editing, and author preview links are reached from the private My Stories flow after a story exists.
 
 Current working beta features:
 
-- Reader/writer account creation and login.
-- Basic profile editing with display name, pen name, role, and bio.
-- Writer story dashboard for users with role `writer` or `both`.
+- Account creation and login.
+- Basic profile editing with display name, pen name, and bio.
+- Story dashboard for signed-in members when story routes are enabled.
 - Private story metadata creation and editing.
 - Private chapter drafts for owned stories.
 - Author-only story preview.
@@ -276,26 +277,18 @@ Coming later:
 - Writer's Nook.
 - Payments and admin tools.
 
-Manual writer/both testing flow:
+Manual member testing flow:
 
 1. Run `npm run dev`.
 2. Open `/beta/`.
 3. Create an account at `/signup/`.
-4. Choose role `writer` or `both`.
+4. Confirm there is no reader/writer/both selection.
 5. Visit `/account/` and save profile details.
-6. Open `/my/stories/`.
-7. Create a story at `/my/stories/new/`.
+6. Open `/my/stories/` if private story routes are enabled.
+7. Create a story at `/my/stories/new/` if that route is enabled.
 8. Edit the story from the My Stories list.
-9. Manage private chapters from the story edit page.
+9. Manage private chapters from the story edit page if chapter routes are enabled.
 10. Preview the private author-only story view.
 11. Sign out, then sign back in at `/login/`.
-
-Manual reader testing flow:
-
-1. Create or update an account with role `reader`.
-2. Open `/account/`.
-3. Confirm profile editing works.
-4. Open `/my/stories/`.
-5. Confirm the reader-only message appears instead of story creation tools.
 
 The homepage now acknowledges that private beta platform tools are being built, but "Join the Waitlist" remains the primary public call to action. Do not describe EverDraft as publicly launched until public story reading and discovery are intentionally added.

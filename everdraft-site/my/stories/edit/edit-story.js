@@ -3,7 +3,7 @@ import {
   archiveStory,
   friendlyStoryError,
   getStoryByIdForAuthor,
-  requireWriterProfile,
+  requireMemberProfile,
   slugifyTitle,
   updateStory
 } from '/stories.js';
@@ -47,7 +47,7 @@ async function loadStory() {
     const session = await requireSession();
     if (!session) return;
 
-    const { canWrite } = await requireWriterProfile();
+    const { canWrite } = await requireMemberProfile();
 
     if (!canWrite) {
       readerNotice.hidden = false;

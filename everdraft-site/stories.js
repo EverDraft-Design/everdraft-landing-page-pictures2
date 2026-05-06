@@ -13,10 +13,10 @@ export function slugifyTitle(value) {
 }
 
 export function canManageStories(profile) {
-  return Boolean(profile && ['writer', 'both'].includes(profile.role));
+  return Boolean(profile);
 }
 
-export async function requireWriterProfile() {
+export async function requireMemberProfile() {
   const profile = await getCurrentProfile();
 
   if (!profile) {
@@ -47,15 +47,7 @@ export function friendlyStoryError(error) {
 
 export async function getMyStories() {
   const supabase = await getSupabaseBrowserClient();
-  const { profile, canWrite } = await requireWriterProfile();
-
-  if (!canWrite) {
-    return {
-      profile,
-      canWrite,
-      stories: []
-    };
-  }
+  const { profile, canWrite } = await requireMemberProfile();
 
   const { data, error } = await supabase
     .from('stories')
@@ -74,15 +66,7 @@ export async function getMyStories() {
 
 export async function getStoryByIdForAuthor(storyId) {
   const supabase = await getSupabaseBrowserClient();
-  const { profile, canWrite } = await requireWriterProfile();
-
-  if (!canWrite) {
-    return {
-      profile,
-      canWrite,
-      story: null
-    };
-  }
+  const { profile, canWrite } = await requireMemberProfile();
 
   const { data, error } = await supabase
     .from('stories')
@@ -125,10 +109,10 @@ function cleanStoryPayload(input) {
 
 export async function createStory(input) {
   const supabase = await getSupabaseBrowserClient();
-  const { profile, canWrite } = await requireWriterProfile();
+  const { profile, canWrite } = await requireMemberProfile();
 
   if (!canWrite) {
-    throw new Error('Story creation is available to writer accounts.');
+    throw new Error('Please sign in and complete your profile before creating stories.');
   }
 
   const story = cleanStoryPayload(input);
@@ -150,10 +134,10 @@ export async function createStory(input) {
 
 export async function updateStory(storyId, input) {
   const supabase = await getSupabaseBrowserClient();
-  const { profile, canWrite } = await requireWriterProfile();
+  const { profile, canWrite } = await requireMemberProfile();
 
   if (!canWrite) {
-    throw new Error('Story editing is available to writer accounts.');
+    throw new Error('You can only edit stories you created.');
   }
 
   const story = cleanStoryPayload(input);
@@ -172,10 +156,10 @@ export async function updateStory(storyId, input) {
 
 export async function archiveStory(storyId) {
   const supabase = await getSupabaseBrowserClient();
-  const { profile, canWrite } = await requireWriterProfile();
+  const { profile, canWrite } = await requireMemberProfile();
 
   if (!canWrite) {
-    throw new Error('Story archiving is available to writer accounts.');
+    throw new Error('You can only edit stories you created.');
   }
 
   const { data, error } = await supabase

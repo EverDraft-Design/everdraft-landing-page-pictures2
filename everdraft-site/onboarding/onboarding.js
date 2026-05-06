@@ -12,7 +12,6 @@ const usernameInput = document.getElementById('username');
 const usernameHelp = document.getElementById('usernameHelp');
 const displayNameInput = document.getElementById('displayName');
 const penNameInput = document.getElementById('penName');
-const roleSelect = document.getElementById('role');
 const bioInput = document.getElementById('bio');
 const status = document.getElementById('onboardingStatus');
 const button = document.getElementById('onboardingButton');
@@ -35,10 +34,9 @@ function fillProfile(profile) {
     : 'Choose your permanent EverDraft username. Use 3-30 lowercase letters, numbers, hyphens, or underscores.';
   displayNameInput.value = profile.display_name || '';
   penNameInput.value = profile.pen_name || '';
-  roleSelect.value = profile.role || 'reader';
   bioInput.value = profile.bio || '';
 
-  markStep(stepProfile, Boolean(profile.username && profile.display_name && profile.role));
+  markStep(stepProfile, Boolean(profile.username && profile.display_name));
   markStep(stepReady, isProfileComplete(profile));
 }
 
@@ -52,8 +50,7 @@ async function loadOnboarding() {
     currentProfile = await getCurrentProfile();
     if (!currentProfile) {
       currentProfile = await createProfileForCurrentUser({
-        displayName: session.user.user_metadata?.display_name || session.user.email || 'EverDraft reader',
-        role: session.user.user_metadata?.intended_role || 'reader',
+        displayName: session.user.user_metadata?.display_name || session.user.email || 'EverDraft member',
         penName: session.user.user_metadata?.display_name || ''
       });
     }
@@ -71,7 +68,6 @@ form.addEventListener('submit', async (event) => {
   const displayName = displayNameInput.value.trim();
   const username = usernameInput.value.trim();
   const penName = penNameInput.value.trim();
-  const role = roleSelect.value;
   const bio = bioInput.value.trim();
 
   if (!displayName) {
@@ -88,7 +84,7 @@ form.addEventListener('submit', async (event) => {
   button.textContent = 'Saving...';
 
   try {
-    currentProfile = await updateCurrentProfile({ username, displayName, penName, role, bio });
+    currentProfile = await updateCurrentProfile({ username, displayName, penName, bio });
     fillProfile(currentProfile);
     status.textContent = 'Profile complete. You can continue to your account.';
     setTimeout(() => {
