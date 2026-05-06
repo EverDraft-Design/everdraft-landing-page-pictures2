@@ -95,6 +95,12 @@ form.addEventListener('submit', async (event) => {
     const { story } = await getChapterForAuthor(chapter.id, storyId);
     fillChapter(story, chapter);
     markSaved('Last saved just now.');
+
+    if (chapter.status === 'published') {
+      window.location.assign(`/my/stories/${storyId}/`);
+      return;
+    }
+
     status.textContent = 'Chapter saved.';
   } catch (error) {
     status.textContent = friendlyChapterError(error);

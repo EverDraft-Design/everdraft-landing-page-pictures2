@@ -66,6 +66,8 @@ const editChapterJs = read('everdraft-site/my/stories/chapters/edit/edit-chapter
 assert.match(newChapterJs, /URLSearchParams\(window\.location\.search\)\.get\('storyId'\)/);
 assert.match(editChapterJs, /params\.get\('storyId'\)/);
 assert.match(editChapterJs, /params\.get\('chapterId'\)/);
+assert.match(editChapterJs, /chapter\.status === 'published'/);
+assert.match(editChapterJs, /window\.location\.assign\(`\/my\/stories\/\$\{storyId\}\/`\)/);
 for (const source of [newChapterHtml, editChapterHtml]) {
   assert.match(source, /chapter-editor/);
   assert.match(source, /wordCount/);
