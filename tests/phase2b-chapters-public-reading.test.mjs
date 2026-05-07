@@ -94,8 +94,11 @@ const publicChapterHtml = read('everdraft-site/story/chapter/index.html');
 assert.match(publicStoryHtml, /This story is not currently readable on EverDraft\./);
 assert.match(publicStoryHtml, /chapterList/);
 assert.match(publicChapterHtml, /previousChapterLink/);
+assert.match(publicChapterHtml, /chapterBackToStoryLink/);
+assert.match(publicChapterHtml, /Back to Story/);
 assert.match(publicChapterHtml, /nextChapterLink/);
 assert.match(publicChapterHtml, /backToStoryLink/);
+assert.match(read('everdraft-site/story/chapter/chapter-public.js'), /chapterBackToStoryLink\.href = `\/story\/\$\{slug\}\/`/);
 
 const worker = read('src/index.js');
 for (const routePattern of [
