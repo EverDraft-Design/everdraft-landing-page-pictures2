@@ -52,6 +52,9 @@ assert.match(followControls, /Follow Writer/);
 assert.match(followControls, /Unfollow Writer/);
 assert.match(followControls, /Sign in to follow this story/);
 assert.match(followControls, /Sign in to follow this writer/);
+assert.match(followControls, /follow-compact-panel/);
+assert.match(followControls, /follow-compact-buttons/);
+assert.match(followControls, /follow-compact-counts/);
 assert.match(followControls, /story\.author_id === currentProfile\.id/);
 assert.match(followControls, /getStoryFollowerCount/);
 assert.match(followControls, /getWriterFollowerCount/);
@@ -61,6 +64,7 @@ const libraryJs = read('everdraft-site/library/library.js');
 assert.match(libraryJs, /from '\/follow-controls\.js'/);
 assert.match(libraryJs, /library-follow-controls/);
 assert.match(libraryJs, /mountLibraryFollowControls/);
+assert.match(libraryJs, /compact:\s*true/);
 assert.match(libraryJs, /Read Story/);
 assert.doesNotMatch(libraryJs, /comment|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
 
@@ -115,5 +119,12 @@ assert.match(readme, /\/library/);
 assert.match(readme, /\/story\/:slug/);
 assert.match(readme, /\/story\/:slug\/chapter\/:chapterNumber/);
 assert.match(readme, /supabase\/migrations\/008_fix_follow_rls\.sql/);
+
+const styles = read('everdraft-site/styles.css');
+assert.match(styles, /\.follow-actions\.follow-actions-compact\s*\{/);
+assert.match(styles, /grid-template-columns:\s*1fr/);
+assert.match(styles, /follow-compact-buttons/);
+assert.match(styles, /flex-wrap:\s*wrap/);
+assert.match(styles, /follow-compact-counts/);
 
 console.log('Phase 3 follow checks passed.');
