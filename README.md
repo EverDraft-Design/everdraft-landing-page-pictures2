@@ -238,9 +238,11 @@ Phase 3 adds the first connection layer:
 - Signed-in members can follow or unfollow stories they do not own.
 - Signed-in members can follow or unfollow writers who are not themselves.
 - Signed-out readers see gentle sign-in prompts instead of follow buttons.
-- `/account/` includes a simple Following section with followed stories and followed writers.
+- `/account/` includes `Your Reading Shelf` with followed stories and followed writers.
 
 To follow a story, sign in, open `/library/`, `/story/:slug/`, or `/story/:slug/chapter/:chapterNumber/`, and use `Follow Story`. To follow a writer, use `Follow Writer` in the same reader-facing story areas. The buttons switch to `Unfollow Story` and `Unfollow Writer` after the follow row exists. Signed-out visitors are linked to `/login/` with the current path preserved as the return destination. Story owners see a quiet owner note instead of self-follow buttons.
+
+Followed stories appear on `/account/` with title, author display name, genre, status, published chapter count, a `Read Story` link, and an account-side `Unfollow Story` button. Followed writers appear on `/account/` with safe public display fields, follower count, public story count, and an account-side `Unfollow Writer` button. EverDraft does not create public writer profile links yet, so writer names are intentionally not linked.
 
 Follow rows use `public.profiles.id`, not Supabase Auth ids. For story follows, `story_follows.user_id` is the follower profile and `story_follows.story_id` is the followed story. For writer follows, `writer_follows.user_id` is the follower profile and `writer_follows.writer_id` is the followed writer profile. Duplicate follows are prevented by the existing unique constraints, and writer self-follows are blocked by a check constraint and policy.
 

@@ -85,6 +85,7 @@ assert.match(chapterPublic, /mountFollowControls\(chapterFollowControls, story/)
 assert.doesNotMatch(chapterPublic, /comment|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
 
 const accountHtml = read('everdraft-site/account/index.html');
+assert.match(accountHtml, /Your Reading Shelf/);
 assert.match(accountHtml, /followingStoriesList/);
 assert.match(accountHtml, /followingWritersList/);
 assert.match(accountHtml, /Followed Stories/);
@@ -93,6 +94,14 @@ assert.match(accountHtml, /Followed Writers/);
 const accountJs = read('everdraft-site/account/account.js');
 assert.match(accountJs, /getMyFollowedStories/);
 assert.match(accountJs, /getMyFollowedWriters/);
+assert.match(accountJs, /unfollowStory/);
+assert.match(accountJs, /unfollowWriter/);
+assert.match(accountJs, /chapter_count/);
+assert.match(accountJs, /public_story_count/);
+assert.match(accountJs, /follower_count/);
+assert.match(accountJs, /data-unfollow-story-id/);
+assert.match(accountJs, /data-unfollow-writer-id/);
+assert.match(accountJs, /Read Story/);
 assert.match(accountJs, /Stories you follow will appear here\./);
 assert.match(accountJs, /Writers you follow will appear here\./);
 assert.doesNotMatch(accountJs, /service_role|secret|token|profiles\.role|auth\.user|email.*follow/i);

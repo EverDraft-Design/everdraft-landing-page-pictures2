@@ -7,7 +7,14 @@ import {
   requireSession,
   updateCurrentProfile
 } from '/auth.js';
-import { getDisplayName, getMyFollowedStories, getMyFollowedWriters, friendlyFollowError } from '/follows.js';
+import {
+  friendlyFollowError,
+  getDisplayName,
+  getMyFollowedStories,
+  getMyFollowedWriters,
+  unfollowStory,
+  unfollowWriter
+} from '/follows.js';
 
 const email = document.getElementById('accountEmail');
 const accountUsername = document.getElementById('accountUsername');
@@ -64,12 +71,20 @@ function renderFollowedStories(stories) {
   followingStoriesList.innerHTML = stories.map((story) => {
     const authorName = getDisplayName(story.author);
     const storyLink = story.slug ? `/story/${story.slug}/` : '/library/';
+    const chapterCount = Number(story.chapter_count) || 0;
+    const chapterCopy = `${chapterCount} ${chapterCount === 1 ? 'published chapter' : 'published chapters'}`;
 
     return `
       <article class="following-item">
-        <h4><a href="${escapeHtml(storyLink)}">${escapeHtml(story.title || 'Untitled story')}</a></h4>
-        <p>By ${escapeHtml(authorName)}</p>
-        <p class="muted-copy">Status: ${escapeHtml(story.status || 'draft')}</p>
+        <div>
+          <h4><a href="${escapeHtml(storyLink)}">${escapeHtml(story.title || 'Untitled story')}</a></h4>
+          <p>By ${escapeHtml(authorName)}</p>
+          <p class="muted-copy">${escapeHtml(story.genre || 'Genre not set')} · ${escapeHtml(story.status || 'draft')} · ${escapeHtml(chapterCopy)}</p>
+        </div>
+        <div class="following-actions">
+          <a class="button-link secondary-link" href="${escapeHtml(storyLink)}">Read Story</a>
+          <button type="button" class="secondary-button" data-unfollow-story-id="${escapeHtml(story.id)}">Unfollow Story</button>
+        </div>
       </article>
     `;
   }).join('');
@@ -81,12 +96,25 @@ function renderFollowedWriters(writers) {
     return;
   }
 
-  followingWritersList.innerHTML = writers.map((writer) => `
-    <article class="following-item">
-      <h4>${escapeHtml(getDisplayName(writer))}</h4>
-      ${writer.username ? `<p>@${escapeHtml(writer.username)}</p>` : ''}
-    </article>
-  `).join('');
+  followingWritersList.innerHTML = writers.map((writer) => {
+    const followerCount = Number(writer.follower_count) || 0;
+    const publicStoryCount = Number(writer.public_story_count) || 0;
+    const followerCopy = `${followerCount} ${followerCount === 1 ? 'writer follower' : 'writer followers'}`;
+    const storyCopy = `${publicStoryCount} ${publicStoryCount === 1 ? 'public story' : 'public stories'}`;
+
+    return `
+      <article class="following-item">
+        <div>
+          <h4>${escapeHtml(getDisplayName(writer))}</h4>
+          ${writer.username ? `<p>@${escapeHtml(writer.username)}</p>` : ''}
+          <p class="muted-copy">${escapeHtml(followerCopy)} · ${escapeHtml(storyCopy)}</p>
+        </div>
+        <div class="following-actions">
+          <button type="button" class="secondary-button" data-unfollow-writer-id="${escapeHtml(writer.id)}">Unfollow Writer</button>
+        </div>
+      </article>
+    `;
+  }).join('');
 }
 
 async function loadFollowing() {
@@ -108,6 +136,29 @@ async function loadFollowing() {
     followingWritersList.innerHTML = '<div class="empty-state">Writers you follow will appear here.</div>';
   }
 }
+
+followingPanel.addEventListener('click', async (event) => {
+  const storyButton = event.target.closest('[data-unfollow-story-id]');
+  const writerButton = event.target.closest('[data-unfollow-writer-id]');
+  const button = storyButton || writerButton;
+  if (!button) return;
+
+  button.disabled = true;
+  followingStatus.textContent = '';
+
+  try {
+    if (storyButton) {
+      await unfollowStory(storyButton.dataset.unfollowStoryId);
+    }
+    if (writerButton) {
+      await unfollowWriter(writerButton.dataset.unfollowWriterId);
+    }
+    await loadFollowing();
+  } catch (error) {
+    followingStatus.textContent = friendlyFollowError(error);
+    button.disabled = false;
+  }
+});
 
 async function loadAccount() {
   try {

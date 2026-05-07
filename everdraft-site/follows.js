@@ -2,7 +2,7 @@ import { getCurrentProfile, getCurrentSession, getSupabaseBrowserClient } from '
 
 const STORY_FOLLOW_SELECT = 'id, story_id, user_id, created_at';
 const WRITER_FOLLOW_SELECT = 'id, writer_id, user_id, created_at';
-const FOLLOWED_STORY_SELECT = 'id, author_id, title, slug, status, genre, updated_at';
+const FOLLOWED_STORY_SELECT = 'id, author_id, title, slug, status, genre, is_readable, updated_at';
 const FOLLOWED_PROFILE_SELECT = 'id, username, display_name, pen_name';
 
 export function friendlyFollowError(error) {
@@ -207,15 +207,28 @@ export async function getMyFollowedStories() {
 
   if (authorError) throw authorError;
 
+  const { data: chapters, error: chapterError } = await supabase
+    .from('chapters')
+    .select('id, story_id, status')
+    .in('story_id', storyIds)
+    .eq('status', 'published');
+
+  if (chapterError) throw chapterError;
+
   const storiesById = new Map(stories.map((story) => [story.id, story]));
   const authorsById = new Map((authors || []).map((author) => [author.id, author]));
+  const chapterCounts = (chapters || []).reduce((counts, chapter) => {
+    counts.set(chapter.story_id, (counts.get(chapter.story_id) || 0) + 1);
+    return counts;
+  }, new Map());
 
   return follows
     .map((follow) => storiesById.get(follow.story_id))
     .filter(Boolean)
     .map((story) => ({
       ...story,
-      author: authorsById.get(story.author_id) || null
+      author: authorsById.get(story.author_id) || null,
+      chapter_count: chapterCounts.get(story.id) || 0
     }));
 }
 
@@ -241,7 +254,31 @@ export async function getMyFollowedWriters() {
   if (writerError) throw writerError;
 
   const writersById = new Map((writers || []).map((writer) => [writer.id, writer]));
+  const { data: publicStories, error: storyError } = await supabase
+    .from('stories')
+    .select('id, author_id, status, is_readable')
+    .in('author_id', writerIds)
+    .in('status', ['ongoing', 'complete'])
+    .eq('is_readable', true);
+
+  if (storyError) throw storyError;
+
+  const publicStoryCounts = (publicStories || []).reduce((counts, story) => {
+    counts.set(story.author_id, (counts.get(story.author_id) || 0) + 1);
+    return counts;
+  }, new Map());
+
+  const followerCounts = new Map(await Promise.all(writerIds.map(async (writerId) => [
+    writerId,
+    await getWriterFollowerCount(writerId)
+  ])));
+
   return follows
     .map((follow) => writersById.get(follow.writer_id))
-    .filter(Boolean);
+    .filter(Boolean)
+    .map((writer) => ({
+      ...writer,
+      follower_count: followerCounts.get(writer.id) || 0,
+      public_story_count: publicStoryCounts.get(writer.id) || 0
+    }));
 }
