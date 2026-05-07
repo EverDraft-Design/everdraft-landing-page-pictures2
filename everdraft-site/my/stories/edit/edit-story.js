@@ -15,7 +15,6 @@ const blurbInput = document.getElementById('blurb');
 const genreInput = document.getElementById('genre');
 const statusInput = document.getElementById('status');
 const coverUrlInput = document.getElementById('coverUrl');
-const bannerUrlInput = document.getElementById('bannerUrl');
 const readerNotice = document.getElementById('readerNotice');
 const missingNotice = document.getElementById('missingNotice');
 const status = document.getElementById('storyStatus');
@@ -34,7 +33,6 @@ function fillStory(story) {
   genreInput.value = story.genre || '';
   statusInput.value = story.status || 'draft';
   coverUrlInput.value = story.cover_url || '';
-  bannerUrlInput.value = story.banner_url || '';
   form.hidden = false;
 }
 

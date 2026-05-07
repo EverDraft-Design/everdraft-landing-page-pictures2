@@ -25,9 +25,10 @@ assert.equal(storiesIndex.includes('/my/stories/${story.id}/edit/'), true);
 assert.doesNotMatch(storiesIndex, /preview/i);
 
 for (const source of [newStoryHtml, editStoryHtml]) {
-  for (const field of ['title', 'slug', 'blurb', 'genre', 'status', 'coverUrl', 'bannerUrl']) {
+  for (const field of ['title', 'slug', 'blurb', 'genre', 'status', 'coverUrl']) {
     assert.match(source, new RegExp(`name="${field}"`), `${field} should be present`);
   }
+  assert.doesNotMatch(source, /bannerUrl|banner_url|Banner URL|banner image|story banner/i);
   for (const status of ['draft', 'ongoing', 'complete', 'hiatus', 'archived']) {
     assert.match(source, new RegExp(`value="${status}"`), `${status} status should be present`);
   }
@@ -44,10 +45,12 @@ assert.match(storiesHelper, /story\.author_id !== profile\.id/);
 assert.match(storiesHelper, /Supabase story permission error:/);
 assert.match(storiesHelper, /Please complete your account profile before creating a story/);
 assert.match(storiesHelper, /function cleanStoryPayload/);
+assert.doesNotMatch(storiesHelper, /banner_url|bannerUrl/);
 
 assert.doesNotMatch(editStoryJs, /preview/i);
+assert.doesNotMatch(editStoryJs, /bannerUrl|banner_url|Banner URL/i);
 assert.match(editStoryJs, /window\.location\.assign\('\/my\/stories\/'\)/);
-assert.doesNotMatch(worker, /storyPreviewPage|isStoryPreviewRoute|\/preview\//);
+assert.doesNotMatch(worker, /storyPreviewPage|isStoryPreviewRoute|\/preview\/|bannerUrl|bannerWrap|Banner URL/i);
 
 assert.match(migration005, /drop policy if exists "Writers can create their own stories"/);
 assert.match(migration005, /create policy "Members can create their own stories"/);

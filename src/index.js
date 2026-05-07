@@ -166,8 +166,6 @@ function storyEditPage() {
           </div>
           <label for="coverUrl">Cover URL</label>
           <input id="coverUrl" name="coverUrl" type="url" />
-          <label for="bannerUrl">Banner URL</label>
-          <input id="bannerUrl" name="bannerUrl" type="url" />
           <div class="auth-actions">
             <button type="submit" id="saveStoryButton">Save Story</button>
             <button type="button" id="archiveStoryButton" class="secondary-button">Archive Story</button>
@@ -357,8 +355,7 @@ function publicStoryPage() {
     heading: 'Loading story...',
     headingId: 'story-title',
     copy: '',
-    body: `<div id="bannerWrap" class="story-media" hidden></div>
-        <p id="storyByline" class="hero-copy"></p>
+    body: `<p id="storyByline" class="hero-copy"></p>
         <div id="storyFollowControls" class="follow-actions" aria-label="Follow story and writer"></div>
         <div id="coverWrap" class="story-cover" hidden></div>
         <div id="storyMeta" class="preview-summary" hidden></div>

@@ -707,17 +707,12 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   margin-bottom: 1rem;
 }
 
-.story-banner-image,
 .story-cover-image {
   width: 100%;
   display: block;
   border: 1px solid var(--border);
   border-radius: 1rem;
   object-fit: cover;
-}
-
-.story-banner-image {
-  max-height: 280px;
 }
 
 .story-cover-image {

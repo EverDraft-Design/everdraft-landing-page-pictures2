@@ -172,9 +172,8 @@ The story form supports:
 - genre
 - status
 - cover URL
-- banner URL
 
-Slugs are auto-generated from the title when left blank. New stories use `publication_mode = none` and `is_readable = true`. Publication Mode, KDP/KU controls, image upload, chapter posting, public story pages, discovery, follows, comments, and ratings are not part of this phase.
+Slugs are auto-generated from the title when left blank. New stories use `publication_mode = none` and `is_readable = true`. EverDraft uses cover art as the supported story visual for now. The legacy `stories.banner_url` database column may remain in Supabase, but it is not shown or updated by the website. Publication Mode, KDP/KU controls, image upload, chapter posting, public story pages, discovery, follows, comments, and ratings are not part of this phase.
 
 To test locally:
 
@@ -201,7 +200,7 @@ Chapter ownership is enforced through the parent story: the signed-in Auth user 
 
 Chapter forms support `chapter_number`, title, content, and status. Status values are `draft`, `published`, `hidden`, and `archived`. The chapter editor intentionally uses a calm plain-text writing area for this beta phase, with word count, Save Draft, a last-saved note, and a browser warning for unsaved changes. Plain text avoids unsafe HTML while preserving line breaks and paragraph spacing on public reading pages. Publishing requires content; when a chapter is first saved as `published`, `published_at` is set if it was empty. Moving a chapter away from `published` does not erase `published_at`, so the original publish date remains available for beta review.
 
-Public story pages show story metadata, cover/banner image URLs when present, author pen name or display name, and only published chapters while `stories.is_readable = true`. If a story is not readable, EverDraft shows the metadata and a gentle unavailable message without chapter content.
+Public story pages show story metadata, cover art when present, author pen name or display name, and only published chapters while `stories.is_readable = true`. If a story is not readable, EverDraft shows the metadata and a gentle unavailable message without chapter content.
 
 Known limitations: no comments, ratings, Storymarks, image upload, payments, admin dashboard, Writer's Nook, or Publication Mode/KDP UI are included in this phase.
 
@@ -224,7 +223,7 @@ Library stories are selected from existing public story data. A story appears in
 
 Archived stories, unreadable stories, draft-only stories, and stories without a slug are not listed. Library cards request only safe author display fields from `public.profiles`: `username`, `display_name`, and `pen_name`. The display name preference is pen name, then display name, then username, then "EverDraft Writer". Emails and private Auth data are not queried.
 
-Library cards show the story title, author name, genre, status, blurb snippet, cover or banner artwork when present, published chapter count when available, and a `Read Story` link to `/story/:slug/`.
+Library cards show the story title, author name, genre, status, blurb snippet, cover artwork when present, published chapter count when available, and a `Read Story` link to `/story/:slug/`.
 
 Known limitations: no search yet, no filters yet, no comments, no ratings, no badges or Storymarks, no image upload, no Publication Mode UI, and no Writer's Nook. No new migration is required for the Library if migrations 006 and 007 have already been applied; those policies already allow public story metadata and published readable chapter reads while preserving owner-only writes.
 
