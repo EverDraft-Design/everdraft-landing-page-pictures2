@@ -20,7 +20,7 @@ for (const [name, source] of [
   ['onboarding page', onboardingHtml],
 ]) {
   assert.equal(source.includes('name="role"'), false, `${name} should not expose a role field`);
-  assert.equal(/reader|writer|both/i.test(source), false, `${name} should not show reader/writer/both role choices`);
+  assert.equal(/reader\s*\/\s*writer\s*\/\s*both|intended role|name="role"|value="reader"|value="writer"|value="both"/i.test(source), false, `${name} should not show reader/writer/both role choices`);
 }
 
 assert.equal(signupJs.includes("formData.get('role')"), false, 'signup should not read role from the form');

@@ -7,6 +7,7 @@ import {
   requireSession,
   updateCurrentProfile
 } from '/auth.js';
+import { getDisplayName, getMyFollowedStories, getMyFollowedWriters, friendlyFollowError } from '/follows.js';
 
 const email = document.getElementById('accountEmail');
 const accountUsername = document.getElementById('accountUsername');
@@ -22,6 +23,20 @@ const status = document.getElementById('profileStatus');
 const saveButton = document.getElementById('saveProfileButton');
 const logoutButton = document.getElementById('logoutButton');
 const memberTools = document.getElementById('memberTools');
+const followingPanel = document.getElementById('followingPanel');
+const followingStoriesList = document.getElementById('followingStoriesList');
+const followingWritersList = document.getElementById('followingWritersList');
+const followingStatus = document.getElementById('followingStatus');
+
+function escapeHtml(value) {
+  return String(value || '').replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character]);
+}
 
 function fillProfile(profile) {
   usernameInput.value = profile.username || '';
@@ -40,6 +55,60 @@ function fillProfile(profile) {
   form.hidden = false;
 }
 
+function renderFollowedStories(stories) {
+  if (!stories.length) {
+    followingStoriesList.innerHTML = '<div class="empty-state">Stories you follow will appear here.</div>';
+    return;
+  }
+
+  followingStoriesList.innerHTML = stories.map((story) => {
+    const authorName = getDisplayName(story.author);
+    const storyLink = story.slug ? `/story/${story.slug}/` : '/library/';
+
+    return `
+      <article class="following-item">
+        <h4><a href="${escapeHtml(storyLink)}">${escapeHtml(story.title || 'Untitled story')}</a></h4>
+        <p>By ${escapeHtml(authorName)}</p>
+        <p class="muted-copy">Status: ${escapeHtml(story.status || 'draft')}</p>
+      </article>
+    `;
+  }).join('');
+}
+
+function renderFollowedWriters(writers) {
+  if (!writers.length) {
+    followingWritersList.innerHTML = '<div class="empty-state">Writers you follow will appear here.</div>';
+    return;
+  }
+
+  followingWritersList.innerHTML = writers.map((writer) => `
+    <article class="following-item">
+      <h4>${escapeHtml(getDisplayName(writer))}</h4>
+      ${writer.username ? `<p>@${escapeHtml(writer.username)}</p>` : ''}
+    </article>
+  `).join('');
+}
+
+async function loadFollowing() {
+  try {
+    followingPanel.hidden = false;
+    followingStoriesList.innerHTML = '<div class="empty-state">Loading followed stories...</div>';
+    followingWritersList.innerHTML = '<div class="empty-state">Loading followed writers...</div>';
+
+    const [stories, writers] = await Promise.all([
+      getMyFollowedStories(),
+      getMyFollowedWriters()
+    ]);
+
+    renderFollowedStories(stories);
+    renderFollowedWriters(writers);
+  } catch (error) {
+    followingStatus.textContent = friendlyFollowError(error);
+    followingStoriesList.innerHTML = '<div class="empty-state">Stories you follow will appear here.</div>';
+    followingWritersList.innerHTML = '<div class="empty-state">Writers you follow will appear here.</div>';
+  }
+}
+
 async function loadAccount() {
   try {
     const session = await requireSession();
@@ -55,6 +124,7 @@ async function loadAccount() {
     }
 
     fillProfile(profile);
+    await loadFollowing();
   } catch (error) {
     status.textContent = friendlyAuthError(error);
   }

@@ -76,6 +76,22 @@
           </div>
         </div>
 
+        <div id="followingPanel" class="notice-panel account-tools following-panel" hidden>
+          <p class="eyebrow">FOLLOWING</p>
+          <h2>Your quiet shelf</h2>
+          <div class="following-grid">
+            <section aria-labelledby="followed-stories-title">
+              <h3 id="followed-stories-title">Followed Stories</h3>
+              <div id="followingStoriesList" class="following-list" aria-live="polite"></div>
+            </section>
+            <section aria-labelledby="followed-writers-title">
+              <h3 id="followed-writers-title">Followed Writers</h3>
+              <div id="followingWritersList" class="following-list" aria-live="polite"></div>
+            </section>
+          </div>
+          <p id="followingStatus" class="form-status" aria-live="polite"></p>
+        </div>
+
         <div class="auth-actions">
           <a class="button-link secondary-link" href="/beta/">Beta Access</a>
           <a class="button-link secondary-link" href="/onboarding/">Review Onboarding</a>

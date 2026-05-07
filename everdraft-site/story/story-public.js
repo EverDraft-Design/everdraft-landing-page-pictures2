@@ -1,4 +1,16 @@
 import { friendlyChapterError, getPublicPublishedChaptersForStory, getPublicStoryBySlug } from '/chapters.js';
+import { getCurrentProfile, getCurrentSession } from '/auth.js';
+import {
+  followStory,
+  followWriter,
+  friendlyFollowError,
+  getStoryFollowerCount,
+  getWriterFollowerCount,
+  isFollowingStory,
+  isFollowingWriter,
+  unfollowStory,
+  unfollowWriter
+} from '/follows.js';
 
 const title = document.getElementById('story-title');
 const byline = document.getElementById('storyByline');
@@ -8,6 +20,19 @@ const meta = document.getElementById('storyMeta');
 const unreadableNotice = document.getElementById('unreadableNotice');
 const chapterList = document.getElementById('chapterList');
 const status = document.getElementById('storyStatus');
+const storyFollowPanel = document.getElementById('storyFollowPanel');
+const storyFollowButton = document.getElementById('storyFollowButton');
+const storyFollowerCount = document.getElementById('storyFollowerCount');
+const storyFollowPrompt = document.getElementById('storyFollowPrompt');
+const writerFollowPanel = document.getElementById('writerFollowPanel');
+const writerFollowButton = document.getElementById('writerFollowButton');
+const writerFollowerCount = document.getElementById('writerFollowerCount');
+const writerFollowPrompt = document.getElementById('writerFollowPrompt');
+
+let currentStory = null;
+let currentProfile = null;
+let followingStory = false;
+let followingWriter = false;
 
 function getSlug() {
   const match = window.location.pathname.match(/^\/story\/([^/]+)\/?$/);
@@ -47,6 +72,105 @@ function renderChapters(story, chapters) {
   `).join('');
 }
 
+function formatFollowers(count) {
+  return `${count} ${count === 1 ? 'follower' : 'followers'}`;
+}
+
+async function getViewerProfile() {
+  const session = await getCurrentSession();
+  if (!session) return null;
+  return getCurrentProfile();
+}
+
+function setFollowButtonState(button, isFollowing, followLabel, unfollowLabel) {
+  button.textContent = isFollowing ? unfollowLabel : followLabel;
+  button.hidden = false;
+  button.disabled = false;
+}
+
+async function renderFollowControls(story) {
+  storyFollowPanel.hidden = false;
+  writerFollowPanel.hidden = false;
+  storyFollowButton.hidden = true;
+  writerFollowButton.hidden = true;
+  storyFollowPrompt.textContent = '';
+  writerFollowPrompt.textContent = '';
+
+  const [storyCount, writerCount] = await Promise.all([
+    getStoryFollowerCount(story.id),
+    getWriterFollowerCount(story.author_id)
+  ]);
+
+  storyFollowerCount.textContent = formatFollowers(storyCount);
+  writerFollowerCount.textContent = formatFollowers(writerCount);
+  currentProfile = await getViewerProfile();
+
+  if (!currentProfile) {
+    storyFollowPrompt.textContent = 'Sign in to follow this story.';
+    writerFollowPrompt.textContent = 'Sign in to follow this writer.';
+    return;
+  }
+
+  if (story.author_id === currentProfile.id) {
+    storyFollowPrompt.textContent = 'This is your story.';
+    writerFollowPrompt.textContent = 'This is your writer profile.';
+    return;
+  }
+
+  [followingStory, followingWriter] = await Promise.all([
+    isFollowingStory(story.id),
+    isFollowingWriter(story.author_id)
+  ]);
+
+  setFollowButtonState(storyFollowButton, followingStory, 'Follow Story', 'Unfollow Story');
+  setFollowButtonState(writerFollowButton, followingWriter, 'Follow Writer', 'Unfollow Writer');
+}
+
+async function refreshFollowControls() {
+  if (!currentStory) return;
+  try {
+    await renderFollowControls(currentStory);
+  } catch (error) {
+    status.textContent = friendlyFollowError(error);
+  }
+}
+
+storyFollowButton.addEventListener('click', async () => {
+  if (!currentStory) return;
+  storyFollowButton.disabled = true;
+  status.textContent = '';
+
+  try {
+    if (followingStory) {
+      await unfollowStory(currentStory.id);
+    } else {
+      await followStory(currentStory.id);
+    }
+    await refreshFollowControls();
+  } catch (error) {
+    status.textContent = friendlyFollowError(error);
+    storyFollowButton.disabled = false;
+  }
+});
+
+writerFollowButton.addEventListener('click', async () => {
+  if (!currentStory) return;
+  writerFollowButton.disabled = true;
+  status.textContent = '';
+
+  try {
+    if (followingWriter) {
+      await unfollowWriter(currentStory.author_id);
+    } else {
+      await followWriter(currentStory.author_id);
+    }
+    await refreshFollowControls();
+  } catch (error) {
+    status.textContent = friendlyFollowError(error);
+    writerFollowButton.disabled = false;
+  }
+});
+
 async function loadStory() {
   try {
     const story = await getPublicStoryBySlug(getSlug());
@@ -57,6 +181,7 @@ async function loadStory() {
       return;
     }
 
+    currentStory = story;
     const author = story.author || {};
     const authorName = author.pen_name || author.display_name || 'EverDraft member';
     title.textContent = story.title || 'Untitled story';
@@ -69,6 +194,7 @@ async function loadStory() {
       <p>${escapeHtml(story.blurb || 'No blurb has been added yet.')}</p>
       <p class="muted-copy">Status: ${escapeHtml(story.status || 'draft')}</p>
     `;
+    await refreshFollowControls();
 
     if (!story.is_readable) {
       unreadableNotice.hidden = false;
