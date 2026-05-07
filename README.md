@@ -203,7 +203,7 @@ Chapter forms support `chapter_number`, title, content, and status. Status value
 
 Public story pages show story metadata, cover/banner image URLs when present, author pen name or display name, and only published chapters while `stories.is_readable = true`. If a story is not readable, EverDraft shows the metadata and a gentle unavailable message without chapter content.
 
-Known limitations: no comments, follows, ratings, Storymarks, image upload, payments, admin dashboard, Writer's Nook, or Publication Mode/KDP UI are included in this phase.
+Known limitations: no comments, ratings, Storymarks, image upload, payments, admin dashboard, Writer's Nook, or Publication Mode/KDP UI are included in this phase.
 
 Migration `supabase/migrations/007_fix_chapter_ownership_rls.sql` refreshes chapter RLS policies for public reads and owner-only authoring. Apply it manually in the Supabase SQL Editor after migration 006 if your live project has older chapter policies.
 
@@ -226,7 +226,25 @@ Archived stories, unreadable stories, draft-only stories, and stories without a 
 
 Library cards show the story title, author name, genre, status, blurb snippet, cover or banner artwork when present, published chapter count when available, and a `Read Story` link to `/story/:slug/`.
 
-Known limitations: no search yet, no filters yet, no comments, no follows, no ratings, no badges or Storymarks, no image upload, no Publication Mode UI, and no Writer's Nook. No new migration is required for the Library if migrations 006 and 007 have already been applied; those policies already allow public story metadata and published readable chapter reads while preserving owner-only writes.
+Known limitations: no search yet, no filters yet, no comments, no ratings, no badges or Storymarks, no image upload, no Publication Mode UI, and no Writer's Nook. No new migration is required for the Library if migrations 006 and 007 have already been applied; those policies already allow public story metadata and published readable chapter reads while preserving owner-only writes.
+
+## Phase 3: Story and Writer Follows
+
+Phase 3 adds the first connection layer:
+
+- Public story pages at `/story/:slug/` show story and writer follower counts.
+- Signed-in members can follow or unfollow stories they do not own.
+- Signed-in members can follow or unfollow writers who are not themselves.
+- Signed-out readers see gentle sign-in prompts instead of follow buttons.
+- `/account/` includes a simple Following section with followed stories and followed writers.
+
+To follow a story, sign in, open a public story page, and use `Follow Story`. To follow a writer, use `Follow Writer` near the author attribution on that same story page. The buttons switch to `Unfollow Story` and `Unfollow Writer` after the follow row exists.
+
+Follow rows use `public.profiles.id`, not Supabase Auth ids. For story follows, `story_follows.user_id` is the follower profile and `story_follows.story_id` is the followed story. For writer follows, `writer_follows.user_id` is the follower profile and `writer_follows.writer_id` is the followed writer profile. Duplicate follows are prevented by the existing unique constraints, and writer self-follows are blocked by a check constraint and policy.
+
+Apply `supabase/migrations/008_fix_follow_rls.sql` manually in the Supabase SQL Editor after migration 007. It keeps RLS enabled, grants safe Data API access for follow counts, allows authenticated users to create/delete only their own follow rows, blocks story self-follows, and preserves writer self-follow protection. The public count policies expose follow relationship rows containing profile/story ids, but no emails or private Auth data are queried by the site.
+
+Known limitations: no email notifications yet, no comments yet, no ratings yet, no badges or Storymarks yet, and no full reader shelves yet.
 
 ## Signup Repair Notes
 
@@ -240,8 +258,9 @@ A safety migration is available at:
 - `supabase/migrations/005_remove_member_role_gate.sql`
 - `supabase/migrations/006_fix_story_ownership_rls.sql`
 - `supabase/migrations/007_fix_chapter_ownership_rls.sql`
+- `supabase/migrations/008_fix_follow_rls.sql`
 
-Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, if Auth users are being created without profile rows, or if story/chapter saves fail with a permission/RLS error. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. Migration 005 keeps `profiles.role` as a legacy/internal field, prevents browser self-service role changes, removes the original story creation role gate, and updates the Auth trigger so new profiles no longer depend on intended-role metadata. Migration 006 recreates story metadata policies around profile ownership instead of legacy role values. Migration 007 recreates chapter policies around parent story ownership and published/readable public access. None of these migrations delete existing data.
+Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, if Auth users are being created without profile rows, or if story/chapter/follow saves fail with a permission/RLS error. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. Migration 005 keeps `profiles.role` as a legacy/internal field, prevents browser self-service role changes, removes the original story creation role gate, and updates the Auth trigger so new profiles no longer depend on intended-role metadata. Migration 006 recreates story metadata policies around profile ownership instead of legacy role values. Migration 007 recreates chapter policies around parent story ownership and published/readable public access. Migration 008 refreshes follow policies for public counts and member-owned follow/unfollow writes. None of these migrations delete existing data.
 
 To test locked usernames:
 

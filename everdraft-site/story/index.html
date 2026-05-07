@@ -25,6 +25,24 @@
         <p class="eyebrow">EVERDRAFT STORY</p>
         <h1 id="story-title">Loading story...</h1>
         <p id="storyByline" class="hero-copy"></p>
+        <div class="follow-actions" aria-label="Follow story and writer">
+          <div id="storyFollowPanel" class="follow-card" hidden>
+            <div>
+              <p class="eyebrow">STORY</p>
+              <p id="storyFollowerCount" class="follow-count">0 followers</p>
+              <p id="storyFollowPrompt" class="field-note"></p>
+            </div>
+            <button type="button" id="storyFollowButton" class="secondary-button" hidden>Follow Story</button>
+          </div>
+          <div id="writerFollowPanel" class="follow-card" hidden>
+            <div>
+              <p class="eyebrow">WRITER</p>
+              <p id="writerFollowerCount" class="follow-count">0 followers</p>
+              <p id="writerFollowPrompt" class="field-note"></p>
+            </div>
+            <button type="button" id="writerFollowButton" class="secondary-button" hidden>Follow Writer</button>
+          </div>
+        </div>
         <div id="coverWrap" class="story-cover" hidden></div>
         <div id="storyMeta" class="preview-summary" hidden></div>
         <div id="unreadableNotice" class="notice-panel" hidden>This story is not currently readable on EverDraft.</div>
