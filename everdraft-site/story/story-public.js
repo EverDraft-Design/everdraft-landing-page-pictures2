@@ -3,7 +3,6 @@ import { mountFollowControls } from '/follow-controls.js';
 
 const title = document.getElementById('story-title');
 const byline = document.getElementById('storyByline');
-const bannerWrap = document.getElementById('bannerWrap');
 const coverWrap = document.getElementById('coverWrap');
 const meta = document.getElementById('storyMeta');
 const unreadableNotice = document.getElementById('unreadableNotice');
@@ -63,7 +62,6 @@ async function loadStory() {
     const authorName = author.pen_name || author.display_name || 'EverDraft member';
     title.textContent = story.title || 'Untitled story';
     byline.textContent = `By ${authorName}${author.username ? ` · @${author.username}` : ''}`;
-    renderImage(bannerWrap, story.banner_url, `${story.title} banner`, 'story-banner-image');
     renderImage(coverWrap, story.cover_url, `${story.title} cover`, 'story-cover-image');
     meta.hidden = false;
     meta.innerHTML = `

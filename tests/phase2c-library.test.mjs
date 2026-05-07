@@ -34,7 +34,7 @@ assert.match(libraryJs, /pen_name \|\| author\.display_name \|\| author\.usernam
 assert.match(libraryJs, /library-cover-frame/);
 assert.match(libraryJs, /library-cover-placeholder/);
 assert.match(libraryJs, /story\.cover_url/);
-assert.doesNotMatch(libraryJs, /story\.cover_url \|\| story\.banner_url/);
+assert.doesNotMatch(libraryJs, /banner_url|bannerUrl|story\.cover_url \|\| story\.banner_url/);
 assert.doesNotMatch(libraryJs, /email|service_role|secret|token|comment|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
 
 const storiesHelper = read('everdraft-site/stories.js');
@@ -45,7 +45,7 @@ assert.match(storiesHelper, /\.not\('title', 'is', null\)/);
 assert.match(storiesHelper, /\.not\('slug', 'is', null\)/);
 assert.match(storiesHelper, /id, username, display_name, pen_name/);
 assert.match(storiesHelper, /status', 'published'/);
-assert.doesNotMatch(storiesHelper, /email|service_role|profiles\.role in|auth\.user|user\.id.*author_id/);
+assert.doesNotMatch(storiesHelper, /email|service_role|profiles\.role in|auth\.user|user\.id.*author_id|banner_url|bannerUrl/);
 
 const homepage = read('everdraft-site/index.html');
 assert.match(homepage, /Join the Waitlist/);
@@ -63,6 +63,7 @@ assert.match(worker, /libraryPage/);
 assert.match(worker, /publicStoryPage/);
 assert.match(worker, /publicChapterPage/);
 assert.match(worker, /\/library\/index\.html/);
+assert.doesNotMatch(worker, /bannerWrap|Banner URL|bannerUrl/);
 
 const readme = read('README.md');
 assert.match(readme, /Phase 2C/);

@@ -2,7 +2,7 @@ import { getSupabaseBrowserClient } from '/auth.js';
 import { friendlyStoryError, getStoryByIdForAuthor, requireMemberProfile } from '/stories.js';
 
 const CHAPTER_SELECT = 'id, story_id, title, chapter_number, content, status, published_at, created_at, updated_at';
-const PUBLIC_STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, banner_url, is_readable, created_at, updated_at';
+const PUBLIC_STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, is_readable, created_at, updated_at';
 const VALID_CHAPTER_STATUSES = new Set(['draft', 'published', 'hidden', 'archived']);
 
 export function friendlyChapterError(error) {

@@ -1,7 +1,7 @@
 import { getCurrentProfile, getCurrentSession, getSupabaseBrowserClient } from '/auth.js';
 
-const STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, banner_url, is_readable, publication_mode, external_book_url, published_at, created_at, updated_at';
-const LIBRARY_STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, banner_url, is_readable, published_at, created_at, updated_at';
+const STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, is_readable, publication_mode, external_book_url, published_at, created_at, updated_at';
+const LIBRARY_STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, is_readable, published_at, created_at, updated_at';
 const VALID_STORY_STATUSES = new Set(['draft', 'ongoing', 'complete', 'hiatus', 'archived']);
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -144,8 +144,7 @@ function cleanStoryPayload(input) {
     blurb: String(input.blurb || '').trim(),
     genre: String(input.genre || '').trim(),
     status,
-    cover_url: String(input.coverUrl || '').trim(),
-    banner_url: String(input.bannerUrl || '').trim()
+    cover_url: String(input.coverUrl || '').trim()
   };
 }
 
