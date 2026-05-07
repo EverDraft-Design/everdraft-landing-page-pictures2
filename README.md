@@ -232,13 +232,15 @@ Known limitations: no search yet, no filters yet, no comments, no ratings, no ba
 
 Phase 3 adds the first connection layer:
 
+- Library cards at `/library/` include compact story and writer follow controls beneath the `Read Story` action.
 - Public story pages at `/story/:slug/` show story and writer follower counts.
+- Public chapter pages at `/story/:slug/chapter/:chapterNumber/` include compact follow controls near the chapter metadata so readers can follow while reading.
 - Signed-in members can follow or unfollow stories they do not own.
 - Signed-in members can follow or unfollow writers who are not themselves.
 - Signed-out readers see gentle sign-in prompts instead of follow buttons.
 - `/account/` includes a simple Following section with followed stories and followed writers.
 
-To follow a story, sign in, open a public story page, and use `Follow Story`. To follow a writer, use `Follow Writer` near the author attribution on that same story page. The buttons switch to `Unfollow Story` and `Unfollow Writer` after the follow row exists.
+To follow a story, sign in, open `/library/`, `/story/:slug/`, or `/story/:slug/chapter/:chapterNumber/`, and use `Follow Story`. To follow a writer, use `Follow Writer` in the same reader-facing story areas. The buttons switch to `Unfollow Story` and `Unfollow Writer` after the follow row exists. Signed-out visitors are linked to `/login/` with the current path preserved as the return destination. Story owners see a quiet owner note instead of self-follow buttons.
 
 Follow rows use `public.profiles.id`, not Supabase Auth ids. For story follows, `story_follows.user_id` is the follower profile and `story_follows.story_id` is the followed story. For writer follows, `writer_follows.user_id` is the follower profile and `writer_follows.writer_id` is the followed writer profile. Duplicate follows are prevented by the existing unique constraints, and writer self-follows are blocked by a check constraint and policy.
 

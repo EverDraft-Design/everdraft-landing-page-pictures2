@@ -21,7 +21,7 @@ assert.match(libraryHtml, /A quiet shelf for stories beginning to find their rea
 assert.match(libraryHtml, /The Library is opening gradually as EverDraft’s story tools are built\./);
 assert.match(libraryHtml, /libraryList/);
 assert.match(libraryHtml, /Join the Waitlist/);
-assert.doesNotMatch(libraryHtml, /comment|follow|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
+assert.doesNotMatch(libraryHtml, /comment|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
 
 const libraryJs = read('everdraft-site/library/library.js');
 assert.match(libraryJs, /getLibraryStories/);
@@ -35,7 +35,7 @@ assert.match(libraryJs, /library-cover-frame/);
 assert.match(libraryJs, /library-cover-placeholder/);
 assert.match(libraryJs, /story\.cover_url/);
 assert.doesNotMatch(libraryJs, /story\.cover_url \|\| story\.banner_url/);
-assert.doesNotMatch(libraryJs, /email|service_role|secret|token|comment|follow|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
+assert.doesNotMatch(libraryJs, /email|service_role|secret|token|comment|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
 
 const storiesHelper = read('everdraft-site/stories.js');
 assert.match(storiesHelper, /export async function getLibraryStories\(\)/);

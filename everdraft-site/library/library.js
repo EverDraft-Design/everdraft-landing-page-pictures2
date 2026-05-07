@@ -1,4 +1,5 @@
 import { friendlyStoryError, getLibraryStories } from '/stories.js';
+import { mountFollowControls } from '/follow-controls.js';
 
 const libraryList = document.getElementById('libraryList');
 const status = document.getElementById('libraryStatus');
@@ -83,15 +84,30 @@ function renderStories(stories) {
           <div class="auth-actions">
             <a class="button-link secondary-link" href="/story/${story.slug}/">Read Story</a>
           </div>
+          <div class="library-follow-controls" data-library-follow-controls="${escapeHtml(story.id)}" aria-label="Follow ${escapeHtml(story.title)}"></div>
         </div>
       </article>
     `;
   }).join('');
 }
 
+async function mountLibraryFollowControls(stories) {
+  await Promise.all(stories.map((story) => {
+    const container = [...libraryList.querySelectorAll('[data-library-follow-controls]')]
+      .find((element) => element.dataset.libraryFollowControls === story.id);
+    if (!container) return null;
+    container.addEventListener('followerror', (event) => {
+      status.textContent = event.detail;
+    });
+    return mountFollowControls(container, story, { compact: true });
+  }));
+}
+
 async function loadLibrary() {
   try {
-    renderStories(await getLibraryStories());
+    const stories = await getLibraryStories();
+    renderStories(stories);
+    await mountLibraryFollowControls(stories);
   } catch (error) {
     status.textContent = friendlyStoryError(error);
     renderEmptyState();
