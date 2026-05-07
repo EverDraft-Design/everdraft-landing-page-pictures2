@@ -7,6 +7,8 @@ const requiredFiles = [
   'everdraft-site/follows.js',
   'everdraft-site/follow-controls.js',
   'everdraft-site/library/library.js',
+  'everdraft-site/writer/index.html',
+  'everdraft-site/writer/writer-public.js',
   'everdraft-site/story/index.html',
   'everdraft-site/story/story-public.js',
   'everdraft-site/story/chapter/index.html',
@@ -31,7 +33,8 @@ for (const helper of [
   'isFollowingWriter',
   'getWriterFollowerCount',
   'getMyFollowedStories',
-  'getMyFollowedWriters'
+  'getMyFollowedWriters',
+  'getPublicWriterProfileByUsername'
 ]) {
   assert.match(follows, new RegExp(`export async function ${helper}\\(`), `${helper} should be exported`);
 }
@@ -52,6 +55,8 @@ assert.match(followControls, /Follow Writer/);
 assert.match(followControls, /Unfollow Writer/);
 assert.match(followControls, /Sign in to follow this story/);
 assert.match(followControls, /Sign in to follow this writer/);
+assert.match(followControls, /mode === 'story'/);
+assert.match(followControls, /mode === 'writer'/);
 assert.match(followControls, /follow-compact-panel/);
 assert.match(followControls, /follow-compact-buttons/);
 assert.match(followControls, /follow-compact-counts/);
@@ -65,8 +70,23 @@ assert.match(libraryJs, /from '\/follow-controls\.js'/);
 assert.match(libraryJs, /library-follow-controls/);
 assert.match(libraryJs, /mountLibraryFollowControls/);
 assert.match(libraryJs, /compact:\s*true/);
+assert.match(libraryJs, /mode:\s*'story'/);
+assert.match(libraryJs, /\/writer\/\$\{escapeHtml\(author\.username\)\}\//);
 assert.match(libraryJs, /Read Story/);
+assert.doesNotMatch(libraryJs, /Follow Writer|Unfollow Writer|writer follower/i);
 assert.doesNotMatch(libraryJs, /comment|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
+
+const writerHtml = read('everdraft-site/writer/index.html');
+assert.match(writerHtml, /writerFollowControls/);
+assert.match(writerHtml, /writerStoriesList/);
+assert.match(writerHtml, /writer-title/);
+
+const writerPublic = read('everdraft-site/writer/writer-public.js');
+assert.match(writerPublic, /getPublicWriterProfileByUsername/);
+assert.match(writerPublic, /mountFollowControls\(writerFollowControls,\s*\{\s*author_id:\s*writer\.id\s*\}/);
+assert.match(writerPublic, /mode:\s*'writer'/);
+assert.match(writerPublic, /writer profile/i);
+assert.doesNotMatch(writerPublic, /comment|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
 
 const storyHtml = read('everdraft-site/story/index.html');
 assert.match(storyHtml, /storyFollowControls/);
@@ -74,6 +94,9 @@ assert.match(storyHtml, /storyFollowControls/);
 const storyPublic = read('everdraft-site/story/story-public.js');
 assert.match(storyPublic, /from '\/follow-controls\.js'/);
 assert.match(storyPublic, /mountFollowControls\(storyFollowControls, story/);
+assert.match(storyPublic, /mode:\s*'story'/);
+assert.match(storyPublic, /\/writer\/\$\{escapeHtml\(author\.username\)\}\//);
+assert.doesNotMatch(storyPublic, /Follow Writer|Unfollow Writer|writer follower/i);
 assert.doesNotMatch(storyPublic, /comment|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
 
 const chapterHtml = read('everdraft-site/story/chapter/index.html');
@@ -82,6 +105,9 @@ assert.match(chapterHtml, /chapterFollowControls/);
 const chapterPublic = read('everdraft-site/story/chapter/chapter-public.js');
 assert.match(chapterPublic, /from '\/follow-controls\.js'/);
 assert.match(chapterPublic, /mountFollowControls\(chapterFollowControls, story/);
+assert.match(chapterPublic, /mode:\s*'story'/);
+assert.match(chapterPublic, /\/writer\/\$\{escapeHtml\(author\.username\)\}\//);
+assert.doesNotMatch(chapterPublic, /Follow Writer|Unfollow Writer|writer follower/i);
 assert.doesNotMatch(chapterPublic, /comment|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
 
 const accountHtml = read('everdraft-site/account/index.html');
@@ -95,12 +121,12 @@ const accountJs = read('everdraft-site/account/account.js');
 assert.match(accountJs, /getMyFollowedStories/);
 assert.match(accountJs, /getMyFollowedWriters/);
 assert.match(accountJs, /unfollowStory/);
-assert.match(accountJs, /unfollowWriter/);
 assert.match(accountJs, /chapter_count/);
 assert.match(accountJs, /public_story_count/);
 assert.match(accountJs, /follower_count/);
 assert.match(accountJs, /data-unfollow-story-id/);
-assert.match(accountJs, /data-unfollow-writer-id/);
+assert.doesNotMatch(accountJs, /data-unfollow-writer-id|Unfollow Writer|unfollowWriter/);
+assert.match(accountJs, /\/writer\/\$\{escapeHtml\(writer\.username\)\}\//);
 assert.match(accountJs, /Read Story/);
 assert.match(accountJs, /Stories you follow will appear here\./);
 assert.match(accountJs, /Writers you follow will appear here\./);
@@ -119,15 +145,20 @@ assert.doesNotMatch(migration, /drop table|delete from|truncate|service_role/i);
 const worker = read('src/index.js');
 assert.match(worker, /storyFollowControls/);
 assert.match(worker, /chapterFollowControls/);
+assert.match(worker, /isWriterRoute/);
+assert.match(worker, /\/writer\/index\.html/);
+assert.match(worker, /writerProfilePage/);
 
 const readme = read('README.md');
 assert.match(readme, /Phase 3/);
 assert.match(readme, /follow a story/i);
 assert.match(readme, /follow a writer/i);
+assert.match(readme, /\/writer\/:username/);
 assert.match(readme, /\/library/);
 assert.match(readme, /\/story\/:slug/);
 assert.match(readme, /\/story\/:slug\/chapter\/:chapterNumber/);
 assert.match(readme, /supabase\/migrations\/008_fix_follow_rls\.sql/);
+assert.match(readme, /writer follows happen only on writer profile pages/i);
 
 const styles = read('everdraft-site/styles.css');
 assert.match(styles, /\.follow-actions\.follow-actions-compact\s*\{/);

@@ -231,17 +231,20 @@ Known limitations: no search yet, no filters yet, no comments, no ratings, no ba
 
 Phase 3 adds the first connection layer:
 
-- Library cards at `/library/` include compact story and writer follow controls beneath the `Read Story` action.
-- Public story pages at `/story/:slug/` show story and writer follower counts.
-- Public chapter pages at `/story/:slug/chapter/:chapterNumber/` include compact follow controls near the chapter metadata so readers can follow while reading.
+- Library cards at `/library/` include compact story follow controls beneath the `Read Story` action.
+- Public story pages at `/story/:slug/` show story follow controls and story follower counts.
+- Public chapter pages at `/story/:slug/chapter/:chapterNumber/` include compact story follow controls near the chapter metadata so readers can follow while reading.
+- Public writer profile pages at `/writer/:username/` include writer follow controls and writer follower counts.
 - Signed-in members can follow or unfollow stories they do not own.
 - Signed-in members can follow or unfollow writers who are not themselves.
 - Signed-out readers see gentle sign-in prompts instead of follow buttons.
 - `/account/` includes `Your Reading Shelf` with followed stories and followed writers.
 
-To follow a story, sign in, open `/library/`, `/story/:slug/`, or `/story/:slug/chapter/:chapterNumber/`, and use `Follow Story`. To follow a writer, use `Follow Writer` in the same reader-facing story areas. The buttons switch to `Unfollow Story` and `Unfollow Writer` after the follow row exists. Signed-out visitors are linked to `/login/` with the current path preserved as the return destination. Story owners see a quiet owner note instead of self-follow buttons.
+Story follows happen on story-related pages. To follow a story, sign in, open `/library/`, `/story/:slug/`, or `/story/:slug/chapter/:chapterNumber/`, and use `Follow Story`. The button switches to `Unfollow Story` after the follow row exists. Signed-out visitors are linked to `/login/` with the current path preserved as the return destination. Story owners see a quiet owner note instead of self-follow buttons.
 
-Followed stories appear on `/account/` with title, author display name, genre, status, published chapter count, a `Read Story` link, and an account-side `Unfollow Story` button. Followed writers appear on `/account/` with safe public display fields, follower count, public story count, and an account-side `Unfollow Writer` button. EverDraft does not create public writer profile links yet, so writer names are intentionally not linked.
+Writer follows happen only on writer profile pages at `/writer/:username/`. To follow a writer, open their writer profile from a linked author name and use `Follow Writer`. Author names link to writer profiles where a public username exists, and the writer profile shows `Follow Writer` or `Unfollow Writer`, the writer follower count, the writer bio, and public readable stories where available. The writer cannot follow themselves.
+
+Followed stories appear on `/account/` with title, author display name, genre, status, published chapter count, a `Read Story` link, and an account-side `Unfollow Story` button. Followed writers appear on `/account/` with safe public display fields, follower count, public story count, and profile links when usernames exist. Writer unfollow actions live on `/writer/:username/` so writer-follow controls have one clear home.
 
 Follow rows use `public.profiles.id`, not Supabase Auth ids. For story follows, `story_follows.user_id` is the follower profile and `story_follows.story_id` is the followed story. For writer follows, `writer_follows.user_id` is the follower profile and `writer_follows.writer_id` is the followed writer profile. Duplicate follows are prevented by the existing unique constraints, and writer self-follows are blocked by a check constraint and policy.
 

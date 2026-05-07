@@ -4,6 +4,8 @@ const STORY_FOLLOW_SELECT = 'id, story_id, user_id, created_at';
 const WRITER_FOLLOW_SELECT = 'id, writer_id, user_id, created_at';
 const FOLLOWED_STORY_SELECT = 'id, author_id, title, slug, status, genre, is_readable, updated_at';
 const FOLLOWED_PROFILE_SELECT = 'id, username, display_name, pen_name';
+const PUBLIC_WRITER_PROFILE_SELECT = 'id, username, display_name, pen_name, bio';
+const PUBLIC_WRITER_STORY_SELECT = 'id, author_id, title, slug, status, genre, blurb, cover_url, is_readable, updated_at';
 
 export function friendlyFollowError(error) {
   const rawMessage = error && error.message ? String(error.message).trim() : '';
@@ -281,4 +283,39 @@ export async function getMyFollowedWriters() {
       follower_count: followerCounts.get(writer.id) || 0,
       public_story_count: publicStoryCounts.get(writer.id) || 0
     }));
+}
+
+export async function getPublicWriterProfileByUsername(username) {
+  const supabase = await getSupabaseBrowserClient();
+  const cleanUsername = String(username || '').trim();
+  if (!cleanUsername) throw new Error('Writer was not found.');
+
+  const { data: writer, error: writerError } = await supabase
+    .from('profiles')
+    .select(PUBLIC_WRITER_PROFILE_SELECT)
+    .eq('username', cleanUsername)
+    .maybeSingle();
+
+  if (writerError) throw writerError;
+  if (!writer) return { writer: null, stories: [] };
+
+  const { data: stories, error: storyError } = await supabase
+    .from('stories')
+    .select(PUBLIC_WRITER_STORY_SELECT)
+    .eq('author_id', writer.id)
+    .eq('is_readable', true)
+    .in('status', ['ongoing', 'complete'])
+    .not('title', 'is', null)
+    .not('slug', 'is', null)
+    .order('updated_at', { ascending: false });
+
+  if (storyError) throw storyError;
+
+  return {
+    writer: {
+      ...writer,
+      follower_count: await getWriterFollowerCount(writer.id)
+    },
+    stories: stories || []
+  };
 }

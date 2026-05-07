@@ -31,6 +31,11 @@ function renderImage(wrap, url, alt, className) {
   wrap.hidden = false;
 }
 
+function renderAuthorByline(author, authorName) {
+  if (!author?.username) return `By ${escapeHtml(authorName)}`;
+  return `By <a href="/writer/${escapeHtml(author.username)}/">${escapeHtml(authorName)}</a> · @${escapeHtml(author.username)}`;
+}
+
 function renderChapters(story, chapters) {
   if (!chapters.length) {
     chapterList.innerHTML = '<div class="empty-state">No published chapters are available yet.</div>';
@@ -59,9 +64,9 @@ async function loadStory() {
     }
 
     const author = story.author || {};
-    const authorName = author.pen_name || author.display_name || 'EverDraft member';
+    const authorName = author.pen_name || author.display_name || author.username || 'EverDraft member';
     title.textContent = story.title || 'Untitled story';
-    byline.textContent = `By ${authorName}${author.username ? ` · @${author.username}` : ''}`;
+    byline.innerHTML = renderAuthorByline(author, authorName);
     renderImage(coverWrap, story.cover_url, `${story.title} cover`, 'story-cover-image');
     meta.hidden = false;
     meta.innerHTML = `
@@ -72,7 +77,7 @@ async function loadStory() {
     storyFollowControls.addEventListener('followerror', (event) => {
       status.textContent = event.detail;
     });
-    await mountFollowControls(storyFollowControls, story);
+    await mountFollowControls(storyFollowControls, story, { mode: 'story' });
 
     if (!story.is_readable) {
       unreadableNotice.hidden = false;
