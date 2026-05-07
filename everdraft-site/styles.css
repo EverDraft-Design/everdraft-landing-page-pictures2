@@ -828,6 +828,8 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 }
 
 .following-item {
+  display: grid;
+  gap: .75rem;
   border: 1px solid var(--border);
   border-radius: .8rem;
   background: rgba(9, 5, 17, .72);
@@ -842,6 +844,19 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 
 .following-item h4 {
   color: var(--gold-soft);
+}
+
+.following-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: center;
+}
+
+.following-actions .button-link,
+.following-actions button {
+  padding: .62rem .75rem;
+  font-size: .92rem;
 }
 
 .following-item a {
@@ -891,6 +906,7 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   .beta-grid { grid-template-columns: repeat(3, 1fr); }
   .follow-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .following-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .following-item { align-content: start; }
   .library-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .library-card {
     grid-template-columns: 150px minmax(0, 1fr);
