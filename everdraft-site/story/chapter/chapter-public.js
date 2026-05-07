@@ -47,6 +47,16 @@ function setNavLink(link, story, chapter, text) {
   link.hidden = false;
 }
 
+function renderChapterMeta(story, chapter) {
+  const author = story.author || {};
+  const authorName = author.pen_name || author.display_name || author.username || 'EverDraft member';
+  const chapterLabel = `Chapter ${chapter.chapter_number}`;
+
+  if (!author.username) return chapterLabel;
+
+  return `${escapeHtml(chapterLabel)} · By <a href="/writer/${escapeHtml(author.username)}/">${escapeHtml(authorName)}</a>`;
+}
+
 async function loadChapter() {
   const { slug, chapterNumber } = getRouteParts();
   backToStoryLink.href = `/story/${slug}/`;
@@ -63,11 +73,11 @@ async function loadChapter() {
 
     storyTitle.textContent = story.title || 'EverDraft story';
     chapterTitle.textContent = chapter.title || 'Untitled chapter';
-    chapterMeta.textContent = `Chapter ${chapter.chapter_number}`;
+    chapterMeta.innerHTML = renderChapterMeta(story, chapter);
     chapterFollowControls.addEventListener('followerror', (event) => {
       status.textContent = event.detail;
     });
-    await mountFollowControls(chapterFollowControls, story, { compact: true });
+    await mountFollowControls(chapterFollowControls, story, { compact: true, mode: 'story' });
     chapterContent.innerHTML = renderParagraphs(chapter.content);
     chapterContent.hidden = false;
     setNavLink(previousChapterLink, story, previousChapter, 'Previous Chapter');

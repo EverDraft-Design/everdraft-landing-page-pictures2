@@ -508,6 +508,20 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   color: var(--gold-soft);
 }
 
+.library-byline a,
+.hero-copy a {
+  color: var(--gold-soft);
+  text-decoration: none;
+}
+
+.library-byline a:hover,
+.library-byline a:focus-visible,
+.hero-copy a:hover,
+.hero-copy a:focus-visible {
+  color: var(--gold);
+  text-decoration: underline;
+}
+
 .library-empty {
   text-align: center;
 }
@@ -863,6 +877,18 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 .following-item a:focus-visible {
   color: var(--gold);
   text-decoration: underline;
+}
+
+.writer-profile-panel {
+  width: min(900px, 100%);
+}
+
+.writer-bio {
+  margin: 0 auto 1.25rem;
+}
+
+.writer-story-list {
+  margin-top: 1rem;
 }
 
 .reading-panel {

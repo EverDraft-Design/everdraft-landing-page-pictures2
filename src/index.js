@@ -356,7 +356,7 @@ function publicStoryPage() {
     headingId: 'story-title',
     copy: '',
     body: `<p id="storyByline" class="hero-copy"></p>
-        <div id="storyFollowControls" class="follow-actions" aria-label="Follow story and writer"></div>
+        <div id="storyFollowControls" class="follow-actions" aria-label="Follow story"></div>
         <div id="coverWrap" class="story-cover" hidden></div>
         <div id="storyMeta" class="preview-summary" hidden></div>
         <div id="unreadableNotice" class="notice-panel" hidden>This story is not currently readable on EverDraft.</div>
@@ -380,7 +380,7 @@ function publicChapterPage() {
     copy: '',
     body: `<p id="storyTitle" class="eyebrow">EVERDRAFT STORY</p>
         <p id="chapterMeta" class="hero-copy"></p>
-        <div id="chapterFollowControls" class="follow-actions reading-follow-actions" aria-label="Follow story and writer"></div>
+        <div id="chapterFollowControls" class="follow-actions reading-follow-actions" aria-label="Follow story"></div>
         <div id="unavailableNotice" class="notice-panel" hidden>This chapter is not currently available on EverDraft.</div>
         <section id="chapterContent" class="chapter-content reading-content" hidden></section>
         <nav class="reader-nav" aria-label="Chapter navigation">
@@ -390,6 +390,27 @@ function publicChapterPage() {
         </nav>
         <p id="chapterStatus" class="form-status" aria-live="polite"></p>`,
     script: '/story/chapter/chapter-public.js'
+  });
+}
+
+function writerProfilePage() {
+  return fallbackHtmlPage({
+    title: 'Writer',
+    description: 'Read an EverDraft writer profile.',
+    navLink: '<a href="/library/" class="nav-link">Library</a>',
+    eyebrow: 'EVERDRAFT WRITER',
+    heading: 'Loading writer...',
+    headingId: 'writer-title',
+    copy: '',
+    body: `<p id="writerMeta" class="hero-copy"></p>
+        <div id="writerFollowControls" class="follow-actions" aria-label="Follow writer"></div>
+        <div id="writerBio" class="preview-summary writer-bio" hidden></div>
+        <section aria-labelledby="writer-stories-title">
+          <h2 id="writer-stories-title">Public Stories</h2>
+          <div id="writerStoriesList" class="story-list writer-story-list" aria-live="polite"></div>
+        </section>
+        <p id="writerStatus" class="form-status" aria-live="polite"></p>`,
+    script: '/writer/writer-public.js'
   });
 }
 
@@ -403,6 +424,7 @@ export default {
     const isChapterEditRoute = /^\/my\/stories\/[^/]+\/chapters\/[^/]+\/edit\/?$/.test(url.pathname);
     const isPublicChapterRoute = /^\/story\/[^/]+\/chapter\/[^/]+\/?$/.test(url.pathname);
     const isPublicStoryRoute = /^\/story\/[^/]+\/?$/.test(url.pathname);
+    const isWriterRoute = /^\/writer\/[^/]+\/?$/.test(url.pathname);
 
     if (url.pathname === '/api/supabase-config') {
       if (request.method !== 'GET') {
@@ -441,6 +463,10 @@ export default {
         return env.ASSETS.fetch(rewriteAssetRequest(request, '/story/index.html'));
       }
 
+      if (isWriterRoute) {
+        return env.ASSETS.fetch(rewriteAssetRequest(request, '/writer/index.html'));
+      }
+
       if (isChapterEditRoute) {
         return env.ASSETS.fetch(rewriteAssetRequest(request, '/my/stories/chapters/edit/index.html'));
       }
@@ -474,6 +500,10 @@ export default {
 
     if (isPublicStoryRoute) {
       return publicStoryPage();
+    }
+
+    if (isWriterRoute) {
+      return writerProfilePage();
     }
 
     if (isStoryManageRoute) {

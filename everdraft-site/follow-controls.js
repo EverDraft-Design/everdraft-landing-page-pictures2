@@ -26,10 +26,12 @@ function loginHref() {
 }
 
 function formatStoryFollowers(count) {
+  if (!count) return 'No readers following yet';
   return `${count} ${count === 1 ? 'reader following' : 'readers following'}`;
 }
 
 function formatWriterFollowers(count) {
+  if (!count) return 'No writer followers yet';
   return `${count} ${count === 1 ? 'writer follower' : 'writer followers'}`;
 }
 
@@ -39,55 +41,84 @@ async function getViewerProfile() {
   return getCurrentProfile();
 }
 
-function renderShell(container, { compact = false } = {}) {
+function getMode(options) {
+  const mode = options.mode || 'both';
+  return ['story', 'writer', 'both'].includes(mode) ? mode : 'both';
+}
+
+function shouldShowStory(mode) {
+  return mode === 'story' || mode === 'both';
+}
+
+function shouldShowWriter(mode) {
+  return mode === 'writer' || mode === 'both';
+}
+
+function renderShell(container, { compact = false, mode = 'both' } = {}) {
+  const storyButton = shouldShowStory(mode)
+    ? '<button type="button" class="secondary-button" data-follow-button="story" hidden>Follow Story</button>'
+    : '';
+  const writerButton = shouldShowWriter(mode)
+    ? '<button type="button" class="secondary-button" data-follow-button="writer" hidden>Follow Writer</button>'
+    : '';
+  const compactDivider = shouldShowStory(mode) && shouldShowWriter(mode) ? '<span aria-hidden="true"> · </span>' : '';
+  const storyCount = shouldShowStory(mode) ? '<span data-follow-count="story">0 readers following</span>' : '';
+  const writerCount = shouldShowWriter(mode) ? '<span data-follow-count="writer">0 writer followers</span>' : '';
+  const storyPrompt = shouldShowStory(mode) ? '<p class="field-note" data-follow-prompt="story"></p>' : '';
+  const writerPrompt = shouldShowWriter(mode) ? '<p class="field-note" data-follow-prompt="writer"></p>' : '';
+
   if (compact) {
     container.innerHTML = `
       <div class="follow-compact-panel">
         <div class="follow-compact-buttons">
-          <button type="button" class="secondary-button" data-follow-button="story" hidden>Follow Story</button>
-          <button type="button" class="secondary-button" data-follow-button="writer" hidden>Follow Writer</button>
+          ${storyButton}
+          ${writerButton}
         </div>
         <p class="follow-compact-counts">
-          <span data-follow-count="story">0 readers following</span>
-          <span aria-hidden="true"> · </span>
-          <span data-follow-count="writer">0 writer followers</span>
+          ${storyCount}
+          ${compactDivider}
+          ${writerCount}
         </p>
-        <p class="field-note" data-follow-prompt="story"></p>
-        <p class="field-note" data-follow-prompt="writer"></p>
+        ${storyPrompt}
+        ${writerPrompt}
       </div>
     `;
     return;
   }
 
   container.innerHTML = `
-    <div class="follow-card${compact ? ' follow-card-compact' : ''}" data-follow-card="story">
+    ${shouldShowStory(mode) ? `<div class="follow-card" data-follow-card="story">
       <div>
         <p class="eyebrow">STORY</p>
         <p class="follow-count" data-follow-count="story">0 readers following</p>
         <p class="field-note" data-follow-prompt="story"></p>
       </div>
       <button type="button" class="secondary-button" data-follow-button="story" hidden>Follow Story</button>
-    </div>
-    <div class="follow-card${compact ? ' follow-card-compact' : ''}" data-follow-card="writer">
+    </div>` : ''}
+    ${shouldShowWriter(mode) ? `<div class="follow-card" data-follow-card="writer">
       <div>
         <p class="eyebrow">WRITER</p>
         <p class="follow-count" data-follow-count="writer">0 writer followers</p>
         <p class="field-note" data-follow-prompt="writer"></p>
       </div>
       <button type="button" class="secondary-button" data-follow-button="writer" hidden>Follow Writer</button>
-    </div>
+    </div>` : ''}
   `;
 }
 
-function setSignedOutPrompt(container) {
+function setSignedOutPrompt(container, mode) {
   const href = escapeHtml(loginHref());
-  container.querySelector('[data-follow-prompt="story"]').innerHTML = `<a href="${href}">Sign in to follow this story.</a>`;
-  container.querySelector('[data-follow-prompt="writer"]').innerHTML = `<a href="${href}">Sign in to follow this writer.</a>`;
+  const storyPrompt = container.querySelector('[data-follow-prompt="story"]');
+  const writerPrompt = container.querySelector('[data-follow-prompt="writer"]');
+  if (storyPrompt && shouldShowStory(mode)) storyPrompt.innerHTML = `<a href="${href}">Sign in to follow this story.</a>`;
+  if (writerPrompt && shouldShowWriter(mode)) writerPrompt.innerHTML = `<a href="${href}">Sign in to follow this writer.</a>`;
 }
 
-function setOwnerPrompt(container) {
-  container.querySelector('[data-follow-prompt="story"]').textContent = 'Your story.';
-  container.querySelector('[data-follow-prompt="writer"]').textContent = 'Your writer profile.';
+function setOwnerPrompt(container, mode) {
+  const storyPrompt = container.querySelector('[data-follow-prompt="story"]');
+  const writerPrompt = container.querySelector('[data-follow-prompt="writer"]');
+  if (storyPrompt && shouldShowStory(mode)) storyPrompt.textContent = 'Your story.';
+  if (writerPrompt && shouldShowWriter(mode)) writerPrompt.textContent = 'Your writer profile.';
 }
 
 function setButton(button, isFollowing, followLabel, unfollowLabel) {
@@ -97,11 +128,14 @@ function setButton(button, isFollowing, followLabel, unfollowLabel) {
 }
 
 export async function mountFollowControls(container, story, options = {}) {
-  if (!container || !story?.id) return;
+  const mode = getMode(options);
+  const needsStory = shouldShowStory(mode);
+  const needsWriter = shouldShowWriter(mode);
+  if (!container || (needsStory && !story?.id) || (needsWriter && !story?.author_id)) return;
 
   container.classList.add('follow-actions');
   if (options.compact) container.classList.add('follow-actions-compact');
-  renderShell(container, options);
+  renderShell(container, { ...options, mode });
 
   const storyButton = container.querySelector('[data-follow-button="story"]');
   const writerButton = container.querySelector('[data-follow-button="writer"]');
@@ -110,31 +144,31 @@ export async function mountFollowControls(container, story, options = {}) {
 
   try {
     const [storyFollowers, writerFollowers] = await Promise.all([
-      getStoryFollowerCount(story.id),
-      story.author_id ? getWriterFollowerCount(story.author_id) : 0
+      needsStory ? getStoryFollowerCount(story.id) : 0,
+      needsWriter ? getWriterFollowerCount(story.author_id) : 0
     ]);
 
-    storyCount.textContent = formatStoryFollowers(storyFollowers);
-    writerCount.textContent = formatWriterFollowers(writerFollowers);
+    if (storyCount) storyCount.textContent = formatStoryFollowers(storyFollowers);
+    if (writerCount) writerCount.textContent = formatWriterFollowers(writerFollowers);
 
     const currentProfile = await getViewerProfile();
     if (!currentProfile) {
-      setSignedOutPrompt(container);
+      setSignedOutPrompt(container, mode);
       return;
     }
 
     if (story.author_id === currentProfile.id) {
-      setOwnerPrompt(container);
+      setOwnerPrompt(container, mode);
       return;
     }
 
-    let followingStory = await isFollowingStory(story.id);
-    let followingWriter = story.author_id ? await isFollowingWriter(story.author_id) : false;
+    let followingStory = needsStory ? await isFollowingStory(story.id) : false;
+    let followingWriter = needsWriter ? await isFollowingWriter(story.author_id) : false;
 
-    setButton(storyButton, followingStory, 'Follow Story', 'Unfollow Story');
-    setButton(writerButton, followingWriter, 'Follow Writer', 'Unfollow Writer');
+    if (storyButton) setButton(storyButton, followingStory, 'Follow Story', 'Unfollow Story');
+    if (writerButton) setButton(writerButton, followingWriter, 'Follow Writer', 'Unfollow Writer');
 
-    storyButton.addEventListener('click', async () => {
+    storyButton?.addEventListener('click', async () => {
       storyButton.disabled = true;
       try {
         if (followingStory) {
@@ -149,7 +183,7 @@ export async function mountFollowControls(container, story, options = {}) {
       }
     });
 
-    writerButton.addEventListener('click', async () => {
+    writerButton?.addEventListener('click', async () => {
       writerButton.disabled = true;
       try {
         if (followingWriter) {

@@ -12,8 +12,7 @@ import {
   getDisplayName,
   getMyFollowedStories,
   getMyFollowedWriters,
-  unfollowStory,
-  unfollowWriter
+  unfollowStory
 } from '/follows.js';
 
 const email = document.getElementById('accountEmail');
@@ -101,16 +100,17 @@ function renderFollowedWriters(writers) {
     const publicStoryCount = Number(writer.public_story_count) || 0;
     const followerCopy = `${followerCount} ${followerCount === 1 ? 'writer follower' : 'writer followers'}`;
     const storyCopy = `${publicStoryCount} ${publicStoryCount === 1 ? 'public story' : 'public stories'}`;
+    const writerName = escapeHtml(getDisplayName(writer));
+    const writerHeading = writer.username
+      ? `<a href="/writer/${escapeHtml(writer.username)}/">${writerName}</a>`
+      : writerName;
 
     return `
       <article class="following-item">
         <div>
-          <h4>${escapeHtml(getDisplayName(writer))}</h4>
+          <h4>${writerHeading}</h4>
           ${writer.username ? `<p>@${escapeHtml(writer.username)}</p>` : ''}
           <p class="muted-copy">${escapeHtml(followerCopy)} · ${escapeHtml(storyCopy)}</p>
-        </div>
-        <div class="following-actions">
-          <button type="button" class="secondary-button" data-unfollow-writer-id="${escapeHtml(writer.id)}">Unfollow Writer</button>
         </div>
       </article>
     `;
@@ -139,8 +139,7 @@ async function loadFollowing() {
 
 followingPanel.addEventListener('click', async (event) => {
   const storyButton = event.target.closest('[data-unfollow-story-id]');
-  const writerButton = event.target.closest('[data-unfollow-writer-id]');
-  const button = storyButton || writerButton;
+  const button = storyButton;
   if (!button) return;
 
   button.disabled = true;
@@ -149,9 +148,6 @@ followingPanel.addEventListener('click', async (event) => {
   try {
     if (storyButton) {
       await unfollowStory(storyButton.dataset.unfollowStoryId);
-    }
-    if (writerButton) {
-      await unfollowWriter(writerButton.dataset.unfollowWriterId);
     }
     await loadFollowing();
   } catch (error) {

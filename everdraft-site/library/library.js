@@ -26,6 +26,11 @@ function formatStatus(value) {
   return value || 'Story';
 }
 
+function renderAuthorByline(author, authorName) {
+  if (!author?.username) return `By ${escapeHtml(authorName)}`;
+  return `By <a href="/writer/${escapeHtml(author.username)}/">${escapeHtml(authorName)}</a>`;
+}
+
 function renderCover(story) {
   if (!story.cover_url) {
     const initial = String(story.title || 'E').trim().charAt(0).toUpperCase() || 'E';
@@ -74,7 +79,7 @@ function renderStories(stories) {
           <div>
             <p class="eyebrow">${escapeHtml(formatStatus(story.status))}</p>
             <h2>${escapeHtml(story.title)}</h2>
-            <p class="library-byline">By ${escapeHtml(authorName)}</p>
+            <p class="library-byline">${renderAuthorByline(author, authorName)}</p>
           </div>
           <p>${escapeHtml(snippet(story.blurb))}</p>
           <dl class="story-meta">
@@ -99,7 +104,7 @@ async function mountLibraryFollowControls(stories) {
     container.addEventListener('followerror', (event) => {
       status.textContent = event.detail;
     });
-    return mountFollowControls(container, story, { compact: true });
+    return mountFollowControls(container, story, { compact: true, mode: 'story' });
   }));
 }
 
