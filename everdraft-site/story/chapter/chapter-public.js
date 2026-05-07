@@ -1,9 +1,11 @@
 import { friendlyChapterError, getPublicChapterBySlugAndNumber } from '/chapters.js';
+import { mountFollowControls } from '/follow-controls.js';
 
 const backToStoryLink = document.getElementById('backToStoryLink');
 const storyTitle = document.getElementById('storyTitle');
 const chapterTitle = document.getElementById('chapter-title');
 const chapterMeta = document.getElementById('chapterMeta');
+const chapterFollowControls = document.getElementById('chapterFollowControls');
 const unavailableNotice = document.getElementById('unavailableNotice');
 const chapterContent = document.getElementById('chapterContent');
 const previousChapterLink = document.getElementById('previousChapterLink');
@@ -62,6 +64,10 @@ async function loadChapter() {
     storyTitle.textContent = story.title || 'EverDraft story';
     chapterTitle.textContent = chapter.title || 'Untitled chapter';
     chapterMeta.textContent = `Chapter ${chapter.chapter_number}`;
+    chapterFollowControls.addEventListener('followerror', (event) => {
+      status.textContent = event.detail;
+    });
+    await mountFollowControls(chapterFollowControls, story, { compact: true });
     chapterContent.innerHTML = renderParagraphs(chapter.content);
     chapterContent.hidden = false;
     setNavLink(previousChapterLink, story, previousChapter, 'Previous Chapter');

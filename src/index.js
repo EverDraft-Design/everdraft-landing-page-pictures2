@@ -359,24 +359,7 @@ function publicStoryPage() {
     copy: '',
     body: `<div id="bannerWrap" class="story-media" hidden></div>
         <p id="storyByline" class="hero-copy"></p>
-        <div class="follow-actions" aria-label="Follow story and writer">
-          <div id="storyFollowPanel" class="follow-card" hidden>
-            <div>
-              <p class="eyebrow">STORY</p>
-              <p id="storyFollowerCount" class="follow-count">0 followers</p>
-              <p id="storyFollowPrompt" class="field-note"></p>
-            </div>
-            <button type="button" id="storyFollowButton" class="secondary-button" hidden>Follow Story</button>
-          </div>
-          <div id="writerFollowPanel" class="follow-card" hidden>
-            <div>
-              <p class="eyebrow">WRITER</p>
-              <p id="writerFollowerCount" class="follow-count">0 followers</p>
-              <p id="writerFollowPrompt" class="field-note"></p>
-            </div>
-            <button type="button" id="writerFollowButton" class="secondary-button" hidden>Follow Writer</button>
-          </div>
-        </div>
+        <div id="storyFollowControls" class="follow-actions" aria-label="Follow story and writer"></div>
         <div id="coverWrap" class="story-cover" hidden></div>
         <div id="storyMeta" class="preview-summary" hidden></div>
         <div id="unreadableNotice" class="notice-panel" hidden>This story is not currently readable on EverDraft.</div>
@@ -400,6 +383,7 @@ function publicChapterPage() {
     copy: '',
     body: `<p id="storyTitle" class="eyebrow">EVERDRAFT STORY</p>
         <p id="chapterMeta" class="hero-copy"></p>
+        <div id="chapterFollowControls" class="follow-actions reading-follow-actions" aria-label="Follow story and writer"></div>
         <div id="unavailableNotice" class="notice-panel" hidden>This chapter is not currently available on EverDraft.</div>
         <section id="chapterContent" class="chapter-content reading-content" hidden></section>
         <nav class="reader-nav" aria-label="Chapter navigation">

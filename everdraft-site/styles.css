@@ -759,6 +759,37 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   margin-top: .25rem;
 }
 
+.follow-card .field-note a {
+  color: var(--gold-soft);
+}
+
+.follow-actions-compact {
+  max-width: none;
+  margin: .35rem 0 0;
+}
+
+.follow-actions-compact .follow-card {
+  align-items: flex-start;
+  padding: .75rem;
+}
+
+.follow-actions-compact .follow-card-compact {
+  gap: .65rem;
+}
+
+.follow-actions-compact button {
+  padding: .65rem .75rem;
+}
+
+.library-follow-controls {
+  display: grid;
+  gap: .65rem;
+}
+
+.reading-follow-actions {
+  margin-bottom: 1.5rem;
+}
+
 .following-panel {
   margin-top: 1rem;
 }
