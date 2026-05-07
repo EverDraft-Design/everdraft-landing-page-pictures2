@@ -763,22 +763,44 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   color: var(--gold-soft);
 }
 
-.follow-actions-compact {
+.follow-actions.follow-actions-compact {
+  grid-template-columns: 1fr;
   max-width: none;
   margin: .35rem 0 0;
 }
 
-.follow-actions-compact .follow-card {
-  align-items: flex-start;
-  padding: .75rem;
+.follow-compact-panel {
+  display: grid;
+  gap: .45rem;
+  min-width: 0;
+  border-top: 1px solid rgba(247, 223, 138, .18);
+  padding-top: .75rem;
 }
 
-.follow-actions-compact .follow-card-compact {
-  gap: .65rem;
+.follow-compact-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
 }
 
-.follow-actions-compact button {
-  padding: .65rem .75rem;
+.follow-compact-buttons button {
+  flex: 0 1 auto;
+  min-width: 0;
+  padding: .55rem .7rem;
+  font-size: .9rem;
+}
+
+.follow-compact-counts {
+  margin: 0;
+  color: var(--muted);
+  font-size: .9rem;
+  line-height: 1.5;
+}
+
+.follow-compact-panel .field-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: .9rem;
 }
 
 .library-follow-controls {

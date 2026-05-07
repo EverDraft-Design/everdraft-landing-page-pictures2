@@ -40,6 +40,25 @@ async function getViewerProfile() {
 }
 
 function renderShell(container, { compact = false } = {}) {
+  if (compact) {
+    container.innerHTML = `
+      <div class="follow-compact-panel">
+        <div class="follow-compact-buttons">
+          <button type="button" class="secondary-button" data-follow-button="story" hidden>Follow Story</button>
+          <button type="button" class="secondary-button" data-follow-button="writer" hidden>Follow Writer</button>
+        </div>
+        <p class="follow-compact-counts">
+          <span data-follow-count="story">0 readers following</span>
+          <span aria-hidden="true"> · </span>
+          <span data-follow-count="writer">0 writer followers</span>
+        </p>
+        <p class="field-note" data-follow-prompt="story"></p>
+        <p class="field-note" data-follow-prompt="writer"></p>
+      </div>
+    `;
+    return;
+  }
+
   container.innerHTML = `
     <div class="follow-card${compact ? ' follow-card-compact' : ''}" data-follow-card="story">
       <div>
