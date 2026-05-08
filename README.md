@@ -115,7 +115,7 @@ SUPABASE_URL=
 SUPABASE_ANON_KEY=
 ```
 
-During beta testing, signup and login pages display the actual Supabase error message returned by Auth or profile creation so configuration, email confirmation, RLS, and duplicate-account issues are easier to diagnose.
+Production-facing pages show warm EverDraft error messages instead of raw database or Supabase details. Specific validation copy is still kept where it helps the member, such as username already taken, invalid usernames, weak passwords, duplicate story slugs, and duplicate chapter numbers. Technical errors should be inspected through safe development logs rather than rendered directly in the UI.
 
 Signup must create the Supabase Auth user first. Only after Auth returns a real user id does EverDraft upsert the matching `public.profiles` row with `user_id`, `username`, `display_name`, and `pen_name`. If email confirmation is enabled and Supabase does not return an active session immediately, the browser cannot create the profile row under RLS until the user confirms their email and signs in.
 
@@ -141,6 +141,10 @@ Supabase Auth settings to check:
 - The `profiles` table migration has been applied and RLS policies are present.
 
 The legacy `profiles.role` column may remain in the database for compatibility, but it is no longer shown to users or used for normal member access.
+
+## User-Facing Error Messages
+
+EverDraft maps Auth, profile, story, chapter, follow, Spark, Note, and Pinboard failures through `everdraft-site/errors.js` before showing them to visitors. Normal users should not see raw messages such as table permission errors, row-level security failures, constraint names, invalid SQL input, or missing database columns. Keep detailed diagnostics in safe development logging only, and never log passwords, tokens, sessions, service keys, or private credentials.
 
 ## Phase 1B: Profile Onboarding
 

@@ -23,7 +23,7 @@ form.addEventListener('submit', async (event) => {
   try {
     validateUsername(username);
   } catch (error) {
-    status.textContent = friendlyAuthError(error);
+    status.textContent = friendlyAuthError(error, 'signup');
     return;
   }
 
@@ -39,18 +39,18 @@ form.addEventListener('submit', async (event) => {
     const data = await signUpWithEmail({ email, password, username, displayName });
 
     if (data.profilePendingEmailConfirmation) {
-      status.textContent = 'Supabase created the Auth user, but no active session was returned because email confirmation may be enabled. The database profile trigger should create your profile row; if it does not appear, apply migration 003_create_profile_on_auth_signup.sql.';
+      status.textContent = 'Please check your email to confirm your account, then sign in to continue.';
       form.reset();
       return;
     }
 
     if (!data.profile?.user_id || !data.profile.display_name) {
-      throw new Error('Signup beta error: Auth succeeded, but EverDraft did not receive a complete profile row.');
+      throw new Error('We couldn’t finish setting up your profile just yet.');
     }
 
     redirectAfterAuth('/onboarding/');
   } catch (error) {
-    status.textContent = friendlyAuthError(error);
+    status.textContent = friendlyAuthError(error, 'signup');
   } finally {
     button.disabled = false;
     button.textContent = 'Sign Up';

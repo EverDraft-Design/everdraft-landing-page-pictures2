@@ -1,4 +1,5 @@
 import { getCurrentProfile, getCurrentSession, getSupabaseBrowserClient } from '/auth.js';
+import { getFriendlyErrorMessage } from '/errors.js';
 
 const STORY_FOLLOW_SELECT = 'id, story_id, user_id, created_at';
 const WRITER_FOLLOW_SELECT = 'id, writer_id, user_id, created_at';
@@ -8,19 +9,7 @@ const PUBLIC_WRITER_PROFILE_SELECT = 'id, username, display_name, pen_name, bio'
 const PUBLIC_WRITER_STORY_SELECT = 'id, author_id, title, slug, status, genre, blurb, cover_url, is_readable, updated_at';
 
 export function friendlyFollowError(error) {
-  const rawMessage = error && error.message ? String(error.message).trim() : '';
-  const message = rawMessage.toLowerCase();
-
-  if (!message) return 'The follow action could not be saved. Please try again.';
-  if (message.includes('sign in')) return 'Please sign in to continue.';
-  if (message.includes('complete your account profile') || message.includes('profile')) return rawMessage;
-  if (message.includes('duplicate') || message.includes('unique')) return 'You are already following this.';
-  if (message.includes('writer_id <> user_id') || message.includes('self')) return 'You cannot follow yourself as a writer.';
-  if (message.includes('row-level security') || message.includes('permission')) {
-    return `Supabase follow permission error: ${rawMessage}. Apply supabase/migrations/008_fix_follow_rls.sql if follow policies are missing.`;
-  }
-
-  return `The follow action could not be saved. Supabase: ${rawMessage}`;
+  return getFriendlyErrorMessage(error, 'follow');
 }
 
 async function getOptionalProfile() {

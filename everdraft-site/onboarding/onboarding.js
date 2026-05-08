@@ -57,7 +57,7 @@ async function loadOnboarding() {
 
     fillProfile(currentProfile);
   } catch (error) {
-    status.textContent = friendlyAuthError(error);
+    status.textContent = friendlyAuthError(error, 'profile');
   }
 }
 
@@ -91,7 +91,7 @@ form.addEventListener('submit', async (event) => {
       window.location.assign('/account/');
     }, 700);
   } catch (error) {
-    status.textContent = friendlyAuthError(error);
+    status.textContent = friendlyAuthError(error, 'profile');
   } finally {
     button.disabled = false;
     button.textContent = 'Complete Profile';

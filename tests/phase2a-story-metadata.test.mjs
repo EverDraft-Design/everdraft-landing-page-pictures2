@@ -42,7 +42,7 @@ assert.match(storiesHelper, /is_readable: true/);
 assert.match(storiesHelper, /\.eq\('author_id', profile\.id\)/);
 assert.match(storiesHelper, /getStoryByIdForAuthor\(storyId\)/);
 assert.match(storiesHelper, /story\.author_id !== profile\.id/);
-assert.match(storiesHelper, /Supabase story permission error:/);
+assert.match(storiesHelper, /getFriendlyErrorMessage\(error, 'story'\)/);
 assert.match(storiesHelper, /Please complete your account profile before creating a story/);
 assert.match(storiesHelper, /function cleanStoryPayload/);
 assert.doesNotMatch(storiesHelper, /banner_url|bannerUrl/);

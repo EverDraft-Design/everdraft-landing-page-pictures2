@@ -1,4 +1,5 @@
 import { getSupabaseBrowserClient } from '/auth.js';
+import { getFriendlyErrorMessage } from '/errors.js';
 import { friendlyStoryError, getStoryByIdForAuthor, requireMemberProfile } from '/stories.js';
 
 const CHAPTER_SELECT = 'id, story_id, title, chapter_number, content, status, published_at, created_at, updated_at';
@@ -8,22 +9,7 @@ const PUBLIC_AUTHOR_SELECT_BASE = 'id, username, display_name, pen_name';
 const VALID_CHAPTER_STATUSES = new Set(['draft', 'published', 'hidden', 'archived']);
 
 export function friendlyChapterError(error) {
-  const rawMessage = error && error.message ? String(error.message).trim() : '';
-  const message = rawMessage.toLowerCase();
-
-  if (!message) return 'The chapter could not be saved. Please try again.';
-  if (message.includes('duplicate') || message.includes('chapters_story_chapter_number_key')) {
-    return `That chapter number is already used for this story. Supabase: ${rawMessage}`;
-  }
-  if (message.includes('row-level security') || message.includes('permission')) {
-    return `Supabase chapter permission error: ${rawMessage}. Apply supabase/migrations/007_fix_chapter_ownership_rls.sql if chapter ownership policies are missing.`;
-  }
-  if (message.includes('sign in')) return 'Please sign in to continue.';
-  if (message.includes('profile')) return rawMessage;
-  if (message.includes('not found') || message.includes('belongs')) return rawMessage;
-  if (message.includes('required') || message.includes('chapter number') || message.includes('status')) return rawMessage;
-
-  return `The chapter could not be saved. Supabase: ${rawMessage}`;
+  return getFriendlyErrorMessage(error, 'chapter');
 }
 
 export async function getStoryForCurrentAuthor(storyId) {
