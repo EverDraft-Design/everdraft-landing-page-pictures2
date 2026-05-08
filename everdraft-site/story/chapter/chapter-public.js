@@ -51,6 +51,12 @@ function renderParagraphs(content) {
 async function setupNotePanel(story, chapter) {
   notePanel.hidden = false;
 
+  if (story.author?.notes_enabled === false) {
+    noteForm.hidden = true;
+    noteStatus.textContent = 'This writer is not receiving Notes right now.';
+    return;
+  }
+
   const session = await getCurrentSession();
   if (!session) {
     noteForm.hidden = true;

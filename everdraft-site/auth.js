@@ -1,7 +1,8 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.105.1';
 
 let clientPromise;
-const PROFILE_SELECT = 'id, user_id, username, display_name, pen_name, role, bio, avatar_url, created_at, updated_at';
+const PROFILE_SELECT_BASE = 'id, user_id, username, display_name, pen_name, role, bio, avatar_url, created_at, updated_at';
+const PROFILE_SELECT = `${PROFILE_SELECT_BASE}, notes_enabled`;
 const USERNAME_PATTERN = /^[a-z0-9_-]{3,30}$/;
 
 function getRedirectPath(fallback = '/account/') {
@@ -51,6 +52,18 @@ function requireValidProfileFields({ displayName }) {
 
   return {
     displayName: cleanDisplayName
+  };
+}
+
+function isMissingNotesEnabledColumn(error) {
+  return String(error?.message || '').toLowerCase().includes('notes_enabled');
+}
+
+function withNotesEnabledDefault(profile) {
+  if (!profile) return profile;
+  return {
+    ...profile,
+    notes_enabled: profile.notes_enabled !== false
   };
 }
 
@@ -213,8 +226,19 @@ export async function getCurrentProfile() {
     .eq('user_id', user.id)
     .maybeSingle();
 
+  if (isMissingNotesEnabledColumn(error)) {
+    const { data: fallbackData, error: fallbackError } = await supabase
+      .from('profiles')
+      .select(PROFILE_SELECT_BASE)
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (fallbackError) throw fallbackError;
+    return withNotesEnabledDefault(fallbackData);
+  }
+
   if (error) throw error;
-  return data;
+  return withNotesEnabledDefault(data);
 }
 
 export async function createProfileForAuthUser({
@@ -235,14 +259,22 @@ export async function createProfileForAuthUser({
     bio: String(bio || '').trim()
   };
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from('profiles')
     .upsert(profile, { onConflict: 'user_id' })
     .select(PROFILE_SELECT)
     .single();
 
+  if (isMissingNotesEnabledColumn(error)) {
+    ({ data, error } = await supabase
+      .from('profiles')
+      .upsert(profile, { onConflict: 'user_id' })
+      .select(PROFILE_SELECT_BASE)
+      .single());
+  }
+
   if (error) throw error;
-  return data;
+  return withNotesEnabledDefault(data);
 }
 
 export async function createProfileForCurrentUser({ displayName, penName, bio = '' } = {}) {
@@ -266,7 +298,7 @@ export async function createProfileForCurrentUser({ displayName, penName, bio = 
   });
 }
 
-export async function updateCurrentProfile({ username, displayName, penName, bio }) {
+export async function updateCurrentProfile({ username, displayName, penName, bio, notesEnabled = true }) {
   const supabase = await getSupabaseBrowserClient();
   const user = await getCurrentUser();
 
@@ -283,7 +315,8 @@ export async function updateCurrentProfile({ username, displayName, penName, bio
   const updatePayload = {
     display_name: profileFields.displayName,
     pen_name: String(penName || '').trim(),
-    bio: String(bio || '').trim()
+    bio: String(bio || '').trim(),
+    notes_enabled: Boolean(notesEnabled)
   };
 
   if (!existingProfile.username && cleanUsername) {
@@ -294,15 +327,19 @@ export async function updateCurrentProfile({ username, displayName, penName, bio
     throw new Error('Your username is your locked EverDraft identity and cannot be changed.');
   }
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from('profiles')
     .update(updatePayload)
     .eq('user_id', user.id)
     .select(PROFILE_SELECT)
     .single();
 
+  if (isMissingNotesEnabledColumn(error)) {
+    throw new Error('The Reader Notes setting is not available yet. Apply supabase/migrations/010_add_notes_enabled_to_profiles.sql, then save your profile again.');
+  }
+
   if (error) throw error;
-  return data;
+  return withNotesEnabledDefault(data);
 }
 
 export function isProfileComplete(profile) {

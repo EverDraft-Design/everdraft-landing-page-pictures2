@@ -59,6 +59,14 @@
           <label for="bio">Bio</label>
           <textarea id="bio" name="bio" rows="4"></textarea>
 
+          <label class="settings-toggle" for="notesEnabled">
+            <input id="notesEnabled" name="notesEnabled" type="checkbox" checked />
+            <span>
+              <strong>Allow Reader Notes</strong>
+              <span>When this is on, readers can send private Notes to your Pinboard. You can turn this off at any time.</span>
+            </span>
+          </label>
+
           <button type="submit" id="saveProfileButton">Save Profile</button>
           <p id="profileStatus" class="form-status" aria-live="polite"></p>
         </form>

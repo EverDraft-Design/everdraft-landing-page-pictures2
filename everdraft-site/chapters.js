@@ -3,6 +3,8 @@ import { friendlyStoryError, getStoryByIdForAuthor, requireMemberProfile } from 
 
 const CHAPTER_SELECT = 'id, story_id, title, chapter_number, content, status, published_at, created_at, updated_at';
 const PUBLIC_STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, is_readable, created_at, updated_at';
+const PUBLIC_AUTHOR_SELECT = 'id, username, display_name, pen_name, notes_enabled';
+const PUBLIC_AUTHOR_SELECT_BASE = 'id, username, display_name, pen_name';
 const VALID_CHAPTER_STATUSES = new Set(['draft', 'published', 'hidden', 'archived']);
 
 export function friendlyChapterError(error) {
@@ -195,11 +197,20 @@ export async function getPublicStoryBySlug(slug) {
   if (error) throw error;
   if (!data) return null;
 
-  const { data: author, error: authorError } = await supabase
+  let { data: author, error: authorError } = await supabase
     .from('profiles')
-    .select('id, username, display_name, pen_name')
+    .select(PUBLIC_AUTHOR_SELECT)
     .eq('id', data.author_id)
     .maybeSingle();
+
+  if (String(authorError?.message || '').toLowerCase().includes('notes_enabled')) {
+    ({ data: author, error: authorError } = await supabase
+      .from('profiles')
+      .select(PUBLIC_AUTHOR_SELECT_BASE)
+      .eq('id', data.author_id)
+      .maybeSingle());
+    if (author) author.notes_enabled = true;
+  }
 
   if (authorError) throw authorError;
   return { ...data, author };

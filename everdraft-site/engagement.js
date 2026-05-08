@@ -29,6 +29,7 @@ export function friendlyEngagementError(error) {
 
   if (!message) return 'This could not be saved yet. Please try again.';
   if (message.includes('sign in')) return 'Please sign in to continue.';
+  if (message.includes('not receiving notes')) return 'This writer is not receiving Notes right now.';
   if (message.includes('complete your account profile') || message.includes('profile')) return rawMessage;
   if (message.includes('not found') || message.includes('readable') || message.includes('chapter') || message.includes('story')) return rawMessage;
   if (message.includes('duplicate') || message.includes('unique')) return 'Your Spark is already here.';
@@ -248,6 +249,21 @@ function cleanNoteInput(input) {
   return { noteType, note };
 }
 
+async function getWriterNotesEnabled(supabase, writerProfileId) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, notes_enabled')
+    .eq('id', writerProfileId)
+    .maybeSingle();
+
+  if (String(error?.message || '').toLowerCase().includes('notes_enabled')) {
+    return true;
+  }
+
+  if (error) throw error;
+  return data?.notes_enabled !== false;
+}
+
 export async function createChapterNote({ story, chapter, noteType, note }) {
   const supabase = await getSupabaseBrowserClient();
   const profile = await requireEngagementProfile();
@@ -261,6 +277,9 @@ export async function createChapterNote({ story, chapter, noteType, note }) {
   }
   if (story.author_id === profile.id) {
     throw new Error('Notes are for readers. This is your chapter.');
+  }
+  if (story.author?.notes_enabled === false || !(await getWriterNotesEnabled(supabase, story.author_id))) {
+    throw new Error('This writer is not receiving Notes right now.');
   }
 
   const { data, error } = await supabase

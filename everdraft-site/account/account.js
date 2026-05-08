@@ -29,6 +29,7 @@ const usernameHelp = document.getElementById('usernameHelp');
 const displayNameInput = document.getElementById('displayName');
 const penNameInput = document.getElementById('penName');
 const bioInput = document.getElementById('bio');
+const notesEnabledInput = document.getElementById('notesEnabled');
 const status = document.getElementById('profileStatus');
 const saveButton = document.getElementById('saveProfileButton');
 const logoutButton = document.getElementById('logoutButton');
@@ -60,6 +61,7 @@ function fillProfile(profile) {
   displayNameInput.value = profile.display_name || '';
   penNameInput.value = profile.pen_name || '';
   bioInput.value = profile.bio || '';
+  notesEnabledInput.checked = profile.notes_enabled !== false;
   avatarUrl.textContent = profile.avatar_url || 'Not set';
   profileState.textContent = isProfileComplete(profile) ? 'Ready for early testing' : 'Needs a few details';
   memberTools.hidden = false;
@@ -204,6 +206,7 @@ form.addEventListener('submit', async (event) => {
   const displayName = String(formData.get('displayName') || '').trim();
   const penName = String(formData.get('penName') || '').trim();
   const bio = String(formData.get('bio') || '').trim();
+  const notesEnabled = formData.get('notesEnabled') === 'on';
 
   if (!displayName) {
     status.textContent = 'Display name is required.';
@@ -219,7 +222,7 @@ form.addEventListener('submit', async (event) => {
   saveButton.textContent = 'Saving...';
 
   try {
-    const profile = await updateCurrentProfile({ username, displayName, penName, bio });
+    const profile = await updateCurrentProfile({ username, displayName, penName, bio, notesEnabled });
     fillProfile(profile);
     status.textContent = 'Profile saved.';
   } catch (error) {
