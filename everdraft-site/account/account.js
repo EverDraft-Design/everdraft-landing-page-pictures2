@@ -8,6 +8,10 @@ import {
   updateCurrentProfile
 } from '/auth.js';
 import {
+  friendlyEngagementError,
+  getMyPinboardNotes
+} from '/engagement.js';
+import {
   friendlyFollowError,
   getDisplayName,
   getMyFollowedStories,
@@ -29,6 +33,7 @@ const status = document.getElementById('profileStatus');
 const saveButton = document.getElementById('saveProfileButton');
 const logoutButton = document.getElementById('logoutButton');
 const memberTools = document.getElementById('memberTools');
+const pinboardSummary = document.getElementById('pinboardSummary');
 const followingPanel = document.getElementById('followingPanel');
 const followingStoriesList = document.getElementById('followingStoriesList');
 const followingWritersList = document.getElementById('followingWritersList');
@@ -137,6 +142,18 @@ async function loadFollowing() {
   }
 }
 
+async function loadPinboardSummary() {
+  try {
+    const notes = await getMyPinboardNotes();
+    const count = notes.length;
+    pinboardSummary.textContent = count
+      ? `${count} ${count === 1 ? 'private Note is' : 'private Notes are'} waiting on your Pinboard.`
+      : 'Reader Notes will appear on your Pinboard when they arrive.';
+  } catch (error) {
+    pinboardSummary.textContent = friendlyEngagementError(error);
+  }
+}
+
 followingPanel.addEventListener('click', async (event) => {
   const storyButton = event.target.closest('[data-unfollow-story-id]');
   const button = storyButton;
@@ -171,6 +188,7 @@ async function loadAccount() {
     }
 
     fillProfile(profile);
+    await loadPinboardSummary();
     await loadFollowing();
   } catch (error) {
     status.textContent = friendlyAuthError(error);
