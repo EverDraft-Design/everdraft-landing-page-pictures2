@@ -75,6 +75,7 @@ assert.match(chapterHtml, /chapterSparkControl/);
 assert.match(chapterHtml, /noteForm/);
 assert.match(chapterHtml, /Leave a Note/);
 assert.match(chapterHtml, /Notes are only visible to the writer/);
+assert.doesNotMatch(chapterHtml, /Spark this chapter if it lit something up for you/);
 assert.doesNotMatch(chapterHtml, /comment|review|rating/i);
 
 const chapterPublic = read('everdraft-site/story/chapter/chapter-public.js');
@@ -90,6 +91,8 @@ const pinboardHtml = read('everdraft-site/account/pinboard/index.html');
 assert.match(pinboardHtml, /Pinboard/);
 assert.match(pinboardHtml, /pinboardList/);
 assert.match(pinboardHtml, /Reader Notes/);
+assert.match(pinboardHtml, /Back to Account/);
+assert.match(pinboardHtml, /href="\/account\/"/);
 assert.doesNotMatch(pinboardHtml, /dashboard|comment|review|rating/i);
 
 const pinboardJs = read('everdraft-site/account/pinboard/pinboard.js');
@@ -142,6 +145,9 @@ assert.match(readme, /not ratings or reviews/i);
 
 const styles = read('everdraft-site/styles.css');
 assert.match(styles, /\.spark-control/);
+assert.match(styles, /top:\s*clamp\(1rem, 3vw, 1\.35rem\)/);
+assert.match(styles, /right:\s*clamp\(1rem, 3vw, 1\.35rem\)/);
+assert.match(styles, /position:\s*absolute/);
 assert.match(styles, /\.note-panel/);
 assert.match(styles, /\.pinboard-card/);
 

@@ -382,7 +382,6 @@ function publicChapterPage() {
     body: `<p id="storyTitle" class="eyebrow">EVERDRAFT STORY</p>
         <p id="chapterMeta" class="hero-copy"></p>
         <div id="chapterSparkControl" class="chapter-spark-control" aria-label="Spark chapter"></div>
-        <p class="field-note spark-helper">Spark this chapter if it lit something up for you.</p>
         <div id="chapterFollowControls" class="follow-actions reading-follow-actions" aria-label="Follow story"></div>
         <div id="unavailableNotice" class="notice-panel" hidden>This chapter is not currently available on EverDraft.</div>
         <section id="chapterContent" class="chapter-content reading-content" hidden></section>
@@ -448,7 +447,10 @@ function pinboardPage() {
     heading: 'Pinboard',
     headingId: 'pinboard-title',
     copy: 'Reader Notes from your stories gather here — little sparks of encouragement, questions, and thoughts from the people following along.',
-    body: `<div id="pinboardList" class="pinboard-list" aria-live="polite"></div>
+    body: `<div class="auth-actions pinboard-top-actions">
+          <a class="button-link secondary-link" href="/account/">Back to Account</a>
+        </div>
+        <div id="pinboardList" class="pinboard-list" aria-live="polite"></div>
         <p id="pinboardStatus" class="form-status" aria-live="polite"></p>`,
     script: '/account/pinboard/pinboard.js'
   });

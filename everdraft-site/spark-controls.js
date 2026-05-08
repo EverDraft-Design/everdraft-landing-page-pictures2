@@ -79,7 +79,7 @@ async function mountSparkControl(container, subject, {
         sparked: false,
         disabled: true,
         label: ownerPrompt,
-        prompt: escapeHtml(ownerPrompt)
+        prompt: ''
       });
       return;
     }

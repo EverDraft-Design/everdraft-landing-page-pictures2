@@ -420,6 +420,7 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 }
 
 .story-panel {
+  position: relative;
   width: min(860px, 100%);
 }
 
@@ -824,6 +825,14 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   justify-content: center;
 }
 
+.story-spark-control,
+.chapter-spark-control {
+  position: absolute;
+  top: clamp(1rem, 3vw, 1.35rem);
+  right: clamp(1rem, 3vw, 1.35rem);
+  z-index: 1;
+}
+
 .library-spark-control {
   justify-content: flex-start;
 }
@@ -876,8 +885,7 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   font-size: .92rem;
 }
 
-.spark-note,
-.spark-helper {
+.spark-note {
   margin: .2rem 0 0;
   text-align: center;
 }
@@ -914,6 +922,11 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 
 .pinboard-panel {
   width: min(900px, 100%);
+}
+
+.pinboard-top-actions {
+  justify-content: center;
+  margin-bottom: 1rem;
 }
 
 .pinboard-list {
@@ -1066,6 +1079,21 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
     justify-self: start;
   }
 
+  .story-spark-control,
+  .chapter-spark-control {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 640px) {
+  .story-spark-control,
+  .chapter-spark-control {
+    position: static;
+    justify-content: center;
+    margin: -.25rem 0 1rem;
+  }
+}
+
 .decor-left {
   position: absolute;
   left: 0;
@@ -1085,7 +1113,6 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   height: auto;
   display: block;
   margin: 0 auto; }
-}
 .journal-entry {
 
   max-width: 860px;
