@@ -100,12 +100,12 @@ async function mountSparkControl(container, subject, {
         await toggleSpark(subject.id);
         await mountSparkControl(container, subject, { getCount, hasSparked, toggleSpark, ownerId, ownerPrompt });
       } catch (error) {
-        container.dispatchEvent(new CustomEvent('sparkerror', { detail: friendlyEngagementError(error) }));
+        container.dispatchEvent(new CustomEvent('sparkerror', { detail: friendlyEngagementError(error, 'spark') }));
         button.disabled = false;
       }
     });
   } catch (error) {
-    container.dispatchEvent(new CustomEvent('sparkerror', { detail: friendlyEngagementError(error) }));
+    container.dispatchEvent(new CustomEvent('sparkerror', { detail: friendlyEngagementError(error, 'spark') }));
   }
 }
 

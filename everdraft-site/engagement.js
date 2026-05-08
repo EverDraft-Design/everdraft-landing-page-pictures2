@@ -1,4 +1,5 @@
 import { getCurrentProfile, getCurrentSession, getSupabaseBrowserClient } from '/auth.js';
+import { getFriendlyErrorMessage } from '/errors.js';
 
 const STORY_SPARK_SELECT = 'id, story_id, profile_id, created_at';
 const CHAPTER_SPARK_SELECT = 'id, chapter_id, story_id, profile_id, created_at';
@@ -23,21 +24,8 @@ export const NOTE_TYPE_LABELS = {
   tiny_typo: 'Tiny Typo'
 };
 
-export function friendlyEngagementError(error) {
-  const rawMessage = error && error.message ? String(error.message).trim() : '';
-  const message = rawMessage.toLowerCase();
-
-  if (!message) return 'This could not be saved yet. Please try again.';
-  if (message.includes('sign in')) return 'Please sign in to continue.';
-  if (message.includes('not receiving notes')) return 'This writer is not receiving Notes right now.';
-  if (message.includes('complete your account profile') || message.includes('profile')) return rawMessage;
-  if (message.includes('not found') || message.includes('readable') || message.includes('chapter') || message.includes('story')) return rawMessage;
-  if (message.includes('duplicate') || message.includes('unique')) return 'Your Spark is already here.';
-  if (message.includes('row-level security') || message.includes('permission')) {
-    return `Supabase Notes/Sparks permission error: ${rawMessage}. Apply supabase/migrations/009_phase4_notes_sparks.sql if Phase 4 policies are missing.`;
-  }
-
-  return `This could not be saved yet. Supabase: ${rawMessage}`;
+export function friendlyEngagementError(error, context = 'engagement') {
+  return getFriendlyErrorMessage(error, context);
 }
 
 async function getOptionalProfile() {

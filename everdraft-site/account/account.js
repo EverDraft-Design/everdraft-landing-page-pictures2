@@ -193,7 +193,7 @@ async function loadAccount() {
     await loadPinboardSummary();
     await loadFollowing();
   } catch (error) {
-    status.textContent = friendlyAuthError(error);
+    status.textContent = friendlyAuthError(error, 'profile');
   }
 }
 
@@ -226,7 +226,7 @@ form.addEventListener('submit', async (event) => {
     fillProfile(profile);
     status.textContent = 'Profile saved.';
   } catch (error) {
-    status.textContent = friendlyAuthError(error);
+    status.textContent = friendlyAuthError(error, 'profile');
   } finally {
     saveButton.disabled = false;
     saveButton.textContent = 'Save Profile';

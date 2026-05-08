@@ -96,7 +96,7 @@ async function setupNotePanel(story, chapter) {
       noteStatus.textContent = 'Your Note has been pinned to the writer’s Pinboard, with a Spark attached.';
       await mountChapterSparkControl(chapterSparkControl, story, chapter);
     } catch (error) {
-      noteStatus.textContent = friendlyEngagementError(error);
+      noteStatus.textContent = friendlyEngagementError(error, 'note');
     } finally {
       leaveNoteButton.disabled = false;
       leaveNoteButton.textContent = 'Leave Note';

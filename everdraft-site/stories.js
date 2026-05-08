@@ -1,4 +1,5 @@
 import { getCurrentProfile, getCurrentSession, getSupabaseBrowserClient } from '/auth.js';
+import { getFriendlyErrorMessage } from '/errors.js';
 
 const STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, is_readable, publication_mode, external_book_url, published_at, created_at, updated_at';
 const LIBRARY_STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, is_readable, published_at, created_at, updated_at';
@@ -39,36 +40,7 @@ export async function requireMemberProfile() {
 }
 
 export function friendlyStoryError(error) {
-  const rawMessage = error && error.message ? String(error.message).trim() : '';
-  const message = rawMessage.toLowerCase();
-
-  if (!message) {
-    return 'The story could not be saved. Please try again.';
-  }
-
-  if (message.includes('duplicate') || message.includes('stories_slug_key')) {
-    return `That slug is already in use. Try a more specific one. Supabase: ${rawMessage}`;
-  }
-  if (message.includes('sign in')) {
-    return 'Please sign in to continue.';
-  }
-  if (message.includes('complete your account profile') || message.includes('profile')) {
-    return rawMessage;
-  }
-  if (message.includes('row-level security') || message.includes('permission')) {
-    return `Supabase story permission error: ${rawMessage}. If you are creating your own story, apply supabase/migrations/006_fix_story_ownership_rls.sql in Supabase.`;
-  }
-  if (message.includes('slug')) {
-    return rawMessage;
-  }
-  if (message.includes('only edit stories you created') || message.includes('belongs to another')) {
-    return 'You can only edit stories you created.';
-  }
-  if (message.includes('required') || message.includes('valid story status')) {
-    return rawMessage;
-  }
-
-  return `The story could not be saved. Supabase: ${rawMessage}`;
+  return getFriendlyErrorMessage(error, 'story');
 }
 
 export async function getMyStories() {

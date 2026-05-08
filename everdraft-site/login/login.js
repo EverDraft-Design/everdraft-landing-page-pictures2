@@ -24,10 +24,9 @@ form.addEventListener('submit', async (event) => {
     await logInWithEmail({ email, password });
     redirectAfterAuth();
   } catch (error) {
-    status.textContent = friendlyAuthError(error);
+    status.textContent = friendlyAuthError(error, 'login');
   } finally {
     button.disabled = false;
     button.textContent = 'Sign In';
   }
 });
-
