@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pinboard — EverDraft</title>
+    <meta name="description" content="View private EverDraft Reader Notes." />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+      </a>
+      <nav aria-label="Primary navigation" class="social-nav">
+        <a href="/account/" class="nav-link">Account</a>
+        <a href="/my/stories/" class="nav-link">My Stories</a>
+        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      </nav>
+    </header>
+    <main class="auth-main story-main">
+      <section class="auth-panel story-panel pinboard-panel" aria-labelledby="pinboard-title">
+        <p class="eyebrow">READER NOTES</p>
+        <h1 id="pinboard-title">Pinboard</h1>
+        <p class="hero-copy">Reader Notes from your stories gather here — little sparks of encouragement, questions, and thoughts from the people following along.</p>
+        <div id="pinboardList" class="pinboard-list" aria-live="polite"></div>
+        <p id="pinboardStatus" class="form-status" aria-live="polite"></p>
+      </section>
+    </main>
+    <script type="module" src="/account/pinboard/pinboard.js"></script>
+  </body>
+</html>

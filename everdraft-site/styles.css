@@ -817,6 +817,134 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   gap: .65rem;
 }
 
+.library-spark-control,
+.story-spark-control,
+.chapter-spark-control {
+  display: flex;
+  justify-content: center;
+}
+
+.library-spark-control {
+  justify-content: flex-start;
+}
+
+.spark-control-wrap {
+  display: grid;
+  gap: .35rem;
+}
+
+.spark-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .42rem;
+  width: fit-content;
+  border: 1px solid rgba(247, 223, 138, .38);
+  border-radius: 999px;
+  background: rgba(10, 5, 18, .62);
+  color: var(--gold-soft);
+  padding: .52rem .75rem;
+  cursor: pointer;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.spark-control:hover,
+.spark-control:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(247, 223, 138, .7);
+  background: rgba(212, 175, 55, .12);
+}
+
+.spark-control.sparked {
+  color: var(--gold);
+  background: rgba(212, 175, 55, .16);
+}
+
+.spark-control:disabled {
+  cursor: default;
+  opacity: .72;
+  transform: none;
+}
+
+.spark-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.spark-count {
+  font-weight: 700;
+  font-size: .92rem;
+}
+
+.spark-note,
+.spark-helper {
+  margin: .2rem 0 0;
+  text-align: center;
+}
+
+.note-panel,
+.pinboard-card {
+  border: 1px solid rgba(247, 223, 138, .18);
+  border-radius: 1rem;
+  background: rgba(10, 5, 18, .72);
+  padding: clamp(1rem, 3vw, 1.35rem);
+}
+
+.note-panel {
+  max-width: 680px;
+  margin: 1.5rem auto 0;
+}
+
+.note-panel h2,
+.pinboard-card h2 {
+  margin: .15rem 0 .65rem;
+  color: var(--gold-soft);
+}
+
+.note-panel p,
+.pinboard-card p,
+.pinboard-card blockquote {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.note-form {
+  margin-top: 1rem;
+}
+
+.pinboard-panel {
+  width: min(900px, 100%);
+}
+
+.pinboard-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.pinboard-card {
+  text-align: left;
+}
+
+.pinboard-card-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .65rem;
+}
+
+.pinboard-card-header p,
+.pinboard-card blockquote {
+  margin: 0;
+}
+
+.pinboard-card blockquote {
+  border-left: 2px solid rgba(247, 223, 138, .42);
+  padding-left: 1rem;
+  font-style: italic;
+}
+
 .reading-follow-actions {
   margin-bottom: 1.5rem;
 }

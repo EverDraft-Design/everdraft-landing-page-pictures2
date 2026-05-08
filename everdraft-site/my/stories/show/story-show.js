@@ -1,5 +1,6 @@
 import { friendlyAuthError, requireSession } from '/auth.js';
 import { friendlyChapterError, getChaptersForAuthorStory } from '/chapters.js';
+import { friendlyEngagementError, getNoteSummaryForStory } from '/engagement.js';
 
 const title = document.getElementById('story-title');
 const summary = document.getElementById('storySummary');
@@ -32,27 +33,31 @@ function escapeHtml(value) {
   })[character]);
 }
 
-function renderChapters(storyId, chapters) {
+function renderChapters(storyId, chapters, noteSummary = new Map()) {
   if (!chapters.length) {
     chapterList.innerHTML = '<div class="empty-state">This story is waiting for its first chapter.</div>';
     return;
   }
 
-  chapterList.innerHTML = chapters.map((chapter) => `
-    <article class="story-card">
-      <div>
-        <p class="eyebrow">Chapter ${chapter.chapter_number} · ${escapeHtml(chapter.status || 'draft')}</p>
-        <h2>${escapeHtml(chapter.title)}</h2>
-      </div>
-      <dl class="story-meta">
-        <div><dt>Published</dt><dd>${formatDate(chapter.published_at)}</dd></div>
-        <div><dt>Updated</dt><dd>${formatDate(chapter.updated_at)}</dd></div>
-      </dl>
-      <div class="auth-actions">
-        <a class="button-link secondary-link" href="/my/stories/${storyId}/chapters/${chapter.id}/edit/">Edit Chapter</a>
-      </div>
-    </article>
-  `).join('');
+  chapterList.innerHTML = chapters.map((chapter) => {
+    const summary = noteSummary.get(chapter.id) || { sparks: 0, notes: 0 };
+    return `
+      <article class="story-card">
+        <div>
+          <p class="eyebrow">Chapter ${chapter.chapter_number} · ${escapeHtml(chapter.status || 'draft')}</p>
+          <h2>${escapeHtml(chapter.title)}</h2>
+          <p class="muted-copy">${summary.sparks} ${summary.sparks === 1 ? 'Spark' : 'Sparks'} · ${summary.notes} ${summary.notes === 1 ? 'Note' : 'Notes'}</p>
+        </div>
+        <dl class="story-meta">
+          <div><dt>Published</dt><dd>${formatDate(chapter.published_at)}</dd></div>
+          <div><dt>Updated</dt><dd>${formatDate(chapter.updated_at)}</dd></div>
+        </dl>
+        <div class="auth-actions">
+          <a class="button-link secondary-link" href="/my/stories/${storyId}/chapters/${chapter.id}/edit/">Edit Chapter</a>
+        </div>
+      </article>
+    `;
+  }).join('');
 }
 
 async function loadStory() {
@@ -76,9 +81,11 @@ async function loadStory() {
     editStoryLink.href = `/my/stories/${story.id}/edit/`;
     publicStoryLink.href = story.slug ? `/story/${story.slug}/` : '/my/stories/';
     storyActions.hidden = false;
-    renderChapters(story.id, chapters);
+    renderChapters(story.id, chapters, await getNoteSummaryForStory(story.id));
   } catch (error) {
-    status.textContent = error.message.includes('profile') ? friendlyAuthError(error) : friendlyChapterError(error);
+    status.textContent = error.message.includes('profile')
+      ? friendlyAuthError(error)
+      : (error.message.includes('Spark') || error.message.includes('Note') ? friendlyEngagementError(error) : friendlyChapterError(error));
   }
 }
 

@@ -356,6 +356,7 @@ function publicStoryPage() {
     headingId: 'story-title',
     copy: '',
     body: `<p id="storyByline" class="hero-copy"></p>
+        <div id="storySparkControl" class="story-spark-control" aria-label="Spark story"></div>
         <div id="storyFollowControls" class="follow-actions" aria-label="Follow story"></div>
         <div id="coverWrap" class="story-cover" hidden></div>
         <div id="storyMeta" class="preview-summary" hidden></div>
@@ -380,9 +381,33 @@ function publicChapterPage() {
     copy: '',
     body: `<p id="storyTitle" class="eyebrow">EVERDRAFT STORY</p>
         <p id="chapterMeta" class="hero-copy"></p>
+        <div id="chapterSparkControl" class="chapter-spark-control" aria-label="Spark chapter"></div>
+        <p class="field-note spark-helper">Spark this chapter if it lit something up for you.</p>
         <div id="chapterFollowControls" class="follow-actions reading-follow-actions" aria-label="Follow story"></div>
         <div id="unavailableNotice" class="notice-panel" hidden>This chapter is not currently available on EverDraft.</div>
         <section id="chapterContent" class="chapter-content reading-content" hidden></section>
+        <section id="notePanel" class="note-panel" aria-labelledby="note-title" hidden>
+          <p class="eyebrow">PRIVATE NOTE</p>
+          <h2 id="note-title">Leave a Note</h2>
+          <p>Send the writer a private note about this chapter — something that moved you, made you curious, confused you, or made you want to keep reading.</p>
+          <p class="field-note">Notes are only visible to the writer. Leaving a Note also adds your Spark to this chapter.</p>
+          <form id="noteForm" class="auth-form note-form">
+            <label for="noteType">Note Type</label>
+            <select id="noteType" name="noteType">
+              <option value="encouragement">Encouragement</option>
+              <option value="reader_reaction">Reader Reaction</option>
+              <option value="character_thought">Character Thought</option>
+              <option value="plot_thought">Plot Thought</option>
+              <option value="pacing_thought">Pacing Thought</option>
+              <option value="clarity_note">Clarity Note</option>
+              <option value="tiny_typo">Tiny Typo</option>
+            </select>
+            <label for="note">Note</label>
+            <textarea id="note" name="note" rows="5" placeholder="Leave something kind, curious, or useful for the writer."></textarea>
+            <button type="submit" id="leaveNoteButton">Leave Note</button>
+          </form>
+          <p id="noteStatus" class="form-status" aria-live="polite"></p>
+        </section>
         <nav class="reader-nav" aria-label="Chapter navigation">
           <a id="previousChapterLink" class="button-link secondary-link" href="#" hidden>Previous Chapter</a>
           <a id="chapterBackToStoryLink" class="button-link secondary-link" href="/story/">Back to Story</a>
@@ -414,9 +439,25 @@ function writerProfilePage() {
   });
 }
 
+function pinboardPage() {
+  return fallbackHtmlPage({
+    title: 'Pinboard',
+    description: 'View private EverDraft Reader Notes.',
+    navLink: '<a href="/account/" class="nav-link">Account</a><a href="/my/stories/" class="nav-link">My Stories</a>',
+    eyebrow: 'READER NOTES',
+    heading: 'Pinboard',
+    headingId: 'pinboard-title',
+    copy: 'Reader Notes from your stories gather here — little sparks of encouragement, questions, and thoughts from the people following along.',
+    body: `<div id="pinboardList" class="pinboard-list" aria-live="polite"></div>
+        <p id="pinboardStatus" class="form-status" aria-live="polite"></p>`,
+    script: '/account/pinboard/pinboard.js'
+  });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const isPinboardRoute = /^\/account\/pinboard\/?$/.test(url.pathname);
     const isLibraryRoute = /^\/library\/?$/.test(url.pathname);
     const isStoryEditRoute = /^\/my\/stories\/[^/]+\/edit\/?$/.test(url.pathname);
     const isStoryManageRoute = /^\/my\/stories\/[^/]+\/?$/.test(url.pathname);
@@ -451,6 +492,10 @@ export default {
     }
 
     if (env.ASSETS) {
+      if (isPinboardRoute) {
+        return env.ASSETS.fetch(rewriteAssetRequest(request, '/account/pinboard/index.html'));
+      }
+
       if (isLibraryRoute) {
         return env.ASSETS.fetch(rewriteAssetRequest(request, '/library/index.html'));
       }
@@ -488,6 +533,10 @@ export default {
 
     if (isStoryEditRoute) {
       return storyEditPage();
+    }
+
+    if (isPinboardRoute) {
+      return pinboardPage();
     }
 
     if (isLibraryRoute) {

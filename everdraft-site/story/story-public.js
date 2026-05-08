@@ -1,5 +1,6 @@
 import { friendlyChapterError, getPublicPublishedChaptersForStory, getPublicStoryBySlug } from '/chapters.js';
 import { mountFollowControls } from '/follow-controls.js';
+import { mountStorySparkControl } from '/spark-controls.js';
 
 const title = document.getElementById('story-title');
 const byline = document.getElementById('storyByline');
@@ -9,6 +10,7 @@ const unreadableNotice = document.getElementById('unreadableNotice');
 const chapterList = document.getElementById('chapterList');
 const status = document.getElementById('storyStatus');
 const storyFollowControls = document.getElementById('storyFollowControls');
+const storySparkControl = document.getElementById('storySparkControl');
 
 function getSlug() {
   const match = window.location.pathname.match(/^\/story\/([^/]+)\/?$/);
@@ -77,6 +79,10 @@ async function loadStory() {
     storyFollowControls.addEventListener('followerror', (event) => {
       status.textContent = event.detail;
     });
+    storySparkControl.addEventListener('sparkerror', (event) => {
+      status.textContent = event.detail;
+    });
+    await mountStorySparkControl(storySparkControl, story);
     await mountFollowControls(storyFollowControls, story, { mode: 'story' });
 
     if (!story.is_readable) {

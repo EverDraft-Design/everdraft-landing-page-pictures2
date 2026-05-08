@@ -24,9 +24,33 @@
         <p id="storyTitle" class="eyebrow">EVERDRAFT STORY</p>
         <h1 id="chapter-title">Loading chapter...</h1>
         <p id="chapterMeta" class="hero-copy"></p>
+        <div id="chapterSparkControl" class="chapter-spark-control" aria-label="Spark chapter"></div>
+        <p class="field-note spark-helper">Spark this chapter if it lit something up for you.</p>
         <div id="chapterFollowControls" class="follow-actions reading-follow-actions" aria-label="Follow story"></div>
         <div id="unavailableNotice" class="notice-panel" hidden>This chapter is not currently available on EverDraft.</div>
         <section id="chapterContent" class="chapter-content reading-content" hidden></section>
+        <section id="notePanel" class="note-panel" aria-labelledby="note-title" hidden>
+          <p class="eyebrow">PRIVATE NOTE</p>
+          <h2 id="note-title">Leave a Note</h2>
+          <p>Send the writer a private note about this chapter — something that moved you, made you curious, confused you, or made you want to keep reading.</p>
+          <p class="field-note">Notes are only visible to the writer. Leaving a Note also adds your Spark to this chapter.</p>
+          <form id="noteForm" class="auth-form note-form">
+            <label for="noteType">Note Type</label>
+            <select id="noteType" name="noteType">
+              <option value="encouragement">Encouragement</option>
+              <option value="reader_reaction">Reader Reaction</option>
+              <option value="character_thought">Character Thought</option>
+              <option value="plot_thought">Plot Thought</option>
+              <option value="pacing_thought">Pacing Thought</option>
+              <option value="clarity_note">Clarity Note</option>
+              <option value="tiny_typo">Tiny Typo</option>
+            </select>
+            <label for="note">Note</label>
+            <textarea id="note" name="note" rows="5" placeholder="Leave something kind, curious, or useful for the writer."></textarea>
+            <button type="submit" id="leaveNoteButton">Leave Note</button>
+          </form>
+          <p id="noteStatus" class="form-status" aria-live="polite"></p>
+        </section>
         <nav class="reader-nav" aria-label="Chapter navigation">
           <a id="previousChapterLink" class="button-link secondary-link" href="#" hidden>Previous Chapter</a>
           <a id="chapterBackToStoryLink" class="button-link secondary-link" href="/story/">Back to Story</a>

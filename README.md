@@ -252,6 +252,27 @@ Apply `supabase/migrations/008_fix_follow_rls.sql` manually in the Supabase SQL 
 
 Known limitations: no email notifications yet, no comments yet, no ratings yet, no badges or Storymarks yet, and no full reader shelves yet.
 
+## Phase 4: Notes, Pinboard, and Sparks
+
+Phase 4 adds writer-safe reader encouragement without opening public discussion threads:
+
+- Private Notes can be left by signed-in readers on public chapter pages at `/story/:slug/chapter/:chapterNumber/`.
+- Notes are private to writers and appear on the writer's Pinboard at `/account/pinboard/`.
+- Story Sparks and chapter Sparks are separate public encouragement counts.
+- Library cards at `/library/` show compact story Sparks alongside story follow controls.
+- Public story pages at `/story/:slug/` show story Sparks.
+- Public chapter pages show chapter Sparks and the private Note form.
+
+Notes are private to writers. They are not public comments, not ratings or reviews, and they do not appear below chapters. The Note form uses gentle categories: Encouragement, Reader Reaction, Character Thought, Plot Thought, Pacing Thought, Clarity Note, and Tiny Typo. Leaving a Note automatically adds one chapter Spark for that reader if they have not already Sparked the chapter.
+
+The Pinboard is a private writer area, linked from `/account/` and private story management pages. It shows the Note type, Note text, story title, chapter title/number, safe reader display name, and date. It does not query or display reader emails.
+
+Sparks are public encouragement counts. Signed-out visitors can see Spark counts and are invited to sign in before adding a Spark. Signed-in readers can Spark or Unspark stories and chapters once per story/chapter. Owners see quiet owner copy instead of self-Spark controls so counts remain reader-focused.
+
+Apply `supabase/migrations/009_phase4_notes_sparks.sql` manually in the Supabase SQL Editor after migration 008. It creates `public.notes`, `public.story_sparks`, and `public.chapter_sparks`, grants the new tables to the Data API roles, enables RLS, adds ownership-based policies, and removes old public policies from the unused `public.comments` table without dropping it or deleting data.
+
+Known limitations: no public comments, no ratings, no moderation dashboard, no notification emails, and no full analytics yet.
+
 ## Signup Repair Notes
 
 The signup flow expects the deployed Cloudflare variables `SUPABASE_URL` and `SUPABASE_ANON_KEY`. It calls Supabase Auth first, then creates or updates the matching profile row using `profiles.user_id = auth.users.id`.
@@ -265,8 +286,9 @@ A safety migration is available at:
 - `supabase/migrations/006_fix_story_ownership_rls.sql`
 - `supabase/migrations/007_fix_chapter_ownership_rls.sql`
 - `supabase/migrations/008_fix_follow_rls.sql`
+- `supabase/migrations/009_phase4_notes_sparks.sql`
 
-Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, if Auth users are being created without profile rows, or if story/chapter/follow saves fail with a permission/RLS error. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. Migration 005 keeps `profiles.role` as a legacy/internal field, prevents browser self-service role changes, removes the original story creation role gate, and updates the Auth trigger so new profiles no longer depend on intended-role metadata. Migration 006 recreates story metadata policies around profile ownership instead of legacy role values. Migration 007 recreates chapter policies around parent story ownership and published/readable public access. Migration 008 refreshes follow policies for public counts and member-owned follow/unfollow writes. None of these migrations delete existing data.
+Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, if Auth users are being created without profile rows, or if story/chapter/follow saves fail with a permission/RLS error. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. Migration 005 keeps `profiles.role` as a legacy/internal field, prevents browser self-service role changes, removes the original story creation role gate, and updates the Auth trigger so new profiles no longer depend on intended-role metadata. Migration 006 recreates story metadata policies around profile ownership instead of legacy role values. Migration 007 recreates chapter policies around parent story ownership and published/readable public access. Migration 008 refreshes follow policies for public counts and member-owned follow/unfollow writes. Migration 009 adds private Notes, the Pinboard data path, public Sparks, and removes old public comment policies without deleting data. None of these migrations delete existing data.
 
 To test locked usernames:
 

@@ -1,5 +1,6 @@
 import { friendlyStoryError, getLibraryStories } from '/stories.js';
 import { mountFollowControls } from '/follow-controls.js';
+import { mountStorySparkControl } from '/spark-controls.js';
 
 const libraryList = document.getElementById('libraryList');
 const status = document.getElementById('libraryStatus');
@@ -89,11 +90,24 @@ function renderStories(stories) {
           <div class="auth-actions">
             <a class="button-link secondary-link" href="/story/${story.slug}/">Read Story</a>
           </div>
+          <div class="library-spark-control" data-library-spark-control="${escapeHtml(story.id)}" aria-label="Spark ${escapeHtml(story.title)}"></div>
           <div class="library-follow-controls" data-library-follow-controls="${escapeHtml(story.id)}" aria-label="Follow ${escapeHtml(story.title)}"></div>
         </div>
       </article>
     `;
   }).join('');
+}
+
+async function mountLibrarySparkControls(stories) {
+  await Promise.all(stories.map((story) => {
+    const container = [...libraryList.querySelectorAll('[data-library-spark-control]')]
+      .find((element) => element.dataset.librarySparkControl === story.id);
+    if (!container) return null;
+    container.addEventListener('sparkerror', (event) => {
+      status.textContent = event.detail;
+    });
+    return mountStorySparkControl(container, story);
+  }));
 }
 
 async function mountLibraryFollowControls(stories) {
@@ -112,6 +126,7 @@ async function loadLibrary() {
   try {
     const stories = await getLibraryStories();
     renderStories(stories);
+    await mountLibrarySparkControls(stories);
     await mountLibraryFollowControls(stories);
   } catch (error) {
     status.textContent = friendlyStoryError(error);
