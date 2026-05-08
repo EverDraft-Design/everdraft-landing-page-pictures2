@@ -356,8 +356,8 @@ function publicStoryPage() {
     headingId: 'story-title',
     copy: '',
     body: `<p id="storyByline" class="hero-copy"></p>
+        <div id="storyFollowControls" class="follow-actions story-follow-control" aria-label="Follow story"></div>
         <div id="storySparkControl" class="story-spark-control" aria-label="Spark story"></div>
-        <div id="storyFollowControls" class="follow-actions" aria-label="Follow story"></div>
         <div id="coverWrap" class="story-cover" hidden></div>
         <div id="storyMeta" class="preview-summary" hidden></div>
         <div id="unreadableNotice" class="notice-panel" hidden>This story is not currently readable on EverDraft.</div>
@@ -381,8 +381,8 @@ function publicChapterPage() {
     copy: '',
     body: `<p id="storyTitle" class="eyebrow">EVERDRAFT STORY</p>
         <p id="chapterMeta" class="hero-copy"></p>
+        <div id="chapterFollowControls" class="follow-actions chapter-follow-control reading-follow-actions" aria-label="Follow story"></div>
         <div id="chapterSparkControl" class="chapter-spark-control" aria-label="Spark chapter"></div>
-        <div id="chapterFollowControls" class="follow-actions reading-follow-actions" aria-label="Follow story"></div>
         <div id="unavailableNotice" class="notice-panel" hidden>This chapter is not currently available on EverDraft.</div>
         <section id="chapterContent" class="chapter-content reading-content" hidden></section>
         <section id="notePanel" class="note-panel" aria-labelledby="note-title" hidden>

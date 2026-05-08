@@ -90,17 +90,20 @@ assert.doesNotMatch(writerPublic, /comment|rating|badge|Storymark|payment|Writer
 
 const storyHtml = read('everdraft-site/story/index.html');
 assert.match(storyHtml, /storyFollowControls/);
+assert.match(storyHtml, /story-follow-control/);
 
 const storyPublic = read('everdraft-site/story/story-public.js');
 assert.match(storyPublic, /from '\/follow-controls\.js'/);
 assert.match(storyPublic, /mountFollowControls\(storyFollowControls, story/);
 assert.match(storyPublic, /mode:\s*'story'/);
+assert.match(storyPublic, /compact:\s*true/);
 assert.match(storyPublic, /\/writer\/\$\{escapeHtml\(author\.username\)\}\//);
 assert.doesNotMatch(storyPublic, /Follow Writer|Unfollow Writer|writer follower/i);
 assert.doesNotMatch(storyPublic, /comment|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
 
 const chapterHtml = read('everdraft-site/story/chapter/index.html');
 assert.match(chapterHtml, /chapterFollowControls/);
+assert.match(chapterHtml, /chapter-follow-control/);
 
 const chapterPublic = read('everdraft-site/story/chapter/chapter-public.js');
 assert.match(chapterPublic, /from '\/follow-controls\.js'/);
@@ -162,6 +165,8 @@ assert.match(readme, /writer follows happen only on writer profile pages/i);
 
 const styles = read('everdraft-site/styles.css');
 assert.match(styles, /\.follow-actions\.follow-actions-compact\s*\{/);
+assert.match(styles, /\.story-follow-control/);
+assert.match(styles, /\.chapter-follow-control/);
 assert.match(styles, /grid-template-columns:\s*1fr/);
 assert.match(styles, /follow-compact-buttons/);
 assert.match(styles, /flex-wrap:\s*wrap/);
