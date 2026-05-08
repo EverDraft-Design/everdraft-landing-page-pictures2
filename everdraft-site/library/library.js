@@ -87,10 +87,10 @@ function renderStories(stories) {
             <div><dt>Genre</dt><dd>${escapeHtml(story.genre || 'Genre not set')}</dd></div>
             <div><dt>Chapters</dt><dd>${chapterCount} ${chapterCount === 1 ? 'chapter' : 'chapters'}</dd></div>
           </dl>
-          <div class="auth-actions">
-            <a class="button-link secondary-link" href="/story/${story.slug}/">Read Story</a>
+          <div class="library-card-actions">
+            <a class="button-link" href="/story/${story.slug}/">Read Story</a>
+            <div class="library-spark-control" data-library-spark-control="${escapeHtml(story.id)}" aria-label="Spark ${escapeHtml(story.title)}"></div>
           </div>
-          <div class="library-spark-control" data-library-spark-control="${escapeHtml(story.id)}" aria-label="Spark ${escapeHtml(story.title)}"></div>
           <div class="library-follow-controls" data-library-follow-controls="${escapeHtml(story.id)}" aria-label="Follow ${escapeHtml(story.title)}"></div>
         </div>
       </article>

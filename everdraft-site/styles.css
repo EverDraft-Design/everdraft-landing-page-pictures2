@@ -538,6 +538,22 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   gap: .9rem;
 }
 
+.library-card-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .65rem;
+}
+
+.library-card-actions .button-link {
+  margin: 0;
+}
+
+.library-card-actions .spark-control-wrap {
+  display: flex;
+  align-items: center;
+}
+
 .library-byline {
   margin: 0;
   color: var(--gold-soft);
@@ -864,6 +880,7 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 .library-follow-controls {
   display: grid;
   gap: .65rem;
+  margin-top: -.15rem;
 }
 
 .library-spark-control,
@@ -900,6 +917,23 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 
 .library-spark-control {
   justify-content: flex-start;
+}
+
+.library-follow-controls .follow-compact-panel {
+  border-top: 0;
+  padding-top: 0;
+  gap: .35rem;
+}
+
+.library-follow-controls .follow-compact-buttons button {
+  padding: .48rem .65rem;
+  font-size: .84rem;
+}
+
+.library-follow-controls .follow-compact-counts,
+.library-follow-controls .field-note {
+  font-size: .86rem;
+  line-height: 1.35;
 }
 
 .story-follow-control .follow-compact-panel,
