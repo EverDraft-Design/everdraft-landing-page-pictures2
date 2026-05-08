@@ -1,7 +1,9 @@
 import { getDisplayName } from '/follows.js';
+import { getCurrentProfile } from '/auth.js';
 import { friendlyEngagementError, getMyPinboardNotes, NOTE_TYPE_LABELS } from '/engagement.js';
 
 const pinboardList = document.getElementById('pinboardList');
+const pinboardNotesSetting = document.getElementById('pinboardNotesSetting');
 const pinboardStatus = document.getElementById('pinboardStatus');
 
 function escapeHtml(value) {
@@ -58,7 +60,14 @@ function renderNotes(notes) {
 async function loadPinboard() {
   try {
     pinboardList.innerHTML = '<div class="empty-state">Gathering your Pinboard...</div>';
-    renderNotes(await getMyPinboardNotes());
+    const [profile, notes] = await Promise.all([
+      getCurrentProfile(),
+      getMyPinboardNotes()
+    ]);
+    pinboardNotesSetting.textContent = profile?.notes_enabled === false
+      ? 'Reader Notes are currently turned off.'
+      : '';
+    renderNotes(notes);
   } catch (error) {
     pinboardStatus.textContent = friendlyEngagementError(error);
     renderEmpty();

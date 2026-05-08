@@ -82,6 +82,8 @@ const chapterPublic = read('everdraft-site/story/chapter/chapter-public.js');
 assert.match(chapterPublic, /from '\/spark-controls\.js'/);
 assert.match(chapterPublic, /mountChapterSparkControl/);
 assert.match(chapterPublic, /createChapterNote/);
+assert.match(chapterPublic, /notes_enabled === false/);
+assert.match(chapterPublic, /This writer is not receiving Notes right now\./);
 assert.match(chapterPublic, /Your Note has been pinned to the writer’s Pinboard, with a Spark attached\./);
 assert.match(chapterPublic, /Sign in to leave a Note/);
 assert.match(chapterPublic, /This is your chapter/);
@@ -93,6 +95,7 @@ assert.match(pinboardHtml, /pinboardList/);
 assert.match(pinboardHtml, /Reader Notes/);
 assert.match(pinboardHtml, /Back to Account/);
 assert.match(pinboardHtml, /href="\/account\/"/);
+assert.match(pinboardHtml, /pinboardNotesSetting/);
 assert.doesNotMatch(pinboardHtml, /dashboard|comment|review|rating/i);
 
 const pinboardJs = read('everdraft-site/account/pinboard/pinboard.js');
@@ -105,10 +108,17 @@ assert.doesNotMatch(pinboardJs, /email|service_role|secret|token|review|rating|c
 const accountHtml = read('everdraft-site/account/index.html');
 assert.match(accountHtml, /\/account\/pinboard\//);
 assert.match(accountHtml, /Pinboard/);
+assert.match(accountHtml, /Allow Reader Notes/);
+assert.match(accountHtml, /notesEnabled/);
 
 const accountJs = read('everdraft-site/account/account.js');
 assert.match(accountJs, /pinboardSummary/);
 assert.match(accountJs, /getMyPinboardNotes/);
+assert.match(accountJs, /notesEnabledInput/);
+assert.match(accountJs, /notesEnabled/);
+
+const authJs = read('everdraft-site/auth.js');
+assert.match(authJs, /notes_enabled/);
 
 const storyShow = read('everdraft-site/my/stories/show/story-show.js');
 assert.match(storyShow, /getNoteSummaryForStory/);
@@ -130,6 +140,13 @@ assert.match(migration, /profiles\.user_id = \(select auth\.uid\(\)\)/);
 assert.match(migration, /drop policy if exists "Public can read comments on readable published chapters"/);
 assert.doesNotMatch(migration, /drop table|truncate|delete from|service_role/i);
 
+const notesSettingMigration = read('supabase/migrations/010_add_notes_enabled_to_profiles.sql');
+assert.match(notesSettingMigration, /alter table public\.profiles/i);
+assert.match(notesSettingMigration, /add column if not exists notes_enabled boolean not null default true/i);
+assert.match(notesSettingMigration, /drop policy if exists "Readers can create private Notes"/i);
+assert.match(notesSettingMigration, /writer_profile\.notes_enabled = true/i);
+assert.doesNotMatch(notesSettingMigration, /drop table|delete from|truncate/i);
+
 const worker = read('src/index.js');
 assert.match(worker, /isPinboardRoute/);
 assert.match(worker, /\/account\/pinboard\/index\.html/);
@@ -141,6 +158,8 @@ assert.match(readme, /Notes are private to writers/);
 assert.match(readme, /Pinboard/);
 assert.match(readme, /Sparks are public encouragement counts/);
 assert.match(readme, /supabase\/migrations\/009_phase4_notes_sparks\.sql/);
+assert.match(readme, /supabase\/migrations\/010_add_notes_enabled_to_profiles\.sql/);
+assert.match(readme, /Allow Reader Notes/);
 assert.match(readme, /not ratings or reviews/i);
 
 const styles = read('everdraft-site/styles.css');
