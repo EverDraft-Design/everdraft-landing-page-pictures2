@@ -7,6 +7,7 @@ const titleInput = document.getElementById('title');
 const contentInput = document.getElementById('content');
 const statusInput = document.getElementById('status');
 const backToStoryLink = document.getElementById('backToStoryLink');
+const storyManagementLink = document.getElementById('storyManagementLink');
 const storySummary = document.getElementById('storySummary');
 const readerNotice = document.getElementById('readerNotice');
 const status = document.getElementById('chapterStatus');
@@ -59,6 +60,7 @@ async function loadChapter() {
 
     const { storyId, chapterId } = getIds();
     backToStoryLink.href = `/my/stories/${storyId}/`;
+    storyManagementLink.href = `/my/stories/${storyId}/`;
     const { story, chapter } = await getChapterForAuthor(chapterId, storyId);
 
     if (!story || !chapter) {

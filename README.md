@@ -277,6 +277,16 @@ Apply `supabase/migrations/010_add_notes_enabled_to_profiles.sql` manually after
 
 Known limitations: no public comments, no ratings, no moderation dashboard, no notification emails, and no full analytics yet.
 
+## Navigation flow
+
+EverDraft route parents are intentionally simple so testers do not need the browser back button:
+
+- Account → My Stories / Pinboard. `/account/` links to `/my/stories/` and `/account/pinboard/`; both return to Account.
+- My Stories → Story Management. `/my/stories/` links to story creation and each owned story; story creation, story editing, and story management return to My Stories.
+- Story Management → Chapters. `/my/stories/:storyId/` links to chapter creation and editing; chapter forms return to Story Management.
+- Library → Story → Chapter. `/library/` links to public stories, stories return to Library, and chapters include Back to Story plus Return to Library.
+- Library → Writer. Public writer profiles return to Library.
+
 ## Signup Repair Notes
 
 The signup flow expects the deployed Cloudflare variables `SUPABASE_URL` and `SUPABASE_ANON_KEY`. It calls Supabase Auth first, then creates or updates the matching profile row using `profiles.user_id = auth.users.id`.

@@ -5,6 +5,7 @@ const form = document.getElementById('chapterForm');
 const chapterNumberInput = document.getElementById('chapterNumber');
 const contentInput = document.getElementById('content');
 const backToStoryLink = document.getElementById('backToStoryLink');
+const storyManagementLink = document.getElementById('storyManagementLink');
 const storySummary = document.getElementById('storySummary');
 const readerNotice = document.getElementById('readerNotice');
 const status = document.getElementById('chapterStatus');
@@ -46,6 +47,7 @@ async function loadNewChapter() {
 
     const storyId = getStoryId();
     backToStoryLink.href = `/my/stories/${storyId}/`;
+    storyManagementLink.href = `/my/stories/${storyId}/`;
     const { story, chapters } = await getChaptersForAuthorStory(storyId);
 
     if (!story) {

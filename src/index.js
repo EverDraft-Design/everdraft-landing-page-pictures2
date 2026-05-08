@@ -139,6 +139,9 @@ function storyEditPage() {
         <p class="eyebrow">STORY METADATA</p>
         <h1 id="edit-story-title">Edit Story</h1>
         <p class="hero-copy">Keep the public-facing story details ready. Chapter tools are not part of this phase.</p>
+        <div class="auth-actions top-return-actions">
+          <a class="button-link secondary-link" href="/my/stories/">Back to My Stories</a>
+        </div>
         <div id="readerNotice" class="notice-panel" hidden>You can only edit stories you created.</div>
         <div id="missingNotice" class="notice-panel" hidden>This story was not found, or it does not belong to your account.</div>
         <form id="storyForm" class="auth-form story-form" hidden>
@@ -233,7 +236,10 @@ function storyManagePage() {
     heading: 'Loading story...',
     headingId: 'story-title',
     copy: 'Checking chapter shelf...',
-    body: `<div id="readerNotice" class="notice-panel" hidden>This story was not found, or it does not belong to your account.</div>
+    body: `<div class="auth-actions top-return-actions">
+          <a class="button-link secondary-link" href="/my/stories/">Back to My Stories</a>
+        </div>
+        <div id="readerNotice" class="notice-panel" hidden>This story was not found, or it does not belong to your account.</div>
         <div id="storyActions" class="story-actions" hidden>
           <a class="button-link" id="addChapterLink" href="/my/stories/">Add Chapter</a>
           <a class="button-link secondary-link" id="editStoryLink" href="/my/stories/">Edit Details</a>
@@ -249,11 +255,14 @@ function chapterNewPage() {
   return fallbackHtmlPage({
     title: 'Create Chapter',
     description: 'Create a private EverDraft chapter draft.',
-    navLink: '<a id="backToStoryLink" href="/my/stories/" class="nav-link">Story</a>',
+    navLink: '<a id="backToStoryLink" href="/my/stories/" class="nav-link">Story Management</a>',
     eyebrow: 'NEW CHAPTER',
     heading: 'Create Chapter Draft',
     copy: 'Draft content for your story.',
-    body: `<div id="readerNotice" class="notice-panel" hidden>This story was not found, or it does not belong to your account.</div>
+    body: `<div class="auth-actions top-return-actions">
+          <a id="storyManagementLink" class="button-link secondary-link" href="/my/stories/">Back to Story Management</a>
+        </div>
+        <div id="readerNotice" class="notice-panel" hidden>This story was not found, or it does not belong to your account.</div>
         <form id="chapterForm" class="auth-form story-form" hidden>
           <div class="form-grid">
             <div>
@@ -290,11 +299,14 @@ function chapterEditPage() {
   return fallbackHtmlPage({
     title: 'Edit Chapter',
     description: 'Edit a private EverDraft chapter draft.',
-    navLink: '<a id="backToStoryLink" href="/my/stories/" class="nav-link">Story</a>',
+    navLink: '<a id="backToStoryLink" href="/my/stories/" class="nav-link">Story Management</a>',
     eyebrow: 'CHAPTER DRAFT',
     heading: 'Edit Chapter',
     copy: 'Loading chapter...',
-    body: `<div id="readerNotice" class="notice-panel" hidden>This chapter was not found, or it does not belong to your story.</div>
+    body: `<div class="auth-actions top-return-actions">
+          <a id="storyManagementLink" class="button-link secondary-link" href="/my/stories/">Back to Story Management</a>
+        </div>
+        <div id="readerNotice" class="notice-panel" hidden>This chapter was not found, or it does not belong to your story.</div>
         <form id="chapterForm" class="auth-form story-form" hidden>
           <div class="form-grid">
             <div>
@@ -340,6 +352,9 @@ function libraryPage() {
     headingId: 'library-title',
     copy: 'A quiet shelf for stories beginning to find their readers.',
     body: `<p class="library-note">The Library is opening gradually as EverDraft’s story tools are built.</p>
+        <div class="auth-actions top-return-actions">
+          <a class="button-link secondary-link" href="/">Return Home</a>
+        </div>
         <div id="libraryList" class="library-grid" aria-live="polite"></div>
         <p id="libraryStatus" class="form-status" aria-live="polite"></p>`,
     script: '/library/library.js'
@@ -356,6 +371,9 @@ function publicStoryPage() {
     headingId: 'story-title',
     copy: '',
     body: `<p id="storyByline" class="hero-copy"></p>
+        <div class="auth-actions top-return-actions">
+          <a class="button-link secondary-link" href="/library/">Return to Library</a>
+        </div>
         <div id="storyFollowControls" class="follow-actions story-follow-control" aria-label="Follow story"></div>
         <div id="storySparkControl" class="story-spark-control" aria-label="Spark story"></div>
         <div id="coverWrap" class="story-cover" hidden></div>
@@ -410,6 +428,7 @@ function publicChapterPage() {
         <nav class="reader-nav" aria-label="Chapter navigation">
           <a id="previousChapterLink" class="button-link secondary-link" href="#" hidden>Previous Chapter</a>
           <a id="chapterBackToStoryLink" class="button-link secondary-link" href="/story/">Back to Story</a>
+          <a class="button-link secondary-link" href="/library/">Return to Library</a>
           <a id="nextChapterLink" class="button-link secondary-link" href="#" hidden>Next Chapter</a>
         </nav>
         <p id="chapterStatus" class="form-status" aria-live="polite"></p>`,
@@ -427,6 +446,9 @@ function writerProfilePage() {
     headingId: 'writer-title',
     copy: '',
     body: `<p id="writerMeta" class="hero-copy"></p>
+        <div class="auth-actions top-return-actions">
+          <a class="button-link secondary-link" href="/library/">Back to Library</a>
+        </div>
         <div id="writerFollowControls" class="follow-actions" aria-label="Follow writer"></div>
         <div id="writerBio" class="preview-summary writer-bio" hidden></div>
         <section aria-labelledby="writer-stories-title">
