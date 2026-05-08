@@ -408,6 +408,10 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   margin-top: 1rem;
 }
 
+.top-return-actions {
+  margin: -.4rem 0 1rem;
+}
+
 .secondary-link {
   background: rgba(212,175,55,0.08);
   color: var(--gold-soft);
