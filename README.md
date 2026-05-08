@@ -338,6 +338,8 @@ The public EverDraft site remains waitlist-first, but the current beta routes ar
 - `/my/stories/:storyId/chapters/:chapterId/edit/` edits an owned chapter.
 - `/story/:slug/` and `/story/:slug/chapter/:chapterNumber/` are public reading routes for published readable chapters.
 
+Beta testers can send feedback, questions, and technical issues to `hello@everdraft.net`. This is currently a visible support email with mailto links on `/beta/` and `/account/`, not a contact form or email-sending system.
+
 Current working beta features:
 
 - Account creation and login.
