@@ -819,22 +819,64 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 }
 
 .library-spark-control,
+.story-follow-control,
+.chapter-follow-control,
 .story-spark-control,
 .chapter-spark-control {
   display: flex;
   justify-content: center;
 }
 
+.story-follow-control,
+.chapter-follow-control,
 .story-spark-control,
 .chapter-spark-control {
   position: absolute;
   top: clamp(1rem, 3vw, 1.35rem);
-  right: clamp(1rem, 3vw, 1.35rem);
   z-index: 1;
+}
+
+.story-follow-control,
+.chapter-follow-control {
+  left: clamp(1rem, 3vw, 1.35rem);
+  justify-content: flex-start;
+  width: min(13.5rem, calc(50% - 2rem));
+  margin: 0;
+  max-width: none;
+}
+
+.story-spark-control,
+.chapter-spark-control {
+  right: clamp(1rem, 3vw, 1.35rem);
 }
 
 .library-spark-control {
   justify-content: flex-start;
+}
+
+.story-follow-control .follow-compact-panel,
+.chapter-follow-control .follow-compact-panel {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.story-follow-control .follow-compact-buttons,
+.chapter-follow-control .follow-compact-buttons {
+  gap: .35rem;
+}
+
+.story-follow-control .follow-compact-buttons button,
+.chapter-follow-control .follow-compact-buttons button {
+  padding: .48rem .65rem;
+  font-size: .82rem;
+}
+
+.story-follow-control .follow-compact-counts,
+.chapter-follow-control .follow-compact-counts,
+.story-follow-control .field-note,
+.chapter-follow-control .field-note {
+  font-size: .8rem;
+  line-height: 1.35;
 }
 
 .spark-control-wrap {
@@ -1086,11 +1128,25 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 }
 
 @media (max-width: 640px) {
+  .story-follow-control,
+  .chapter-follow-control,
   .story-spark-control,
   .chapter-spark-control {
     position: static;
     justify-content: center;
-    margin: -.25rem 0 1rem;
+    width: auto;
+    margin: -.25rem auto .75rem;
+  }
+
+  .story-follow-control .follow-compact-panel,
+  .chapter-follow-control .follow-compact-panel {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .story-follow-control .follow-compact-buttons,
+  .chapter-follow-control .follow-compact-buttons {
+    justify-content: center;
   }
 }
 

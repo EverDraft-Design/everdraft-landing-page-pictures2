@@ -83,7 +83,7 @@ async function loadStory() {
       status.textContent = event.detail;
     });
     await mountStorySparkControl(storySparkControl, story);
-    await mountFollowControls(storyFollowControls, story, { mode: 'story' });
+    await mountFollowControls(storyFollowControls, story, { mode: 'story', compact: true });
 
     if (!story.is_readable) {
       unreadableNotice.hidden = false;
