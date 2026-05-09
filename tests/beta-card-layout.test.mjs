@@ -12,11 +12,14 @@ for (const label of ['ACCOUNTS', 'PROFILE', 'STORIES', 'READING']) {
   assert.match(betaHtml, new RegExp(`<p class="eyebrow">${label}</p>`));
 }
 
-assert.match(styles, /\.beta-grid\s+\.story-card\s*\{[\s\S]*display:\s*flex/);
-assert.match(styles, /\.beta-grid\s+\.story-card\s*\{[\s\S]*flex-direction:\s*column/);
+assert.match(styles, /\.beta-grid\s+\.story-card\s*\{[\s\S]*display:\s*grid/);
+assert.match(styles, /\.beta-grid\s+\.story-card\s*\{[\s\S]*grid-template-rows:\s*auto\s+minmax\(3\.25rem,\s*auto\)\s+minmax\(5\.8rem,\s*auto\)\s+auto/);
 assert.match(styles, /\.beta-grid\s+\.story-card\s*\{[\s\S]*height:\s*100%/);
-assert.match(styles, /\.beta-grid\s+\.story-card\s+\.auth-actions\s*\{[\s\S]*margin-top:\s*auto/);
+assert.match(styles, /\.beta-grid\s+\.story-card\s*\{[\s\S]*text-align:\s*center/);
+assert.match(styles, /\.beta-grid\s+\.story-card\s+\.auth-actions\s*\{[\s\S]*margin-top:\s*\.25rem/);
+assert.match(styles, /\.beta-grid\s+\.story-card\s+\.auth-actions\s*\{[\s\S]*flex-direction:\s*column/);
 assert.match(styles, /\.beta-grid\s+\.story-card\s+\.auth-actions\s*\{[\s\S]*justify-content:\s*center/);
 assert.match(styles, /\.beta-grid\s+\.story-card\s+\.auth-actions\s*\{[\s\S]*align-items:\s*center/);
+assert.doesNotMatch(styles, /\.beta-grid\s+\.story-card\s+\.auth-actions\s*\{[\s\S]*margin-top:\s*auto/);
 
 console.log('Beta card layout checks passed.');

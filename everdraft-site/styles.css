@@ -606,18 +606,28 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   display: grid;
   gap: 1rem;
   margin: 1.5rem 0;
+  align-items: stretch;
 }
 
 .beta-grid .story-card {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto minmax(3.25rem, auto) minmax(5.8rem, auto) auto;
+  align-content: start;
+  gap: .65rem;
   height: 100%;
+  text-align: center;
 }
 
 .beta-grid .story-card .auth-actions {
-  margin-top: auto;
+  flex-direction: column;
+  margin-top: .25rem;
   justify-content: center;
   align-items: center;
+  gap: .6rem;
+}
+
+.beta-grid .story-card .button-link {
+  min-width: min(100%, 11.5rem);
 }
 
 .beta-checklist,
