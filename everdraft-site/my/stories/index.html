@@ -17,24 +17,29 @@
       </a>
       <nav aria-label="Primary navigation" class="social-nav">
         <a href="/account/" class="nav-link">Account</a>
+        <a href="/library/" class="nav-link">Library</a>
         <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
       </nav>
     </header>
 
     <main class="auth-main story-main">
       <section class="auth-panel story-panel" aria-labelledby="stories-title">
-        <p class="eyebrow">WRITER SHELF</p>
+        <p class="eyebrow">DRAFT SHELF</p>
         <h1 id="stories-title">My Stories</h1>
         <p class="hero-copy">
           A private draft shelf for story metadata. Chapters and public discovery are not open yet.
         </p>
+        <div class="auth-actions top-return-actions">
+          <a class="button-link secondary-link" href="/account/">Back to Account</a>
+        </div>
 
         <div id="readerNotice" class="notice-panel" hidden>
-          Story creation is available to writer accounts. Update your profile role to Writer or Both to begin.
+          Please sign in and complete your profile to continue.
         </div>
 
         <div id="storyActions" class="story-actions" hidden>
           <a class="button-link" href="/my/stories/new/">Create New Story</a>
+          <a class="button-link secondary-link" href="/library/">View Library</a>
         </div>
 
         <div id="storyList" class="story-list" aria-live="polite"></div>

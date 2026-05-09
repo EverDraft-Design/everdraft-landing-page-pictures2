@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Writer — EverDraft</title>
+    <meta name="description" content="Read an EverDraft writer profile." />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+      </a>
+      <nav aria-label="Primary navigation" class="social-nav">
+        <a href="/library/" class="nav-link">Library</a>
+        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      </nav>
+    </header>
+    <main class="auth-main story-main">
+      <article class="auth-panel story-panel writer-profile-panel" aria-labelledby="writer-title">
+        <p class="eyebrow">EVERDRAFT WRITER</p>
+        <h1 id="writer-title">Loading writer...</h1>
+        <p id="writerMeta" class="hero-copy"></p>
+        <div class="auth-actions top-return-actions">
+          <a class="button-link secondary-link" href="/library/">Back to Library</a>
+        </div>
+        <div id="writerFollowControls" class="follow-actions" aria-label="Follow writer"></div>
+        <div id="writerBio" class="preview-summary writer-bio" hidden></div>
+        <section aria-labelledby="writer-stories-title">
+          <h2 id="writer-stories-title">Public Stories</h2>
+          <div id="writerStoriesList" class="story-list writer-story-list" aria-live="polite"></div>
+        </section>
+        <p id="writerStatus" class="form-status" aria-live="polite"></p>
+      </article>
+    </main>
+    <script type="module" src="/writer/writer-public.js"></script>
+  </body>
+</html>

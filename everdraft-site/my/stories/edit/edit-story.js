@@ -3,7 +3,7 @@ import {
   archiveStory,
   friendlyStoryError,
   getStoryByIdForAuthor,
-  requireWriterProfile,
+  requireMemberProfile,
   slugifyTitle,
   updateStory
 } from '/stories.js';
@@ -15,14 +15,11 @@ const blurbInput = document.getElementById('blurb');
 const genreInput = document.getElementById('genre');
 const statusInput = document.getElementById('status');
 const coverUrlInput = document.getElementById('coverUrl');
-const bannerUrlInput = document.getElementById('bannerUrl');
 const readerNotice = document.getElementById('readerNotice');
 const missingNotice = document.getElementById('missingNotice');
 const status = document.getElementById('storyStatus');
 const saveButton = document.getElementById('saveStoryButton');
 const archiveButton = document.getElementById('archiveStoryButton');
-const manageChaptersLink = document.getElementById('manageChaptersLink');
-const previewStoryLink = document.getElementById('previewStoryLink');
 
 function getStoryIdFromPath() {
   const match = window.location.pathname.match(/^\/my\/stories\/([^/]+)\/edit\/?$/);
@@ -36,9 +33,6 @@ function fillStory(story) {
   genreInput.value = story.genre || '';
   statusInput.value = story.status || 'draft';
   coverUrlInput.value = story.cover_url || '';
-  bannerUrlInput.value = story.banner_url || '';
-  manageChaptersLink.href = `/my/stories/chapters/?storyId=${encodeURIComponent(story.id)}`;
-  previewStoryLink.href = `/my/stories/${story.id}/preview/`;
   form.hidden = false;
 }
 
@@ -47,7 +41,7 @@ async function loadStory() {
     const session = await requireSession();
     if (!session) return;
 
-    const { canWrite } = await requireWriterProfile();
+    const { canWrite } = await requireMemberProfile();
 
     if (!canWrite) {
       readerNotice.hidden = false;
@@ -85,9 +79,8 @@ form.addEventListener('submit', async (event) => {
   saveButton.textContent = 'Saving...';
 
   try {
-    const story = await updateStory(getStoryIdFromPath(), payload);
-    fillStory(story);
-    status.textContent = 'Story saved.';
+    await updateStory(getStoryIdFromPath(), payload);
+    window.location.assign('/my/stories/');
   } catch (error) {
     status.textContent = friendlyStoryError(error);
   } finally {

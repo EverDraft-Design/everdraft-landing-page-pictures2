@@ -115,13 +115,13 @@ SUPABASE_URL=
 SUPABASE_ANON_KEY=
 ```
 
-During beta testing, signup and login pages display the actual Supabase error message returned by Auth or profile creation so configuration, email confirmation, RLS, and duplicate-account issues are easier to diagnose.
+Production-facing pages show warm EverDraft error messages instead of raw database or Supabase details. Specific validation copy is still kept where it helps the member, such as username already taken, invalid usernames, weak passwords, duplicate story slugs, and duplicate chapter numbers. Technical errors should be inspected through safe development logs rather than rendered directly in the UI.
 
-Signup must create the Supabase Auth user first. Only after Auth returns a real user id does EverDraft upsert the matching `public.profiles` row with `user_id`, `display_name`, `role`, and `pen_name`. If email confirmation is enabled and Supabase does not return an active session immediately, the browser cannot create the profile row under RLS until the user confirms their email and signs in.
+Signup must create the Supabase Auth user first. Only after Auth returns a real user id does EverDraft upsert the matching `public.profiles` row with `user_id`, `username`, `display_name`, and `pen_name`. If email confirmation is enabled and Supabase does not return an active session immediately, the browser cannot create the profile row under RLS until the user confirms their email and signs in.
 
 For email-confirmation projects, apply `supabase/migrations/003_create_profile_on_auth_signup.sql`. It adds a Postgres trigger on `auth.users` that creates the matching `public.profiles` row from signup metadata as soon as Supabase Auth creates the user, and backfills Auth users that were created before the trigger existed.
 
-EverDraft account identity now includes a locked public username. New signups must choose a lowercase username using 3-30 letters, numbers, hyphens, or underscores. The username is saved to `public.profiles.username`, must be unique, and cannot be changed after creation. Existing beta users whose profile has no username can set one once from `/account/` or `/onboarding/`. The admin role is not selectable in the UI.
+EverDraft account identity now includes a locked public username. New signups must choose a lowercase username using 3-30 letters, numbers, hyphens, or underscores. The username is saved to `public.profiles.username`, must be unique, and cannot be changed after creation. Existing beta users whose profile has no username can set one once from `/account/` or `/onboarding/`. Users do not choose reader/writer/both roles, and admin status is not selectable in the UI.
 
 To test locally:
 
@@ -140,29 +140,33 @@ Supabase Auth settings to check:
 - Email confirmation is configured the way you want for testing.
 - The `profiles` table migration has been applied and RLS policies are present.
 
-No Phase 1A database migration was needed because the existing `profiles` table already supports `user_id`, `display_name`, `pen_name`, `role`, `bio`, and `avatar_url`, and its RLS policies already allow users to create and update their own profile.
+The legacy `profiles.role` column may remain in the database for compatibility, but it is no longer shown to users or used for normal member access.
 
-## Phase 1B: Profile Onboarding
+## User-Facing Error Messages
 
-Phase 1B adds a small protected onboarding route:
+EverDraft maps Auth, profile, story, chapter, follow, Spark, Note, and Pinboard failures through `everdraft-site/errors.js` before showing them to visitors. Normal users should not see raw messages such as table permission errors, row-level security failures, constraint names, invalid SQL input, or missing database columns. Keep detailed diagnostics in safe development logging only, and never log passwords, tokens, sessions, service keys, or private credentials.
+
+## Phase 1B: First-Time Profile Completion
+
+Phase 1B keeps a small protected first-time profile completion fallback:
 
 - `/onboarding/`
 
-The onboarding page helps a signed-in user complete their basic `profiles` row with display name, pen name, role, and bio. It does not add story uploads, dashboards, discovery, payments, Writer's Nook, or public profile pages.
+The onboarding page helps a signed-in user complete their basic `profiles` row with username, display name, pen name, and bio if signup needs a dedicated handoff. `/account/` remains the main place to manage profile details and member tools after that first setup step. It does not add discovery, payments, Writer's Nook, or public profile pages.
 
 New signups with an immediate session are sent to `/onboarding/`. If Supabase email confirmation is enabled, the user will still need to confirm their email and sign in before onboarding can run.
 
 No Phase 1B migration was needed. The existing `profiles` table and RLS policies already support this flow.
 
-## Phase 2A: Writer Story Dashboard
+## Phase 2A: Member Story Dashboard
 
-Phase 2A adds a minimal protected writer area for story metadata:
+Phase 2A adds a minimal protected member area for story metadata:
 
-- `/my/stories/` lists the signed-in writer's own stories.
+- `/my/stories/` lists the signed-in member's own stories.
 - `/my/stories/new/` creates a story shell.
 - `/my/stories/:storyId/edit/` edits story metadata for the author.
 
-Only users with profile role `writer` or `both` can create or edit stories. Reader-only users see a friendly message directing them to update their profile role first.
+Any signed-in member with a profile can create or edit their own stories. Access is based on authentication and ownership, not reader/writer/both role values.
 
 The story form supports:
 
@@ -172,51 +176,120 @@ The story form supports:
 - genre
 - status
 - cover URL
-- banner URL
 
-Slugs are auto-generated from the title when left blank. New stories use `publication_mode = none` and `is_readable = true`. Publication Mode, KDP/KU controls, image upload, chapter posting, public story pages, discovery, follows, comments, and ratings are not part of this phase.
+Slugs are auto-generated from the title when left blank. New stories use `publication_mode = none` and `is_readable = true`. EverDraft uses cover art as the supported story visual for now. The legacy `stories.banner_url` database column may remain in Supabase, but it is not shown or updated by the website. Publication Mode, KDP/KU controls, image upload, chapter posting, public story pages, discovery, follows, comments, and ratings are not part of this phase.
 
 To test locally:
 
 1. Add `SUPABASE_URL` and `SUPABASE_ANON_KEY` to `.dev.vars`.
 2. Run `npm run dev`.
-3. Sign in as a user whose profile role is `writer` or `both`.
+3. Sign in as any member account with a completed profile.
 4. Open `/my/stories/`.
 5. Create a story at `/my/stories/new/`.
 6. Edit the story metadata from the list.
 
-No Phase 2A database migration was needed because the existing `stories` table and RLS policies already support author-owned story creation and updates.
+Migration `supabase/migrations/006_fix_story_ownership_rls.sql` repairs live story permissions if Supabase still rejects story saves with a row-level security or permission error. It recreates story read/create/update policies so `public.stories.author_id` is checked against the signed-in member's `public.profiles.id`, found through `profiles.user_id = auth.uid()`. Apply it manually after the earlier profile/account migrations. It does not delete story data.
 
-## Phase 2B: Private Chapter Drafts
+## Phase 2B: Chapters and Public Reading
 
-Phase 2B adds private chapter drafting under an author's own story:
+Phase 2B adds private chapter management for owned stories plus basic public reading pages:
 
-- `/my/stories/chapters/?storyId=...` lists chapters for one owned story.
-- `/my/stories/chapters/new/?storyId=...` creates a private chapter draft.
-- `/my/stories/:storyId/chapters/:chapterId/edit/` edits an owned chapter draft.
+- `/my/stories/:storyId/` manages one owned story and its chapters.
+- `/my/stories/:storyId/chapters/new/` creates a chapter draft.
+- `/my/stories/:storyId/chapters/:chapterId/edit/` edits an owned chapter.
+- `/story/:slug/` shows public story metadata and published chapters.
+- `/story/:slug/chapter/:chapterNumber/` shows one published readable chapter.
 
-Only users with profile role `writer` or `both` can use these pages, and the chapter helpers verify the parent story belongs to the current author before reading or writing chapters.
+Chapter ownership is enforced through the parent story: the signed-in Auth user must have a `public.profiles` row where `profiles.user_id = auth.uid()`, and that profile id must match `stories.author_id`. Chapters do not store Auth user ids.
 
-The chapter form supports:
+Chapter forms support `chapter_number`, title, content, and status. Status values are `draft`, `published`, `hidden`, and `archived`. The chapter editor intentionally uses a calm plain-text writing area for this beta phase, with word count, Save Draft, a last-saved note, and a browser warning for unsaved changes. Plain text avoids unsafe HTML while preserving line breaks and paragraph spacing on public reading pages. Publishing requires content; when a chapter is first saved as `published`, `published_at` is set if it was empty. Moving a chapter away from `published` does not erase `published_at`, so the original publish date remains available for beta review.
 
-- title
-- chapter number
-- status
-- content
+Public story pages show story metadata, cover art when present, author pen name or display name, and only published chapters while `stories.is_readable = true`. If a story is not readable, EverDraft shows the metadata and a gentle unavailable message without chapter content.
 
-This phase still does not add public reader chapter pages, comments, follows, ratings, discovery, payments, badges, admin tools, or Writer's Nook. No Phase 2B migration was needed because the existing `chapters` table and RLS policies already support author-owned chapter creation and updates.
+Known limitations: no comments, ratings, Storymarks, image upload, payments, admin dashboard, Writer's Nook, or Publication Mode/KDP UI are included in this phase.
 
-## Phase 2C: Private Author Preview
+Migration `supabase/migrations/007_fix_chapter_ownership_rls.sql` refreshes chapter RLS policies for public reads and owner-only authoring. Apply it manually in the Supabase SQL Editor after migration 006 if your live project has older chapter policies.
 
-Phase 2C adds an author-only story preview route:
+## Phase 2C: EverDraft Library
 
-- `/my/stories/:storyId/preview/`
+Phase 2C adds the first public Library route:
 
-The preview shows story metadata and the author's own non-archived chapter drafts in a reader-like layout, but it is still protected behind login, writer/both role checks, and story ownership checks. It is not a public story page and is not linked from the homepage.
+- `/library/` shows an early public shelf for readable stories.
 
-Use this route from the private story list or story edit page to review draft presentation before any future public reader experience exists.
+The homepage remains waitlist-first. The Library is linked from navigation and footer areas as a secondary public route, but "Join the Waitlist" stays the primary homepage action.
 
-This phase still does not add public discovery, public story pages, public chapter reading, comments, follows, ratings, payments, badges, admin tools, or Writer's Nook. No Phase 2C migration was needed.
+Library stories are selected from existing public story data. A story appears in the Library when it has:
+
+- `stories.status` of `ongoing` or `complete`
+- `stories.is_readable = true`
+- a title
+- a slug
+
+Archived stories, unreadable stories, draft-only stories, and stories without a slug are not listed. Library cards request only safe author display fields from `public.profiles`: `username`, `display_name`, and `pen_name`. The display name preference is pen name, then display name, then username, then "EverDraft Writer". Emails and private Auth data are not queried.
+
+Library cards show the story title, author name, genre, status, blurb snippet, cover artwork when present, published chapter count when available, and a `Read Story` link to `/story/:slug/`.
+
+Known limitations: no search yet, no filters yet, no comments, no ratings, no badges or Storymarks, no image upload, no Publication Mode UI, and no Writer's Nook. No new migration is required for the Library if migrations 006 and 007 have already been applied; those policies already allow public story metadata and published readable chapter reads while preserving owner-only writes.
+
+## Phase 3: Story and Writer Follows
+
+Phase 3 adds the first connection layer:
+
+- Library cards at `/library/` include compact story follow controls beneath the `Read Story` action.
+- Public story pages at `/story/:slug/` show story follow controls and story follower counts.
+- Public chapter pages at `/story/:slug/chapter/:chapterNumber/` include compact story follow controls near the chapter metadata so readers can follow while reading.
+- Public writer profile pages at `/writer/:username/` include writer follow controls and writer follower counts.
+- Signed-in members can follow or unfollow stories they do not own.
+- Signed-in members can follow or unfollow writers who are not themselves.
+- Signed-out readers see gentle sign-in prompts instead of follow buttons.
+- `/account/` includes `Your Reading Shelf` with followed stories and followed writers.
+
+Story follows happen on story-related pages. To follow a story, sign in, open `/library/`, `/story/:slug/`, or `/story/:slug/chapter/:chapterNumber/`, and use `Follow Story`. The button switches to `Unfollow Story` after the follow row exists. Signed-out visitors are linked to `/login/` with the current path preserved as the return destination. Story owners see a quiet owner note instead of self-follow buttons.
+
+Writer follows happen only on writer profile pages at `/writer/:username/`. To follow a writer, open their writer profile from a linked author name and use `Follow Writer`. Author names link to writer profiles where a public username exists, and the writer profile shows `Follow Writer` or `Unfollow Writer`, the writer follower count, the writer bio, and public readable stories where available. The writer cannot follow themselves.
+
+Followed stories appear on `/account/` with title, author display name, genre, status, published chapter count, a `Read Story` link, and an account-side `Unfollow Story` button. Followed writers appear on `/account/` with safe public display fields, follower count, public story count, and profile links when usernames exist. Writer unfollow actions live on `/writer/:username/` so writer-follow controls have one clear home.
+
+Follow rows use `public.profiles.id`, not Supabase Auth ids. For story follows, `story_follows.user_id` is the follower profile and `story_follows.story_id` is the followed story. For writer follows, `writer_follows.user_id` is the follower profile and `writer_follows.writer_id` is the followed writer profile. Duplicate follows are prevented by the existing unique constraints, and writer self-follows are blocked by a check constraint and policy.
+
+Apply `supabase/migrations/008_fix_follow_rls.sql` manually in the Supabase SQL Editor after migration 007. It keeps RLS enabled, grants safe Data API access for follow counts, allows authenticated users to create/delete only their own follow rows, blocks story self-follows, and preserves writer self-follow protection. The public count policies expose follow relationship rows containing profile/story ids, but no emails or private Auth data are queried by the site.
+
+Known limitations: no email notifications yet, no comments yet, no ratings yet, no badges or Storymarks yet, and no full reader shelves yet.
+
+## Phase 4: Notes, Pinboard, and Sparks
+
+Phase 4 adds writer-safe reader encouragement without opening public discussion threads:
+
+- Private Notes can be left by signed-in readers on public chapter pages at `/story/:slug/chapter/:chapterNumber/`.
+- Notes are private to writers and appear on the writer's Pinboard at `/account/pinboard/`.
+- Story Sparks and chapter Sparks are separate public encouragement counts.
+- Library cards at `/library/` show compact story Sparks alongside story follow controls.
+- Public story pages at `/story/:slug/` show story Sparks.
+- Public chapter pages show chapter Sparks and the private Note form.
+
+Notes are private to writers. They are not public comments, not ratings or reviews, and they do not appear below chapters. The Note form uses gentle categories: Encouragement, Reader Reaction, Character Thought, Plot Thought, Pacing Thought, Clarity Note, and Tiny Typo. Leaving a Note automatically adds one chapter Spark for that reader if they have not already Sparked the chapter.
+
+Writers can turn private Reader Notes on or off from `/account/` with the **Allow Reader Notes** setting. The default is on for existing and new profiles. Turning Notes off hides the Note form on public chapter pages and blocks new Notes, but it does not delete previous Notes. Sparks remain available even when Notes are turned off.
+
+The Pinboard is a private writer area, linked from `/account/` and private story management pages. It shows the Note type, Note text, story title, chapter title/number, safe reader display name, and date. It does not query or display reader emails.
+
+Sparks are public encouragement counts. Signed-out visitors can see Spark counts and are invited to sign in before adding a Spark. Signed-in readers can Spark or Unspark stories and chapters once per story/chapter. Owners see quiet owner copy instead of self-Spark controls so counts remain reader-focused.
+
+Apply `supabase/migrations/009_phase4_notes_sparks.sql` manually in the Supabase SQL Editor after migration 008. It creates `public.notes`, `public.story_sparks`, and `public.chapter_sparks`, grants the new tables to the Data API roles, enables RLS, adds ownership-based policies, and removes old public policies from the unused `public.comments` table without dropping it or deleting data.
+
+Apply `supabase/migrations/010_add_notes_enabled_to_profiles.sql` manually after migration 009. It adds `profiles.notes_enabled` with a safe default of `true` and recreates the Note insert policy so new Notes are only accepted when the writer is currently receiving Notes.
+
+Known limitations: no public comments, no ratings, no moderation dashboard, no notification emails, and no full analytics yet.
+
+## Navigation flow
+
+EverDraft route parents are intentionally simple so testers do not need the browser back button:
+
+- Account → My Stories / Pinboard. `/account/` links to `/my/stories/` and `/account/pinboard/`; both return to Account.
+- My Stories → Story Management. `/my/stories/` links to story creation and each owned story; story creation, story editing, and story management return to My Stories.
+- Story Management → Chapters. `/my/stories/:storyId/` links to chapter creation and editing; chapter forms return to Story Management.
+- Library → Story → Chapter. `/library/` links to public stories, stories return to Library, and chapters include Back to Story plus Return to Library.
+- Library → Writer. Public writer profiles return to Library.
 
 ## Signup Repair Notes
 
@@ -227,8 +300,14 @@ A safety migration is available at:
 - `supabase/migrations/002_fix_profiles_auth_signup.sql`
 - `supabase/migrations/003_create_profile_on_auth_signup.sql`
 - `supabase/migrations/004_add_locked_username_to_profiles.sql`
+- `supabase/migrations/005_remove_member_role_gate.sql`
+- `supabase/migrations/006_fix_story_ownership_rls.sql`
+- `supabase/migrations/007_fix_chapter_ownership_rls.sql`
+- `supabase/migrations/008_fix_follow_rls.sql`
+- `supabase/migrations/009_phase4_notes_sparks.sql`
+- `supabase/migrations/010_add_notes_enabled_to_profiles.sql`
 
-Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, or if Auth users are being created without profile rows. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. None of these migrations delete existing data.
+Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, if Auth users are being created without profile rows, or if story/chapter/follow saves fail with a permission/RLS error. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. Migration 005 keeps `profiles.role` as a legacy/internal field, prevents browser self-service role changes, removes the original story creation role gate, and updates the Auth trigger so new profiles no longer depend on intended-role metadata. Migration 006 recreates story metadata policies around profile ownership instead of legacy role values. Migration 007 recreates chapter policies around parent story ownership and published/readable public access. Migration 008 refreshes follow policies for public counts and member-owned follow/unfollow writes. Migration 009 adds private Notes, the Pinboard data path, public Sparks, and removes old public comment policies without deleting data. Migration 010 adds the writer-controlled Reader Notes setting and enforces it for new Notes. None of these migrations delete existing data.
 
 To test locked usernames:
 
@@ -240,7 +319,7 @@ To test locked usernames:
 6. Try another signup with the same username and confirm Supabase rejects it.
 7. Open `/account/` and confirm the username is read-only after it is set.
 
-If old blank beta rows already exist in `public.profiles`, remove them manually from Supabase **Table Editor > profiles** after confirming they are test rows. Look for rows with an empty `display_name`, missing `user_id`, or a role that does not match a real test account. Do not delete profiles for real users.
+If old blank beta rows already exist in `public.profiles`, remove them manually from Supabase **Table Editor > profiles** after confirming they are test rows. Look for rows with an empty `display_name` or missing `user_id`. Do not delete profiles for real users.
 
 ## Beta Testing Pathway
 
@@ -250,70 +329,77 @@ The public EverDraft site remains waitlist-first, but the current beta routes ar
 - `/contact/` gives early testers a simple way to send feedback by email. There is no contact form or email-sending backend yet.
 - `/signup/` creates a Supabase Auth account.
 - `/login/` signs in to an existing account.
-- `/account/` manages the basic profile and links to role-appropriate beta tools.
-- `/onboarding/` gives the same profile setup flow in a guided format.
-- `/my/stories/` lists the signed-in writer's own private stories.
+- `/account/` manages the basic profile and links to member beta tools.
+- `/onboarding/` is a first-time profile completion fallback after signup; normal profile editing happens from `/account/`.
+- `/library/` shows the first public Library shelf for readable ongoing/complete stories.
+- `/my/stories/` lists the signed-in member's own private stories.
 - `/my/stories/new/` creates a private story shell.
-- Story edit, chapter management, chapter draft editing, and author preview links are reached from the private My Stories flow after a story exists.
+- `/my/stories/:storyId/` manages an owned story and opens its chapter shelf.
+- `/my/stories/:storyId/chapters/new/` opens the Add Chapter form.
+- `/my/stories/:storyId/chapters/:chapterId/edit/` edits an owned chapter.
+- `/story/:slug/` and `/story/:slug/chapter/:chapterNumber/` are public reading routes for published readable chapters.
+
+Beta testers can send feedback, questions, and technical issues to `hello@everdraft.net`. This is currently a visible support email with mailto links on `/beta/` and `/account/`, not a contact form or email-sending system.
 
 Current working beta features:
 
-- Reader/writer account creation and login.
-- Basic profile editing with display name, pen name, role, and bio.
+- Account creation and login.
+- Basic profile editing with display name, pen name, and bio.
 - Locked usernames/handles for public identity.
-- Writer story dashboard for users with role `writer` or `both`.
+- Story dashboard for signed-in members when story routes are enabled.
 - Private story metadata creation and editing.
-- Private chapter drafts for owned stories.
-- Author-only story preview.
-- Friendly user-facing errors and improved navigation/back links through the private writer flow.
+- Private chapter drafting and publishing for owned stories.
+- Public story and chapter reading pages for published readable chapters.
+- Public Library browsing with story follows and story Sparks.
+- Private Reader Notes on chapters and writer Pinboard viewing.
+- Writer follows through public writer profile pages.
+- Friendly user-facing errors and improved navigation/back links through the member, writer, and reader flows.
 
 Coming later:
 
-- Public story reading pages.
 - Public story discovery.
-- Follows.
-- Sparks for stories and chapters.
-- Private Reader Notes.
-- Writer Pinboard.
-- Guided feedback comments.
-- Completion ratings.
+- Search and filters.
+- Notifications.
+- Full reader shelves.
 - Storymarks and badges.
 - Publication Mode controls.
 - Writer's Nook.
 - Payments and admin tools.
 
-Manual writer/both testing flow:
+Manual member testing flow:
 
 1. Run `npm run dev`.
 2. Open `/beta/`.
 3. Create an account at `/signup/`.
-4. Choose role `writer` or `both`.
+4. Confirm there is no reader/writer/both selection.
 5. Visit `/account/` and save profile details.
-6. Open `/my/stories/`.
-7. Create a story at `/my/stories/new/`.
+6. Open `/my/stories/` if private story routes are enabled.
+7. Create a story at `/my/stories/new/` if that route is enabled.
 8. Edit the story from the My Stories list.
 9. Add a cover URL if one is available, then update the story blurb/details.
 10. Manage private chapters from the story edit page.
 11. Save one chapter as draft, then try setting it to published.
-12. Preview the private author-only story view.
-13. Use only on-page links such as My Stories, Chapters, Edit Story, and Account to move around.
-14. Sign out, then sign back in at `/login/`.
+12. Publish the chapter and confirm it appears at `/story/:slug/`.
+13. Open `/story/:slug/chapter/:chapterNumber/`.
+14. Use only on-page links such as My Stories, Story Management, Back to Story, Return to Library, Pinboard, and Account to move around.
+15. Sign out, then sign back in at `/login/`.
 
 Manual reader testing flow:
 
-1. Create or update an account with role `reader`.
+1. Create or use a second test account if possible.
 2. Open `/account/`.
 3. Confirm profile editing works.
-4. Open `/my/stories/`.
-5. Confirm the reader-only message appears instead of story creation tools.
-6. When Library, public story pages, follows, Sparks, Reader Notes, or chapter reading pages are enabled for a test account, try each one and return using the on-page links.
+4. Open `/library/`.
+5. Open a story, follow it, Spark it, and read a chapter.
+6. Spark a chapter and leave a private Reader Note if possible.
+7. Return to the story page, then return to the Library.
 
 Manual navigation and mobile testing flow:
 
-1. Move through `/signup/`, `/login/`, `/account/`, `/beta/`, `/my/stories/`, and `/contact/` using only page links and buttons.
-2. Confirm testers do not need the browser back button for the private writer flow.
-3. Repeat the account and writer flow on a phone or narrow browser window.
-4. Check that buttons, cards, forms, and reading/preview pages feel comfortable to use.
+1. Move through `/signup/`, `/login/`, `/account/`, `/beta/`, `/library/`, `/my/stories/`, and `/contact/` using only page links and buttons.
+2. Confirm testers do not need the browser back button for the account, writer, or reading flows.
+3. Repeat the account, writer, and reader flows on a phone or narrow browser window.
+4. Check that buttons, cards, forms, and reading pages feel comfortable to use.
 
 Tester feedback:
 

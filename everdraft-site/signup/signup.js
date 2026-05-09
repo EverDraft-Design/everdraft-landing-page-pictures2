@@ -3,7 +3,6 @@ import { friendlyAuthError, redirectAfterAuth, signUpWithEmail, validateUsername
 const form = document.getElementById('signupForm');
 const button = document.getElementById('signupButton');
 const status = document.getElementById('signupStatus');
-const VALID_SIGNUP_ROLES = new Set(['reader', 'writer', 'both']);
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -15,7 +14,6 @@ form.addEventListener('submit', async (event) => {
   const email = String(formData.get('email') || '').trim();
   const password = String(formData.get('password') || '');
   const confirmPassword = String(formData.get('confirmPassword') || '');
-  const role = String(formData.get('role') || 'reader');
 
   if (!displayName || !username || !email || !password) {
     status.textContent = 'Please complete the required fields.';
@@ -25,12 +23,7 @@ form.addEventListener('submit', async (event) => {
   try {
     validateUsername(username);
   } catch (error) {
-    status.textContent = friendlyAuthError(error);
-    return;
-  }
-
-  if (!VALID_SIGNUP_ROLES.has(role)) {
-    status.textContent = 'Please choose Reader, Writer, or Both.';
+    status.textContent = friendlyAuthError(error, 'signup');
     return;
   }
 
@@ -43,21 +36,21 @@ form.addEventListener('submit', async (event) => {
   button.textContent = 'Creating...';
 
   try {
-    const data = await signUpWithEmail({ email, password, username, displayName, role });
+    const data = await signUpWithEmail({ email, password, username, displayName });
 
     if (data.profilePendingEmailConfirmation) {
-      status.textContent = 'Supabase created the Auth user, but no active session was returned because email confirmation may be enabled. The database profile trigger should create your profile row; if it does not appear, apply migration 003_create_profile_on_auth_signup.sql.';
+      status.textContent = 'Please check your email to confirm your account, then sign in to continue.';
       form.reset();
       return;
     }
 
-    if (!data.profile?.user_id || !data.profile.display_name || !data.profile.role) {
-      throw new Error('Signup beta error: Auth succeeded, but EverDraft did not receive a complete profile row.');
+    if (!data.profile?.user_id || !data.profile.display_name) {
+      throw new Error('We couldn’t finish setting up your profile just yet.');
     }
 
     redirectAfterAuth('/onboarding/');
   } catch (error) {
-    status.textContent = friendlyAuthError(error);
+    status.textContent = friendlyAuthError(error, 'signup');
   } finally {
     button.disabled = false;
     button.textContent = 'Sign Up';

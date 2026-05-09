@@ -6,7 +6,7 @@
     <title>Beta Access - EverDraft</title>
     <meta
       name="description"
-      content="A private beta testing path for the first EverDraft account and writer tools."
+      content="A private beta testing path for the first EverDraft account and member tools."
     />
     <link rel="icon" type="image/png" href="/favicon/favicon.png" />
     <link rel="stylesheet" href="/styles.css" />
@@ -31,15 +31,15 @@
         <h1 id="beta-title">Test the First EverDraft Tools</h1>
         <p class="hero-copy">
           EverDraft is being built step by step. This page is a quiet testing map for the
-          account, profile, writer, chapter, and reading-prep tools that exist now while the
-          public site remains waitlist-first.
+          account, profile, story, chapter, Library, follows, Sparks, Notes, and Pinboard tools
+          that exist now while the public site remains waitlist-first.
         </p>
 
         <div class="beta-grid" aria-label="Current beta features">
           <article class="story-card">
             <p class="eyebrow">ACCOUNTS</p>
             <h2>Sign up and sign in</h2>
-            <p>Create a test account, choose a role, then return later with the same email and password.</p>
+            <p>Create a test account, set a username, then return later with the same email and password.</p>
             <div class="auth-actions">
               <a class="button-link" href="/signup/">Create Account</a>
               <a class="button-link secondary-link" href="/login/">Sign In</a>
@@ -49,20 +49,29 @@
           <article class="story-card">
             <p class="eyebrow">PROFILE</p>
             <h2>Edit your profile</h2>
-            <p>Set a display name, pen name, role, and short bio. Check that your username feels clear before it locks.</p>
+            <p>Set a display name, pen name, and short bio. Check that your username feels clear before it locks.</p>
             <div class="auth-actions">
               <a class="button-link" href="/account/">Open Account</a>
-              <a class="button-link secondary-link" href="/onboarding/">Profile Onboarding</a>
             </div>
           </article>
 
           <article class="story-card">
-            <p class="eyebrow">WRITER FLOW</p>
-            <h2>Draft stories and chapters</h2>
-            <p>Writer and both accounts can try story setup, chapter drafts, published chapter status, and private story preview.</p>
+            <p class="eyebrow">STORIES</p>
+            <h2>Manage stories and chapters</h2>
+            <p>Create a private story shell, add details, draft chapters, and publish readable chapter drafts.</p>
             <div class="auth-actions">
               <a class="button-link" href="/my/stories/">My Stories</a>
               <a class="button-link secondary-link" href="/my/stories/new/">Create Story</a>
+            </div>
+          </article>
+
+          <article class="story-card">
+            <p class="eyebrow">READING</p>
+            <h2>Read, Spark, and send Notes</h2>
+            <p>Browse the Library, follow stories, Spark chapters, and send private Reader Notes to a writer’s Pinboard.</p>
+            <div class="auth-actions">
+              <a class="button-link" href="/library/">Open Library</a>
+              <a class="button-link secondary-link" href="/account/pinboard/">Pinboard</a>
             </div>
           </article>
         </div>
@@ -75,7 +84,7 @@
               <ul>
                 <li>Try this: create an account at <a href="/signup/">signup</a>.</li>
                 <li>Set your username and check it feels right before saving.</li>
-                <li>Add or edit your display name, pen name, role, and short bio.</li>
+                <li>Add or edit your display name, pen name, and short bio.</li>
                 <li>Return to your <a href="/account/">account page</a> and sign back in later.</li>
               </ul>
             </article>
@@ -88,7 +97,8 @@
                 <li>Add or edit the story blurb, genre, and details.</li>
                 <li>Add a chapter from the story editing page.</li>
                 <li>Save a chapter as draft, then try changing it to published.</li>
-                <li>View the private story preview and check the chapter order feels clear.</li>
+                <li>View the public story page and check the chapter order feels clear.</li>
+                <li>Open your <a href="/account/pinboard/">Pinboard</a> and check whether Reader Notes appear.</li>
                 <li>Notice anything confusing in the writer flow? Send feedback.</li>
               </ul>
             </article>
@@ -96,10 +106,11 @@
             <article class="checklist-group">
               <h3>Reader Test Flow</h3>
               <ul>
-                <li>Visit the reader-facing pages available to your test account.</li>
-                <li>Open a story or preview and check whether the reading path feels calm.</li>
-                <li>If Library, follows, Sparks, Reader Notes, or public chapter pages are open for your test, try each one.</li>
-                <li>Return to the story page, then return to the Library or account page.</li>
+                <li>Visit <a href="/library/">the Library</a>.</li>
+                <li>Open a story and check whether the reading path feels calm.</li>
+                <li>Follow a story, Spark a story, and read a chapter.</li>
+                <li>Spark a chapter and leave a private Reader Note if you can.</li>
+                <li>Return to the story page, then return to the Library.</li>
                 <li>Send feedback if something feels odd, missing, or hard to find.</li>
               </ul>
             </article>
@@ -109,7 +120,7 @@
               <ul>
                 <li>Use only on-page buttons and links to move around.</li>
                 <li>Check this feels clear without needing the browser back button.</li>
-                <li>Try Back to Account, Back to My Stories, Back to Story, Chapters, and Return to Library links wherever they appear.</li>
+                <li>Try Back to Account, Back to My Stories, Back to Story, Return to Library, and Pinboard links wherever they appear.</li>
               </ul>
             </article>
 
@@ -124,13 +135,18 @@
           </div>
         </section>
 
-        <section class="notice-panel contact-card" aria-labelledby="beta-contact-title">
-          <p class="eyebrow">FEEDBACK</p>
+        <section class="story-card beta-contact-card" aria-labelledby="beta-contact-title">
+          <p class="eyebrow">BETA SUPPORT</p>
           <h2 id="beta-contact-title">Found something odd?</h2>
           <p>
-            If something breaks, feels confusing, or you have a question, email
-            <a href="mailto:hello@everdraft.net">hello@everdraft.net</a>. Thoughtful feedback helps
-            EverDraft grow softer, safer, and easier to use.
+            EverDraft is still in early beta. If something breaks, feels confusing,
+            or you have a question, email:
+          </p>
+          <p>
+            <a href="mailto:hello@everdraft.net">hello@everdraft.net</a>
+          </p>
+          <p class="muted-copy">
+            Thoughtful feedback helps EverDraft grow softer, safer, and easier to use.
           </p>
           <div class="auth-actions">
             <a class="button-link secondary-link" href="/contact/">Contact EverDraft</a>
@@ -140,9 +156,9 @@
         <section class="beta-roadmap" aria-labelledby="roadmap-title">
           <h2 id="roadmap-title">Coming Later</h2>
           <div class="beta-pill-list">
-            <span>Follows</span>
-            <span>Guided feedback comments</span>
-            <span>Completion ratings</span>
+            <span>Search and filters</span>
+            <span>Notifications</span>
+            <span>Full reader shelves</span>
             <span>Storymarks and badges</span>
             <span>Publication Mode UI</span>
             <span>Writer's Nook</span>

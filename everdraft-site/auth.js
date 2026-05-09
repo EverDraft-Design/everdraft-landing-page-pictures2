@@ -1,8 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.105.1';
+import { getFriendlyErrorMessage } from '/errors.js';
 
 let clientPromise;
-const PROFILE_SELECT = 'id, user_id, username, display_name, pen_name, role, bio, avatar_url, created_at, updated_at';
-const VALID_PROFILE_ROLES = new Set(['reader', 'writer', 'both']);
+const PROFILE_SELECT_BASE = 'id, user_id, username, display_name, pen_name, role, bio, avatar_url, created_at, updated_at';
+const PROFILE_SELECT = `${PROFILE_SELECT_BASE}, notes_enabled`;
 const USERNAME_PATTERN = /^[a-z0-9_-]{3,30}$/;
 
 function getRedirectPath(fallback = '/account/') {
@@ -10,54 +11,31 @@ function getRedirectPath(fallback = '/account/') {
   return params.get('redirect') || fallback;
 }
 
-export function friendlyAuthError(error) {
-  const rawMessage = error && error.message ? String(error.message).trim() : '';
-  const message = rawMessage.toLowerCase();
-
-  if (!message) return 'Something went wrong. Please try again.';
-  if (message.includes('supabase is not configured')) {
-    return 'Supabase is not configured. The Worker is not receiving SUPABASE_URL and SUPABASE_ANON_KEY. ENABLE_SUPABASE_DEV_CHECK does not enable auth; it only controls the optional diagnostic endpoint.';
-  }
-  if (message.includes('supabase configuration could not be loaded')) {
-    return 'Supabase configuration could not be loaded. Check the deployed Worker and Cloudflare environment variables.';
-  }
-  if (message.includes('duplicate') && message.includes('username')) {
-    return 'That EverDraft username is already taken. Please choose another.';
-  }
-  if (message.includes('profiles_username')) {
-    return 'That EverDraft username is already taken. Please choose another.';
-  }
-  if (message.includes('already') || message.includes('registered')) {
-    return `Supabase: ${rawMessage}`;
-  }
-  if (message.includes('password')) {
-    return `Supabase: ${rawMessage}`;
-  }
-  if (message.includes('invalid login') || message.includes('invalid credentials')) {
-    return `Supabase: ${rawMessage}`;
-  }
-  if (message.includes('email')) {
-    return `Supabase: ${rawMessage}`;
-  }
-
-  return `Supabase: ${rawMessage}`;
+export function friendlyAuthError(error, context = 'auth') {
+  return getFriendlyErrorMessage(error, context);
 }
 
-function requireValidProfileFields({ displayName, role }) {
+function requireValidProfileFields({ displayName }) {
   const cleanDisplayName = String(displayName || '').trim();
-  const cleanRole = String(role || '').trim();
 
   if (!cleanDisplayName) {
     throw new Error('Display name is required before an EverDraft profile can be created.');
   }
 
-  if (!VALID_PROFILE_ROLES.has(cleanRole)) {
-    throw new Error('Please choose Reader, Writer, or Both before creating an EverDraft profile.');
-  }
-
   return {
-    displayName: cleanDisplayName,
-    role: cleanRole
+    displayName: cleanDisplayName
+  };
+}
+
+function isMissingNotesEnabledColumn(error) {
+  return String(error?.message || '').toLowerCase().includes('notes_enabled');
+}
+
+function withNotesEnabledDefault(profile) {
+  if (!profile) return profile;
+  return {
+    ...profile,
+    notes_enabled: profile.notes_enabled !== false
   };
 }
 
@@ -84,13 +62,13 @@ export function validateUsername(username) {
   return cleanUsername;
 }
 
-function requireValidProfileInput({ userId, username, displayName, role, requireUsername = true }) {
+function requireValidProfileInput({ userId, username, displayName, requireUsername = true }) {
   const cleanUserId = String(userId || '').trim();
-  const profileFields = requireValidProfileFields({ displayName, role });
+  const profileFields = requireValidProfileFields({ displayName });
   const cleanUsername = requireUsername ? validateUsername(username) : normalizeUsername(username);
 
   if (!cleanUserId) {
-    throw new Error('Signup beta error: Supabase Auth did not return a user id, so no profile was created.');
+    throw new Error('We couldn’t create your account just yet.');
   }
 
   return {
@@ -105,14 +83,14 @@ export async function getSupabaseBrowserClient() {
     clientPromise = fetch('/api/supabase-config', { cache: 'no-store' })
       .then(async (response) => {
         if (!response.ok) {
-          throw new Error('Supabase configuration could not be loaded.');
+          throw new Error('Account service configuration could not be loaded.');
         }
 
         return response.json();
       })
       .then((config) => {
         if (!config.configured || !config.url || !config.anonKey) {
-          throw new Error('Supabase is not configured for this environment.');
+          throw new Error('Account services are not configured for this environment.');
         }
 
         return createClient(config.url, config.anonKey);
@@ -147,13 +125,10 @@ export async function requireSession() {
   return session;
 }
 
-export async function signUpWithEmail({ email, password, username, displayName, role }) {
+export async function signUpWithEmail({ email, password, username, displayName }) {
   const supabase = await getSupabaseBrowserClient();
   const cleanUsername = validateUsername(username);
-  const profileFields = requireValidProfileFields({
-    displayName,
-    role
-  });
+  const profileFields = requireValidProfileFields({ displayName });
 
   const { data, error } = await supabase.auth.signUp({
     email: String(email || '').trim(),
@@ -161,8 +136,7 @@ export async function signUpWithEmail({ email, password, username, displayName, 
     options: {
       data: {
         username: cleanUsername,
-        display_name: profileFields.displayName,
-        intended_role: profileFields.role
+        display_name: profileFields.displayName
       }
     }
   });
@@ -170,7 +144,7 @@ export async function signUpWithEmail({ email, password, username, displayName, 
   if (error) throw error;
 
   if (!data.user?.id) {
-    throw new Error('Signup beta error: Supabase Auth did not return a user, so no profile was created.');
+    throw new Error('We couldn’t create your account just yet.');
   }
 
   if (!data.session) {
@@ -186,12 +160,10 @@ export async function signUpWithEmail({ email, password, username, displayName, 
     userId: data.user.id,
     username: cleanUsername,
     displayName: profileFields.displayName,
-    role: profileFields.role,
     penName: profileFields.displayName
   }).catch((profileError) => {
-    throw new Error(
-      `Auth user was created, but profile creation failed: ${profileError.message}. Check public.profiles RLS allows insert where user_id = auth.uid().`
-    );
+    console.error('EverDraft profile creation failed after signup.', profileError);
+    throw new Error('We couldn’t finish setting up your profile just yet.');
   });
 
   return {
@@ -225,8 +197,19 @@ export async function getCurrentProfile() {
     .eq('user_id', user.id)
     .maybeSingle();
 
+  if (isMissingNotesEnabledColumn(error)) {
+    const { data: fallbackData, error: fallbackError } = await supabase
+      .from('profiles')
+      .select(PROFILE_SELECT_BASE)
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (fallbackError) throw fallbackError;
+    return withNotesEnabledDefault(fallbackData);
+  }
+
   if (error) throw error;
-  return data;
+  return withNotesEnabledDefault(data);
 }
 
 export async function createProfileForAuthUser({
@@ -234,32 +217,38 @@ export async function createProfileForAuthUser({
   userId,
   username,
   displayName,
-  role = 'reader',
   penName,
   bio = '',
   requireUsername = true
 }) {
-  const profileInput = requireValidProfileInput({ userId, username, displayName, role, requireUsername });
+  const profileInput = requireValidProfileInput({ userId, username, displayName, requireUsername });
   const profile = {
     user_id: profileInput.userId,
     username: profileInput.username,
     display_name: profileInput.displayName,
     pen_name: String(penName ?? profileInput.displayName).trim() || profileInput.displayName,
-    role: profileInput.role,
     bio: String(bio || '').trim()
   };
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from('profiles')
     .upsert(profile, { onConflict: 'user_id' })
     .select(PROFILE_SELECT)
     .single();
 
+  if (isMissingNotesEnabledColumn(error)) {
+    ({ data, error } = await supabase
+      .from('profiles')
+      .upsert(profile, { onConflict: 'user_id' })
+      .select(PROFILE_SELECT_BASE)
+      .single());
+  }
+
   if (error) throw error;
-  return data;
+  return withNotesEnabledDefault(data);
 }
 
-export async function createProfileForCurrentUser({ displayName, role = 'reader', penName, bio = '' } = {}) {
+export async function createProfileForCurrentUser({ displayName, penName, bio = '' } = {}) {
   const supabase = await getSupabaseBrowserClient();
   const user = await getCurrentUser();
 
@@ -270,24 +259,22 @@ export async function createProfileForCurrentUser({ displayName, role = 'reader'
     userId: user.id,
     username: user.user_metadata?.username || '',
     displayName: displayName || user.user_metadata?.display_name || user.email,
-    role: role || user.user_metadata?.intended_role || 'reader',
     penName: penName ?? displayName ?? user.user_metadata?.display_name ?? '',
     bio,
     requireUsername: false
   }).catch((profileError) => {
-    throw new Error(
-      `Profile creation failed: ${profileError.message}. Check public.profiles RLS allows insert where user_id = auth.uid().`
-    );
+    console.error('EverDraft profile creation failed for current user.', profileError);
+    throw new Error('We couldn’t finish setting up your profile just yet.');
   });
 }
 
-export async function updateCurrentProfile({ username, displayName, penName, role, bio }) {
+export async function updateCurrentProfile({ username, displayName, penName, bio, notesEnabled = true }) {
   const supabase = await getSupabaseBrowserClient();
   const user = await getCurrentUser();
 
   if (!user?.id) throw new Error('You need to be signed in to update your profile.');
 
-  const profileFields = requireValidProfileFields({ displayName, role });
+  const profileFields = requireValidProfileFields({ displayName });
 
   const existingProfile = await getCurrentProfile();
   if (!existingProfile) {
@@ -298,8 +285,8 @@ export async function updateCurrentProfile({ username, displayName, penName, rol
   const updatePayload = {
     display_name: profileFields.displayName,
     pen_name: String(penName || '').trim(),
-    role: profileFields.role,
-    bio: String(bio || '').trim()
+    bio: String(bio || '').trim(),
+    notes_enabled: Boolean(notesEnabled)
   };
 
   if (!existingProfile.username && cleanUsername) {
@@ -310,15 +297,19 @@ export async function updateCurrentProfile({ username, displayName, penName, rol
     throw new Error('Your username is your locked EverDraft identity and cannot be changed.');
   }
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from('profiles')
     .update(updatePayload)
     .eq('user_id', user.id)
     .select(PROFILE_SELECT)
     .single();
 
+  if (isMissingNotesEnabledColumn(error)) {
+    throw new Error('The Reader Notes setting is not available just yet. Please try again later.');
+  }
+
   if (error) throw error;
-  return data;
+  return withNotesEnabledDefault(data);
 }
 
 export function isProfileComplete(profile) {
@@ -326,7 +317,6 @@ export function isProfileComplete(profile) {
     profile
       && profile.username
       && profile.display_name
-      && profile.role
       && (profile.pen_name || profile.bio)
   );
 }

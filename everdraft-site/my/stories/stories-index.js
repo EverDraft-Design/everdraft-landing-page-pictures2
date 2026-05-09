@@ -35,12 +35,14 @@ function renderStories(stories) {
         <p>${escapeHtml(story.genre || 'Genre not set')}</p>
       </div>
       <dl class="story-meta">
+        <div><dt>Slug</dt><dd>${escapeHtml(story.slug || 'Not set')}</dd></div>
         <div><dt>Created</dt><dd>${formatDate(story.created_at)}</dd></div>
         <div><dt>Updated</dt><dd>${formatDate(story.updated_at)}</dd></div>
       </dl>
       <div class="auth-actions">
-        <a class="button-link secondary-link" href="/my/stories/${story.id}/edit/">Edit</a>
-        <a class="button-link secondary-link" href="/my/stories/${story.id}/preview/">Preview</a>
+        <a class="button-link secondary-link" href="/my/stories/${story.id}/">Manage Story</a>
+        <a class="button-link secondary-link" href="/my/stories/${story.id}/edit/">Edit Details</a>
+        <a class="button-link secondary-link" href="/my/stories/${story.id}/chapters/new/">Add Chapter</a>
       </div>
     </article>
   `).join('');

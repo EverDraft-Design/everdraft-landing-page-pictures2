@@ -27,7 +27,7 @@
         <p class="eyebrow">ACCOUNT FOUNDATION</p>
         <h1 id="account-title">Your EverDraft Account</h1>
         <p class="hero-copy">
-          Manage your early EverDraft profile and find the private beta tools available for your role.
+          Manage your early EverDraft profile and member tools.
         </p>
 
         <div class="account-summary" aria-live="polite">
@@ -56,55 +56,61 @@
           <label for="penName">Pen name</label>
           <input id="penName" name="penName" type="text" autocomplete="off" />
 
-          <label for="role">Role</label>
-          <select id="role" name="role">
-            <option value="reader">Reader</option>
-            <option value="writer">Writer</option>
-            <option value="both">Both</option>
-          </select>
-
           <label for="bio">Bio</label>
           <textarea id="bio" name="bio" rows="4"></textarea>
+
+          <label class="settings-toggle" for="notesEnabled">
+            <input id="notesEnabled" name="notesEnabled" type="checkbox" checked />
+            <span>
+              <strong>Allow Reader Notes</strong>
+              <span>When this is on, readers can send private Notes to your Pinboard. You can turn this off at any time.</span>
+            </span>
+          </label>
 
           <button type="submit" id="saveProfileButton">Save Profile</button>
           <p id="profileStatus" class="form-status" aria-live="polite"></p>
         </form>
 
-        <div id="writerTools" class="notice-panel account-tools" hidden>
-          <p class="eyebrow">WRITER TESTING</p>
-          <h2>Your private writer tools are open for testing</h2>
+        <div id="memberTools" class="notice-panel account-tools" hidden>
+          <p class="eyebrow">MEMBER TESTING</p>
+          <h2>Member tools</h2>
           <p>
-            Use My Stories to create story foundations, manage private chapter drafts, and preview
-            your own work before public reader pages open more widely.
+            Signed-in members can test account and profile editing now. Story tools are available
+            to signed-in members when those routes are enabled.
           </p>
           <div class="auth-actions">
-            <a class="button-link" href="/my/stories/">Go to My Stories</a>
-            <a class="button-link secondary-link" href="/my/stories/new/">Create New Story</a>
+            <a class="button-link" href="/my/stories/">My Stories</a>
+            <a class="button-link secondary-link" href="/account/pinboard/">Pinboard</a>
+            <a class="button-link secondary-link" href="/library/">View Library</a>
           </div>
+          <p id="pinboardSummary" class="muted-copy"></p>
         </div>
 
-        <div id="readerTools" class="notice-panel account-tools" hidden>
-          <p class="eyebrow">READER TESTING</p>
-          <h2>Reader tools are coming later</h2>
-          <p>
-            You can test account and profile editing now. Reader features will open in a later
-            beta phase. If you want to try story creation, change your role to Writer or Both
-            and save your profile.
-          </p>
+        <div id="followingPanel" class="notice-panel account-tools following-panel" hidden>
+          <p class="eyebrow">FOLLOWING</p>
+          <h2>Your Reading Shelf</h2>
+          <p class="muted-copy">Return to the stories and writers you are keeping close.</p>
+          <div class="following-grid">
+            <section aria-labelledby="followed-stories-title">
+              <h3 id="followed-stories-title">Followed Stories</h3>
+              <div id="followingStoriesList" class="following-list" aria-live="polite"></div>
+            </section>
+            <section aria-labelledby="followed-writers-title">
+              <h3 id="followed-writers-title">Followed Writers</h3>
+              <div id="followingWritersList" class="following-list" aria-live="polite"></div>
+            </section>
+          </div>
+          <p id="followingStatus" class="form-status" aria-live="polite"></p>
         </div>
 
         <div class="auth-actions">
           <a class="button-link secondary-link" href="/beta/">Beta Access</a>
-          <a class="button-link secondary-link" href="/onboarding/">Review Onboarding</a>
           <button type="button" id="logoutButton">Log Out</button>
         </div>
-
-        <aside class="notice-panel support-card" aria-label="Testing support">
-          <p>
-            Need help or want to report a testing issue? Email
-            <a href="mailto:hello@everdraft.net">hello@everdraft.net</a>.
-          </p>
-        </aside>
+        <p class="support-line">
+          Need help or want to report a testing issue?
+          Email <a href="mailto:hello@everdraft.net">hello@everdraft.net</a>.
+        </p>
       </section>
     </main>
 

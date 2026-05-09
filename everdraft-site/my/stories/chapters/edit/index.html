@@ -15,20 +15,20 @@
         <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
       </a>
       <nav aria-label="Primary navigation" class="social-nav">
-        <a id="backToChaptersLink" href="/my/stories/" class="nav-link">Chapters</a>
+        <a id="backToStoryLink" href="/my/stories/" class="nav-link">Story Management</a>
         <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
       </nav>
     </header>
     <main class="auth-main story-main">
       <section class="auth-panel story-panel" aria-labelledby="edit-chapter-title">
-        <p class="eyebrow">PRIVATE CHAPTER</p>
-        <h1 id="edit-chapter-title">Edit Chapter Draft</h1>
-        <p class="hero-copy">Private chapter drafting only. No public reader view is open yet.</p>
-        <div id="readerNotice" class="notice-panel" hidden>Chapter drafting is available to writer accounts. Update your profile role to Writer or Both to begin.</div>
-        <div id="missingNotice" class="notice-panel" hidden>This chapter was not found, or it does not belong to your story.</div>
+        <p class="eyebrow">CHAPTER DRAFT</p>
+        <h1 id="edit-chapter-title">Edit Chapter</h1>
+        <p id="storySummary" class="hero-copy">Loading chapter...</p>
+        <div class="auth-actions top-return-actions">
+          <a id="storyManagementLink" class="button-link secondary-link" href="/my/stories/">Back to Story Management</a>
+        </div>
+        <div id="readerNotice" class="notice-panel" hidden>This chapter was not found, or it does not belong to your story.</div>
         <form id="chapterForm" class="auth-form story-form" hidden>
-          <label for="title">Chapter title</label>
-          <input id="title" name="title" type="text" required />
           <div class="form-grid">
             <div>
               <label for="chapterNumber">Chapter number</label>
@@ -44,10 +44,18 @@
               </select>
             </div>
           </div>
+          <label for="title">Title</label>
+          <input id="title" name="title" type="text" required />
           <label for="content">Content</label>
-          <textarea id="content" name="content" rows="14"></textarea>
+          <textarea id="content" name="content" rows="18" class="chapter-editor" spellcheck="true" placeholder="Continue the chapter here..."></textarea>
+          <div class="editor-meta">
+            <span id="wordCount">0 words</span>
+            <span id="lastSaved">Last saved: not yet</span>
+          </div>
+          <p class="field-note editor-note">Your browser may underline spelling suggestions while you write.</p>
+          <p class="field-note editor-note">Plain text is safest for this beta editor. Line breaks and paragraph spacing will be preserved on public reading pages.</p>
           <div class="auth-actions">
-            <button type="submit" id="saveChapterButton">Save Chapter</button>
+            <button type="submit" id="saveChapterButton">Save Draft</button>
             <button type="button" id="archiveChapterButton" class="secondary-button">Archive Chapter</button>
           </div>
           <p id="chapterStatus" class="form-status" aria-live="polite"></p>

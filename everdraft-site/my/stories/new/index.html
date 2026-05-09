@@ -28,9 +28,12 @@
         <p class="hero-copy">
           Start with the story shell. Chapter tools are coming later.
         </p>
+        <div class="auth-actions top-return-actions">
+          <a class="button-link secondary-link" href="/my/stories/">Back to My Stories</a>
+        </div>
 
         <div id="readerNotice" class="notice-panel" hidden>
-          Story creation is available to writer accounts. Update your profile role to Writer or Both to begin.
+          Please sign in and complete your profile to continue.
         </div>
 
         <form id="storyForm" class="auth-form story-form" hidden>
@@ -62,9 +65,6 @@
 
           <label for="coverUrl">Cover URL</label>
           <input id="coverUrl" name="coverUrl" type="url" />
-
-          <label for="bannerUrl">Banner URL</label>
-          <input id="bannerUrl" name="bannerUrl" type="url" />
 
           <button type="submit" id="saveStoryButton">Create Story</button>
           <p id="storyStatus" class="form-status" aria-live="polite"></p>

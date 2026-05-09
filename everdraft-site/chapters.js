@@ -1,52 +1,34 @@
 import { getSupabaseBrowserClient } from '/auth.js';
-import { getStoryByIdForAuthor, requireWriterProfile } from '/stories.js';
+import { getFriendlyErrorMessage } from '/errors.js';
+import { friendlyStoryError, getStoryByIdForAuthor, requireMemberProfile } from '/stories.js';
 
 const CHAPTER_SELECT = 'id, story_id, title, chapter_number, content, status, published_at, created_at, updated_at';
+const PUBLIC_STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, is_readable, created_at, updated_at';
+const PUBLIC_AUTHOR_SELECT = 'id, username, display_name, pen_name, notes_enabled';
+const PUBLIC_AUTHOR_SELECT_BASE = 'id, username, display_name, pen_name';
+const VALID_CHAPTER_STATUSES = new Set(['draft', 'published', 'hidden', 'archived']);
 
 export function friendlyChapterError(error) {
-  const message = (error && error.message ? error.message : '').toLowerCase();
-
-  if (message.includes('duplicate') || message.includes('chapters_story_chapter_number_key')) {
-    return 'That chapter number is already used for this story.';
-  }
-  if (message.includes('row-level security') || message.includes('permission')) {
-    return 'You do not have permission to change this chapter.';
-  }
-  if (message.includes('chapter number')) {
-    return 'Please enter a valid chapter number.';
-  }
-
-  return 'The chapter could not be saved. Please check the fields and try again.';
+  return getFriendlyErrorMessage(error, 'chapter');
 }
 
-export async function requireAuthorStory(storyId) {
-  const { canWrite } = await requireWriterProfile();
-
-  if (!canWrite) {
-    return {
-      canWrite,
-      story: null
-    };
-  }
-
+export async function getStoryForCurrentAuthor(storyId) {
+  const { profile, canWrite } = await requireMemberProfile();
   const { story } = await getStoryByIdForAuthor(storyId);
 
-  return {
-    canWrite,
-    story
-  };
+  if (!story || story.author_id !== profile.id) {
+    return { profile, canWrite, story: null };
+  }
+
+  return { profile, canWrite, story };
 }
 
-export async function getChaptersForStory(storyId) {
+export async function getChaptersForAuthorStory(storyId) {
   const supabase = await getSupabaseBrowserClient();
-  const { canWrite, story } = await requireAuthorStory(storyId);
+  const { profile, canWrite, story } = await getStoryForCurrentAuthor(storyId);
 
-  if (!canWrite || !story) {
-    return {
-      canWrite,
-      story,
-      chapters: []
-    };
+  if (!story) {
+    return { profile, canWrite, story: null, chapters: [] };
   }
 
   const { data, error } = await supabase
@@ -56,24 +38,32 @@ export async function getChaptersForStory(storyId) {
     .order('chapter_number', { ascending: true });
 
   if (error) throw error;
-
-  return {
-    canWrite,
-    story,
-    chapters: data || []
-  };
+  return { profile, canWrite, story, chapters: data || [] };
 }
 
-export async function getChapterByIdForStory(storyId, chapterId) {
+export async function getChapterForAuthor(chapterId, storyId = '') {
   const supabase = await getSupabaseBrowserClient();
-  const { canWrite, story } = await requireAuthorStory(storyId);
 
-  if (!canWrite || !story) {
-    return {
-      canWrite,
-      story,
-      chapter: null
-    };
+  if (!storyId) {
+    const { data, error } = await supabase
+      .from('chapters')
+      .select(CHAPTER_SELECT)
+      .eq('id', chapterId)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) {
+      const { profile, canWrite } = await requireMemberProfile();
+      return { profile, canWrite, story: null, chapter: null };
+    }
+
+    return getChapterForAuthor(chapterId, data.story_id);
+  }
+
+  const { profile, canWrite, story } = await getStoryForCurrentAuthor(storyId);
+
+  if (!story) {
+    return { profile, canWrite, story: null, chapter: null };
   }
 
   const { data, error } = await supabase
@@ -84,50 +74,54 @@ export async function getChapterByIdForStory(storyId, chapterId) {
     .maybeSingle();
 
   if (error) throw error;
-
-  return {
-    canWrite,
-    story,
-    chapter: data
-  };
+  return { profile, canWrite, story, chapter: data };
 }
 
-function cleanChapterPayload(input) {
+function cleanChapterPayload(input, existingChapter = null) {
+  const chapterNumber = Number.parseInt(String(input.chapterNumber || input.chapter_number || ''), 10);
   const title = String(input.title || '').trim();
-  const chapterNumber = Number.parseInt(input.chapterNumber, 10);
-
-  if (!title) {
-    throw new Error('A chapter title is required.');
-  }
+  const content = String(input.content || '').trim();
+  const status = String(input.status || 'draft').trim() || 'draft';
 
   if (!Number.isInteger(chapterNumber) || chapterNumber < 1) {
-    throw new Error('A valid chapter number is required.');
+    throw new Error('Chapter number is required and must be 1 or higher.');
+  }
+  if (!title) {
+    throw new Error('Chapter title is required.');
+  }
+  if (!VALID_CHAPTER_STATUSES.has(status)) {
+    throw new Error('Please choose a valid chapter status.');
+  }
+  if (status === 'published' && !content) {
+    throw new Error('Chapter content is required before publishing.');
   }
 
-  return {
-    title,
+  const payload = {
     chapter_number: chapterNumber,
-    content: String(input.content || '').trim(),
-    status: input.status || 'draft'
+    title,
+    content,
+    status
   };
+
+  if (status === 'published' && !existingChapter?.published_at) {
+    payload.published_at = new Date().toISOString();
+  }
+
+  return payload;
 }
 
 export async function createChapter(storyId, input) {
   const supabase = await getSupabaseBrowserClient();
-  const { canWrite, story } = await requireAuthorStory(storyId);
+  const { story } = await getStoryForCurrentAuthor(storyId);
 
-  if (!canWrite || !story) {
-    throw new Error('Chapter drafting is available only for your own stories.');
+  if (!story) {
+    throw new Error('This story was not found, or it belongs to another profile.');
   }
 
   const chapter = cleanChapterPayload(input);
-
   const { data, error } = await supabase
     .from('chapters')
-    .insert({
-      ...chapter,
-      story_id: story.id
-    })
+    .insert({ ...chapter, story_id: story.id })
     .select(CHAPTER_SELECT)
     .single();
 
@@ -137,18 +131,17 @@ export async function createChapter(storyId, input) {
 
 export async function updateChapter(storyId, chapterId, input) {
   const supabase = await getSupabaseBrowserClient();
-  const { canWrite, story } = await requireAuthorStory(storyId);
+  const { story, chapter: existingChapter } = await getChapterForAuthor(chapterId, storyId);
 
-  if (!canWrite || !story) {
-    throw new Error('Chapter editing is available only for your own stories.');
+  if (!story || !existingChapter) {
+    throw new Error('This chapter was not found, or it belongs to another story.');
   }
 
-  const chapter = cleanChapterPayload(input);
-
+  const chapter = cleanChapterPayload(input, existingChapter);
   const { data, error } = await supabase
     .from('chapters')
     .update(chapter)
-    .eq('id', chapterId)
+    .eq('id', existingChapter.id)
     .eq('story_id', story.id)
     .select(CHAPTER_SELECT)
     .single();
@@ -159,16 +152,16 @@ export async function updateChapter(storyId, chapterId, input) {
 
 export async function archiveChapter(storyId, chapterId) {
   const supabase = await getSupabaseBrowserClient();
-  const { canWrite, story } = await requireAuthorStory(storyId);
+  const { story, chapter } = await getChapterForAuthor(chapterId, storyId);
 
-  if (!canWrite || !story) {
-    throw new Error('Chapter archiving is available only for your own stories.');
+  if (!story || !chapter) {
+    throw new Error('This chapter was not found, or it belongs to another story.');
   }
 
   const { data, error } = await supabase
     .from('chapters')
     .update({ status: 'archived' })
-    .eq('id', chapterId)
+    .eq('id', chapter.id)
     .eq('story_id', story.id)
     .select(CHAPTER_SELECT)
     .single();
@@ -176,3 +169,84 @@ export async function archiveChapter(storyId, chapterId) {
   if (error) throw error;
   return data;
 }
+
+export async function getPublicStoryBySlug(slug) {
+  const supabase = await getSupabaseBrowserClient();
+  const cleanSlug = String(slug || '').trim().toLowerCase();
+
+  const { data, error } = await supabase
+    .from('stories')
+    .select(PUBLIC_STORY_SELECT)
+    .eq('slug', cleanSlug)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) return null;
+
+  let { data: author, error: authorError } = await supabase
+    .from('profiles')
+    .select(PUBLIC_AUTHOR_SELECT)
+    .eq('id', data.author_id)
+    .maybeSingle();
+
+  if (String(authorError?.message || '').toLowerCase().includes('notes_enabled')) {
+    ({ data: author, error: authorError } = await supabase
+      .from('profiles')
+      .select(PUBLIC_AUTHOR_SELECT_BASE)
+      .eq('id', data.author_id)
+      .maybeSingle());
+    if (author) author.notes_enabled = true;
+  }
+
+  if (authorError) throw authorError;
+  return { ...data, author };
+}
+
+export async function getPublicPublishedChaptersForStory(storyId) {
+  const supabase = await getSupabaseBrowserClient();
+  const { data, error } = await supabase
+    .from('chapters')
+    .select('id, story_id, title, chapter_number, status, published_at')
+    .eq('story_id', storyId)
+    .eq('status', 'published')
+    .order('chapter_number', { ascending: true });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function getPublicChapterBySlugAndNumber(slug, chapterNumber) {
+  const story = await getPublicStoryBySlug(slug);
+
+  if (!story || !story.is_readable) {
+    return { story, chapter: null, previousChapter: null, nextChapter: null };
+  }
+
+  const chapters = await getPublicPublishedChaptersForStory(story.id);
+  const number = Number.parseInt(String(chapterNumber || ''), 10);
+  const index = chapters.findIndex((chapter) => chapter.chapter_number === number);
+
+  if (index < 0) {
+    return { story, chapter: null, previousChapter: null, nextChapter: null };
+  }
+
+  const supabase = await getSupabaseBrowserClient();
+  const { data, error } = await supabase
+    .from('chapters')
+    .select(CHAPTER_SELECT)
+    .eq('story_id', story.id)
+    .eq('chapter_number', number)
+    .eq('status', 'published')
+    .maybeSingle();
+
+  if (error) throw error;
+
+  return {
+    story,
+    chapter: data,
+    previousChapter: chapters[index - 1] || null,
+    nextChapter: chapters[index + 1] || null
+  };
+}
+
+export { friendlyStoryError };
