@@ -92,13 +92,13 @@ waitlistForm.addEventListener('submit', async (event) => {
       throw new Error('Request failed');
     }
 
-    formStatus.textContent = 'Success! You are on the waitlist.';
+    formStatus.textContent = 'You’re in the loop. Thank you for following EverDraft’s next chapter.';
     waitlistForm.reset();
     heroEmail.value = payload.email || '';
   } catch (error) {
     formStatus.textContent = 'Sorry, there was an error. Please try again.';
   } finally {
     submitBtn.disabled = false;
-    submitBtn.textContent = 'Submit';
+    submitBtn.textContent = 'Keep Me in the Loop';
   }
 });

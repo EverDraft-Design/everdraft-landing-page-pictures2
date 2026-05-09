@@ -19,7 +19,7 @@ function cleanText(value, maxLength) {
 
 async function saveWaitlistSignup(request, env) {
   if (!env.DB) {
-    return jsonResponse({ error: 'Waitlist database is not configured.' }, 500);
+    return jsonResponse({ error: 'Updates signup database is not configured.' }, 500);
   }
 
   let payload;
@@ -79,8 +79,8 @@ async function saveWaitlistSignup(request, env) {
 
     return jsonResponse({ ok: true });
   } catch (error) {
-    console.error('Failed to save waitlist signup', error);
-    return jsonResponse({ error: 'Unable to save waitlist signup.' }, 500);
+    console.error('Failed to save updates signup', error);
+    return jsonResponse({ error: 'Unable to save updates signup.' }, 500);
   }
 }
 
@@ -144,7 +144,7 @@ function storyEditPage() {
               <a href="/community-guidelines/">Community Guidelines</a>
             </div>
           </details>
-          <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+          <a href="/#waitlist" class="nav-link nav-link-primary">Keep Me in the Loop</a>
         </div>
         <details class="mobile-nav">
           <summary class="nav-link">Menu</summary>
@@ -157,7 +157,7 @@ function storyEditPage() {
             <a href="/writer-ownership/">Writer Ownership</a>
             <a href="/community-guidelines/">Community Guidelines</a>
             <a href="/account/">Account</a>
-            <a href="/#waitlist" class="mobile-primary-link">Join the Waitlist</a>
+            <a href="/#waitlist" class="mobile-primary-link">Keep Me in the Loop</a>
           </div>
         </details>
       </nav>
@@ -247,7 +247,7 @@ function fallbackHtmlPage({ title, description, navLink, eyebrow, heading, headi
               <a href="/community-guidelines/">Community Guidelines</a>
             </div>
           </details>
-          <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+          <a href="/#waitlist" class="nav-link nav-link-primary">Keep Me in the Loop</a>
         </div>
         <details class="mobile-nav">
           <summary class="nav-link">Menu</summary>
@@ -260,7 +260,7 @@ function fallbackHtmlPage({ title, description, navLink, eyebrow, heading, headi
             <a href="/writer-ownership/">Writer Ownership</a>
             <a href="/community-guidelines/">Community Guidelines</a>
             <a href="/account/">Account</a>
-            <a href="/#waitlist" class="mobile-primary-link">Join the Waitlist</a>
+            <a href="/#waitlist" class="mobile-primary-link">Keep Me in the Loop</a>
           </div>
         </details>
       </nav>

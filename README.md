@@ -1,12 +1,12 @@
 # EverDraft Landing Page
 
-EverDraft is currently a landing and waitlist website served by a Cloudflare Worker. The public homepage, journal page, branding, and waitlist flow remain the priority.
+EverDraft is currently an early beta website served by a Cloudflare Worker. The public homepage now invites visitors to explore the Library, create an account, and optionally leave an email for updates while the platform continues to grow.
 
 ## Project Setup
 
 - Static site assets live in `everdraft-site/`.
 - The Cloudflare Worker entrypoint is `src/index.js`.
-- The waitlist API is handled at `/api/signup` and stores submissions in Cloudflare D1.
+- The updates signup API is handled at `/api/signup` and stores submissions in the existing Cloudflare D1 waitlist table.
 - Wrangler configuration lives in `wrangler.jsonc`.
 
 ## Local Development
@@ -83,7 +83,7 @@ The existing `migrations/0001_create_waitlist_signups.sql` file is for the curre
 
 ## Step 2: Supabase Schema Plan
 
-Step 2 adds reviewable database planning files for the future story-sharing platform. It still does not add public login, story uploads, dashboards, reader pages, writer pages, or other visible platform UI. The public site should remain waitlist-first.
+Step 2 added reviewable database planning files for the future story-sharing platform. Later phases added early beta account, story, Library, Reader Notes, Sparks, follows, Pinboard, contact, and trust pages.
 
 Review the plain-English schema plan here:
 
@@ -106,7 +106,7 @@ Phase 1A adds the first controlled Supabase Auth pages:
 - `/account/` for a protected basic profile page.
 - `/logout/` for signing out.
 
-These pages are for early account/profile testing only. Story upload, chapter posting, story discovery, dashboards, paid features, and Writer's Nook are not built yet. The public homepage remains waitlist-first and still uses "Join the Waitlist" as the primary call to action.
+These pages began as early account/profile testing surfaces. The current public homepage is no longer waitlist-first; it presents EverDraft as early beta, points visitors to the Library and account creation, and keeps an optional "Keep Me in the Loop" updates signup.
 
 The browser auth helper lives at `everdraft-site/auth.js`. It loads the Supabase Project URL and anon/public key from the Worker endpoint `/api/supabase-config`, which reads:
 
@@ -216,7 +216,7 @@ Phase 2C adds the first public Library route:
 
 - `/library/` shows an early public shelf for readable stories.
 
-The homepage remains waitlist-first. The Library is linked from navigation and footer areas as a secondary public route, but "Join the Waitlist" stays the primary homepage action.
+The homepage is now early-beta-first. The Library is a clear primary route from the homepage and navigation, while "Keep Me in the Loop" remains available as an optional updates signup.
 
 Library stories are selected from existing public story data. A story appears in the Library when it has:
 
@@ -285,8 +285,8 @@ Known limitations: no public comments, no ratings, no moderation dashboard, no n
 
 EverDraft route parents are intentionally simple so testers do not need the browser back button:
 
-- Public navigation stays grouped so the site can grow without crowding the header. Desktop uses top-level links for Home, Library, Journal, Account, an About dropdown, and Join the Waitlist. The About dropdown contains Beta Access, Contact, Writer Ownership, and Community Guidelines.
-- Mobile navigation uses one compact Menu disclosure with Home, Library, Journal, Beta Access, Contact, Writer Ownership, Community Guidelines, Account, and Join the Waitlist.
+- Public navigation stays grouped so the site can grow without crowding the header. Desktop uses top-level links for Home, Library, Journal, Account, an About dropdown, and Keep Me in the Loop. The About dropdown contains Beta Access, Contact, Writer Ownership, and Community Guidelines.
+- Mobile navigation uses one compact Menu disclosure with Home, Library, Journal, Beta Access, Contact, Writer Ownership, Community Guidelines, Account, and Keep Me in the Loop.
 - Account → My Stories / Pinboard. `/account/` links to `/my/stories/` and `/account/pinboard/`; both return to Account.
 - My Stories → Story Management. `/my/stories/` links to story creation and each owned story; story creation, story editing, and story management return to My Stories.
 - Story Management → Chapters. `/my/stories/:storyId/` links to chapter creation and editing; chapter forms return to Story Management.
@@ -326,7 +326,7 @@ If old blank beta rows already exist in `public.profiles`, remove them manually 
 
 ## Beta Testing Pathway
 
-The public EverDraft site remains waitlist-first, but the current beta routes are now easier to find for manual testing:
+The public EverDraft site is now positioned as early beta rather than waitlist-first. Current beta routes are easier to find for manual testing:
 
 - `/beta/` is the testing hub for the current early platform tools.
 - `/contact/` gives early testers a simple way to send feedback by email. There is no contact form or email-sending backend yet.
@@ -412,4 +412,4 @@ Tester feedback:
 - The beta checklist and account page both point testers to this address.
 - `/contact/` uses `mailto:hello@everdraft.net` and does not include a contact form.
 
-The homepage now acknowledges that private beta platform tools are being built, but "Join the Waitlist" remains the primary public call to action. Do not describe EverDraft as publicly launched until public story reading and discovery are intentionally added.
+The homepage now invites visitors to Explore the Library and Create an Account, with "Keep Me in the Loop" as an optional updates signup. EverDraft is still early beta, not fully launched; do not describe it as a crowded public platform or professional publishing service.
