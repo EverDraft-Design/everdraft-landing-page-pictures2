@@ -348,13 +348,16 @@ Current working beta features:
 - Private story metadata creation and editing.
 - Private chapter drafting and publishing for owned stories.
 - Public story and chapter reading pages for published readable chapters.
+- Public Library browsing with story follows and story Sparks.
+- Private Reader Notes on chapters and writer Pinboard viewing.
+- Writer follows through public writer profile pages.
 
 Coming later:
 
 - Public story discovery.
-- Follows.
-- Guided feedback comments.
-- Completion ratings.
+- Search and filters.
+- Notifications.
+- Full reader shelves.
 - Storymarks and badges.
 - Publication Mode controls.
 - Writer's Nook.
