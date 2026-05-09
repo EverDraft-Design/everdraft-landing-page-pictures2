@@ -22,7 +22,6 @@ const bioInput = document.getElementById('bio');
 const status = document.getElementById('profileStatus');
 const saveButton = document.getElementById('saveProfileButton');
 const logoutButton = document.getElementById('logoutButton');
-const myStoriesLink = document.getElementById('myStoriesLink');
 const writerTools = document.getElementById('writerTools');
 const readerTools = document.getElementById('readerTools');
 
@@ -40,10 +39,9 @@ function fillProfile(profile) {
   bioInput.value = profile.bio || '';
   avatarUrl.textContent = profile.avatar_url || 'Not set';
   profileState.textContent = isProfileComplete(profile) ? 'Ready for early testing' : 'Needs a few details';
-  const canTestWriterTools = ['writer', 'both'].includes(profile.role);
-  myStoriesLink.hidden = !canTestWriterTools;
-  writerTools.hidden = !canTestWriterTools;
-  readerTools.hidden = canTestWriterTools;
+  const isWriterProfile = ['writer', 'both'].includes(profile.role);
+  writerTools.hidden = !isWriterProfile;
+  readerTools.hidden = isWriterProfile;
   form.hidden = false;
 }
 
