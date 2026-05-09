@@ -146,13 +146,13 @@ The legacy `profiles.role` column may remain in the database for compatibility, 
 
 EverDraft maps Auth, profile, story, chapter, follow, Spark, Note, and Pinboard failures through `everdraft-site/errors.js` before showing them to visitors. Normal users should not see raw messages such as table permission errors, row-level security failures, constraint names, invalid SQL input, or missing database columns. Keep detailed diagnostics in safe development logging only, and never log passwords, tokens, sessions, service keys, or private credentials.
 
-## Phase 1B: Profile Onboarding
+## Phase 1B: First-Time Profile Completion
 
-Phase 1B adds a small protected onboarding route:
+Phase 1B keeps a small protected first-time profile completion fallback:
 
 - `/onboarding/`
 
-The onboarding page helps a signed-in user complete their basic `profiles` row with display name, pen name, and bio. It does not add story uploads, discovery, payments, Writer's Nook, or public profile pages.
+The onboarding page helps a signed-in user complete their basic `profiles` row with username, display name, pen name, and bio if signup needs a dedicated handoff. `/account/` remains the main place to manage profile details and member tools after that first setup step. It does not add discovery, payments, Writer's Nook, or public profile pages.
 
 New signups with an immediate session are sent to `/onboarding/`. If Supabase email confirmation is enabled, the user will still need to confirm their email and sign in before onboarding can run.
 
@@ -329,7 +329,7 @@ The public EverDraft site remains waitlist-first, but the current beta routes ar
 - `/signup/` creates a Supabase Auth account.
 - `/login/` signs in to an existing account.
 - `/account/` manages the basic profile and links to member beta tools.
-- `/onboarding/` gives the same profile setup flow in a guided format.
+- `/onboarding/` is a first-time profile completion fallback after signup; normal profile editing happens from `/account/`.
 - `/library/` shows the first public Library shelf for readable ongoing/complete stories.
 - `/my/stories/` lists the signed-in member's own private stories.
 - `/my/stories/new/` creates a private story shell.
