@@ -129,9 +129,37 @@ function storyEditPage() {
       <a href="/" class="brand" aria-label="EverDraft home">
         <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
       </a>
-      <nav aria-label="Primary navigation" class="social-nav">
-        <a href="/my/stories/" class="nav-link">My Stories</a>
-        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      <nav aria-label="Primary navigation" class="site-nav">
+        <div class="desktop-nav">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/library/" class="nav-link">Library</a>
+          <a href="/journal/" class="nav-link">Journal</a>
+          <a href="/account/" class="nav-link">Account</a>
+          <details class="nav-dropdown">
+            <summary class="nav-link">About</summary>
+            <div class="nav-dropdown-menu">
+              <a href="/beta/">Beta Access</a>
+              <a href="/contact/">Contact</a>
+              <a href="/writer-ownership/">Writer Ownership</a>
+              <a href="/community-guidelines/">Community Guidelines</a>
+            </div>
+          </details>
+          <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+        </div>
+        <details class="mobile-nav">
+          <summary class="nav-link">Menu</summary>
+          <div class="mobile-nav-panel">
+            <a href="/">Home</a>
+            <a href="/library/">Library</a>
+            <a href="/journal/">Journal</a>
+            <a href="/beta/">Beta Access</a>
+            <a href="/contact/">Contact</a>
+            <a href="/writer-ownership/">Writer Ownership</a>
+            <a href="/community-guidelines/">Community Guidelines</a>
+            <a href="/account/">Account</a>
+            <a href="/#waitlist" class="mobile-primary-link">Join the Waitlist</a>
+          </div>
+        </details>
       </nav>
     </header>
     <main class="auth-main story-main">
@@ -204,9 +232,37 @@ function fallbackHtmlPage({ title, description, navLink, eyebrow, heading, headi
       <a href="/" class="brand" aria-label="EverDraft home">
         <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
       </a>
-      <nav aria-label="Primary navigation" class="social-nav">
-        ${navLink}
-        <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+      <nav aria-label="Primary navigation" class="site-nav">
+        <div class="desktop-nav">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/library/" class="nav-link">Library</a>
+          <a href="/journal/" class="nav-link">Journal</a>
+          <a href="/account/" class="nav-link">Account</a>
+          <details class="nav-dropdown">
+            <summary class="nav-link">About</summary>
+            <div class="nav-dropdown-menu">
+              <a href="/beta/">Beta Access</a>
+              <a href="/contact/">Contact</a>
+              <a href="/writer-ownership/">Writer Ownership</a>
+              <a href="/community-guidelines/">Community Guidelines</a>
+            </div>
+          </details>
+          <a href="/#waitlist" class="nav-link nav-link-primary">Join the Waitlist</a>
+        </div>
+        <details class="mobile-nav">
+          <summary class="nav-link">Menu</summary>
+          <div class="mobile-nav-panel">
+            <a href="/">Home</a>
+            <a href="/library/">Library</a>
+            <a href="/journal/">Journal</a>
+            <a href="/beta/">Beta Access</a>
+            <a href="/contact/">Contact</a>
+            <a href="/writer-ownership/">Writer Ownership</a>
+            <a href="/community-guidelines/">Community Guidelines</a>
+            <a href="/account/">Account</a>
+            <a href="/#waitlist" class="mobile-primary-link">Join the Waitlist</a>
+          </div>
+        </details>
       </nav>
     </header>
     <main class="auth-main story-main">
@@ -260,6 +316,7 @@ function chapterNewPage() {
     heading: 'Create Chapter Draft',
     copy: 'Draft content for your story.',
     body: `<div class="auth-actions top-return-actions">
+          <a id="backToStoryLink" class="button-link secondary-link" href="/my/stories/" hidden>Back to Story</a>
           <a id="storyManagementLink" class="button-link secondary-link" href="/my/stories/">Back to Story Management</a>
         </div>
         <div id="readerNotice" class="notice-panel" hidden>This story was not found, or it does not belong to your account.</div>
@@ -304,6 +361,7 @@ function chapterEditPage() {
     heading: 'Edit Chapter',
     copy: 'Loading chapter...',
     body: `<div class="auth-actions top-return-actions">
+          <a id="backToStoryLink" class="button-link secondary-link" href="/my/stories/" hidden>Back to Story</a>
           <a id="storyManagementLink" class="button-link secondary-link" href="/my/stories/">Back to Story Management</a>
         </div>
         <div id="readerNotice" class="notice-panel" hidden>This chapter was not found, or it does not belong to your story.</div>
@@ -427,6 +485,7 @@ function publicChapterPage() {
         </section>
         <nav class="reader-nav" aria-label="Chapter navigation">
           <a id="previousChapterLink" class="button-link secondary-link" href="#" hidden>Previous Chapter</a>
+          <a id="backToStoryLink" class="button-link secondary-link" href="/story/" hidden>Back to Story</a>
           <a id="chapterBackToStoryLink" class="button-link secondary-link" href="/story/">Back to Story</a>
           <a class="button-link secondary-link" href="/library/">Return to Library</a>
           <a id="nextChapterLink" class="button-link secondary-link" href="#" hidden>Next Chapter</a>
