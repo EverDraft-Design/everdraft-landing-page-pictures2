@@ -792,6 +792,10 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   line-height: 1.75;
 }
 
+.chapter-content p {
+  margin: 0 0 1.35rem;
+}
+
 .chapter-preview-list {
   display: grid;
   gap: 1rem;
@@ -1188,6 +1192,11 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   max-width: 68ch;
   margin: 0 auto;
   font-size: 1.08rem;
+  color: var(--muted);
+  line-height: 1.8;
+  text-align: justify;
+  text-align-last: left;
+  hyphens: auto;
 }
 
 .reader-nav {
@@ -1240,6 +1249,12 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   .nav-link {
     padding: .4rem .68rem;
     font-size: .88rem;
+  }
+
+  .reading-content {
+    text-align: left;
+    text-align-last: auto;
+    hyphens: manual;
   }
 
   .story-follow-control,
