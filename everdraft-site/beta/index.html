@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Beta Access — EverDraft</title>
+    <title>Beta Access - EverDraft</title>
     <meta
       name="description"
       content="A private beta testing path for the first EverDraft account and member tools."
@@ -31,8 +31,8 @@
         <h1 id="beta-title">Test the First EverDraft Tools</h1>
         <p class="hero-copy">
           EverDraft is being built step by step. This page is a quiet testing map for the
-          account and profile tools that exist now while the public site
-          remains waitlist-first.
+          account, profile, story, chapter, Library, follows, Sparks, Notes, and Pinboard tools
+          that exist now while the public site remains waitlist-first.
         </p>
 
         <div class="beta-grid" aria-label="Current beta features">
@@ -49,7 +49,7 @@
           <article class="story-card">
             <p class="eyebrow">PROFILE</p>
             <h2>Edit your profile</h2>
-            <p>Set a display name, pen name, and short bio.</p>
+            <p>Set a display name, pen name, and short bio. Check that your username feels clear before it locks.</p>
             <div class="auth-actions">
               <a class="button-link" href="/account/">Open Account</a>
             </div>
@@ -58,7 +58,7 @@
           <article class="story-card">
             <p class="eyebrow">STORIES</p>
             <h2>Manage stories and chapters</h2>
-            <p>Create a private story shell, add chapters, and publish readable chapter drafts.</p>
+            <p>Create a private story shell, add details, draft chapters, and publish readable chapter drafts.</p>
             <div class="auth-actions">
               <a class="button-link" href="/my/stories/">My Stories</a>
               <a class="button-link secondary-link" href="/my/stories/new/">Create Story</a>
@@ -78,19 +78,61 @@
 
         <section class="beta-checklist" aria-labelledby="checklist-title">
           <h2 id="checklist-title">Testing Checklist</h2>
-          <ol>
-            <li>Create an account at <a href="/signup/">/signup/</a>.</li>
-            <li>Visit <a href="/account/">/account/</a> and edit profile details.</li>
-            <li>Confirm your username is locked once it has been set.</li>
-            <li>Open <a href="/my/stories/">My Stories</a>.</li>
-            <li>Create a story at <a href="/my/stories/new/">/my/stories/new/</a>.</li>
-            <li>Edit the story from the My Stories list.</li>
-            <li>Open the story, add a chapter, and publish it when ready.</li>
-            <li>Open <a href="/library/">the Library</a> and test story follows, Sparks, and public reading pages.</li>
-            <li>Leave a private Reader Note on a chapter from a second account if possible.</li>
-            <li>Open <a href="/account/pinboard/">Pinboard</a> and confirm Reader Notes appear for the writer.</li>
-            <li>Return to account, sign out, then sign back in.</li>
-          </ol>
+          <div class="checklist-groups">
+            <article class="checklist-group">
+              <h3>Account Setup</h3>
+              <ul>
+                <li>Try this: create an account at <a href="/signup/">signup</a>.</li>
+                <li>Set your username and check it feels right before saving.</li>
+                <li>Add or edit your display name, pen name, and short bio.</li>
+                <li>Return to your <a href="/account/">account page</a> and sign back in later.</li>
+              </ul>
+            </article>
+
+            <article class="checklist-group">
+              <h3>Writer Test Flow</h3>
+              <ul>
+                <li>Create a new story from <a href="/my/stories/">My Stories</a>.</li>
+                <li>Add a cover image URL if you have one handy.</li>
+                <li>Add or edit the story blurb, genre, and details.</li>
+                <li>Add a chapter from the story editing page.</li>
+                <li>Save a chapter as draft, then try changing it to published.</li>
+                <li>View the public story page and check the chapter order feels clear.</li>
+                <li>Open your <a href="/account/pinboard/">Pinboard</a> and check whether Reader Notes appear.</li>
+                <li>Notice anything confusing in the writer flow? Send feedback.</li>
+              </ul>
+            </article>
+
+            <article class="checklist-group">
+              <h3>Reader Test Flow</h3>
+              <ul>
+                <li>Visit <a href="/library/">the Library</a>.</li>
+                <li>Open a story and check whether the reading path feels calm.</li>
+                <li>Follow a story, Spark a story, and read a chapter.</li>
+                <li>Spark a chapter and leave a private Reader Note if you can.</li>
+                <li>Return to the story page, then return to the Library.</li>
+                <li>Send feedback if something feels odd, missing, or hard to find.</li>
+              </ul>
+            </article>
+
+            <article class="checklist-group">
+              <h3>Navigation Test</h3>
+              <ul>
+                <li>Use only on-page buttons and links to move around.</li>
+                <li>Check this feels clear without needing the browser back button.</li>
+                <li>Try Back to Account, Back to My Stories, Back to Story, Return to Library, and Pinboard links wherever they appear.</li>
+              </ul>
+            </article>
+
+            <article class="checklist-group">
+              <h3>Mobile Test</h3>
+              <ul>
+                <li>Try the same flow on mobile or a narrow browser window.</li>
+                <li>Check buttons, cards, forms, and reading pages are easy to use.</li>
+                <li>Notice anything that feels cramped or confusing? Please send a note.</li>
+              </ul>
+            </article>
+          </div>
         </section>
 
         <section class="story-card beta-contact-card" aria-labelledby="beta-contact-title">
@@ -106,6 +148,9 @@
           <p class="muted-copy">
             Thoughtful feedback helps EverDraft grow softer, safer, and easier to use.
           </p>
+          <div class="auth-actions">
+            <a class="button-link secondary-link" href="/contact/">Contact EverDraft</a>
+          </div>
         </section>
 
         <section class="beta-roadmap" aria-labelledby="roadmap-title">
@@ -118,6 +163,8 @@
             <span>Publication Mode UI</span>
             <span>Writer's Nook</span>
             <span>Payments and admin tools</span>
+            <span>Community Guidelines coming soon</span>
+            <span>Writer Ownership Statement coming soon</span>
           </div>
         </section>
       </section>
@@ -129,6 +176,7 @@
         <a href="/journal/">Journal</a>
         <a href="/#waitlist">Waitlist</a>
         <a href="/login/">Sign in</a>
+        <a href="/contact/">Contact</a>
       </nav>
       <img src="/assets/footer-logo.png" alt="EverDraft logo" class="footer-logo" />
     </footer>

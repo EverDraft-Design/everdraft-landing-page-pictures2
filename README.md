@@ -326,6 +326,7 @@ If old blank beta rows already exist in `public.profiles`, remove them manually 
 The public EverDraft site remains waitlist-first, but the current beta routes are now easier to find for manual testing:
 
 - `/beta/` is the testing hub for the current early platform tools.
+- `/contact/` gives early testers a simple way to send feedback by email. There is no contact form or email-sending backend yet.
 - `/signup/` creates a Supabase Auth account.
 - `/login/` signs in to an existing account.
 - `/account/` manages the basic profile and links to member beta tools.
@@ -344,6 +345,7 @@ Current working beta features:
 
 - Account creation and login.
 - Basic profile editing with display name, pen name, and bio.
+- Locked usernames/handles for public identity.
 - Story dashboard for signed-in members when story routes are enabled.
 - Private story metadata creation and editing.
 - Private chapter drafting and publishing for owned stories.
@@ -351,6 +353,7 @@ Current working beta features:
 - Public Library browsing with story follows and story Sparks.
 - Private Reader Notes on chapters and writer Pinboard viewing.
 - Writer follows through public writer profile pages.
+- Friendly user-facing errors and improved navigation/back links through the member, writer, and reader flows.
 
 Coming later:
 
@@ -373,9 +376,35 @@ Manual member testing flow:
 6. Open `/my/stories/` if private story routes are enabled.
 7. Create a story at `/my/stories/new/` if that route is enabled.
 8. Edit the story from the My Stories list.
-9. Open the story management page and add a chapter.
-10. Publish the chapter and confirm it appears at `/story/:slug/`.
-11. Open `/story/:slug/chapter/:chapterNumber/`.
-12. Sign out, then sign back in at `/login/`.
+9. Add a cover URL if one is available, then update the story blurb/details.
+10. Manage private chapters from the story edit page.
+11. Save one chapter as draft, then try setting it to published.
+12. Publish the chapter and confirm it appears at `/story/:slug/`.
+13. Open `/story/:slug/chapter/:chapterNumber/`.
+14. Use only on-page links such as My Stories, Story Management, Back to Story, Return to Library, Pinboard, and Account to move around.
+15. Sign out, then sign back in at `/login/`.
+
+Manual reader testing flow:
+
+1. Create or use a second test account if possible.
+2. Open `/account/`.
+3. Confirm profile editing works.
+4. Open `/library/`.
+5. Open a story, follow it, Spark it, and read a chapter.
+6. Spark a chapter and leave a private Reader Note if possible.
+7. Return to the story page, then return to the Library.
+
+Manual navigation and mobile testing flow:
+
+1. Move through `/signup/`, `/login/`, `/account/`, `/beta/`, `/library/`, `/my/stories/`, and `/contact/` using only page links and buttons.
+2. Confirm testers do not need the browser back button for the account, writer, or reading flows.
+3. Repeat the account, writer, and reader flows on a phone or narrow browser window.
+4. Check that buttons, cards, forms, and reading pages feel comfortable to use.
+
+Tester feedback:
+
+- Ask testers to email `hello@everdraft.net` for questions, testing issues, or thoughtful feedback.
+- The beta checklist and account page both point testers to this address.
+- `/contact/` uses `mailto:hello@everdraft.net` and does not include a contact form.
 
 The homepage now acknowledges that private beta platform tools are being built, but "Join the Waitlist" remains the primary public call to action. Do not describe EverDraft as publicly launched until public story reading and discovery are intentionally added.
