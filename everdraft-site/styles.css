@@ -44,6 +44,8 @@ body {
 .navbar, main, .site-footer { width: min(1120px, 92%); margin-inline: auto; }
 .navbar {
   display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap;
+  gap: .75rem;
   padding: 1.2rem 0;
 }
 .brand { color: var(--gold-soft); text-decoration: none; display:flex; align-items:center; line-height:0; }
@@ -71,7 +73,12 @@ body {
   color: #2f1b03;
   font-weight: 700;
 }
-.social-nav { display: flex; gap: 0.55rem; }
+.social-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
 .social-icon {
   display:grid; place-items:center; width:2rem; height:2rem; border-radius:999px;
   border:1px solid var(--border); color: var(--gold-soft); text-decoration:none;
@@ -196,6 +203,9 @@ button:focus-visible {
 .journal-featured-card {
   display: grid;
   gap: 1rem;
+}
+.journal-featured-card .button-link {
+  justify-self: center;
 }
 .journal-featured-card h2,
 .journal-note h2,
@@ -456,6 +466,12 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 .story-panel {
   position: relative;
   width: min(860px, 100%);
+}
+
+.story-panel > .eyebrow,
+.story-panel > h1,
+.story-panel > .hero-copy {
+  text-align: center;
 }
 
 .story-actions {
@@ -1210,6 +1226,22 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
 }
 
 @media (max-width: 640px) {
+  .navbar {
+    justify-content: center;
+    gap: .6rem;
+  }
+
+  .navbar .primary-nav,
+  .navbar .social-nav {
+    justify-content: center;
+    gap: .35rem;
+  }
+
+  .nav-link {
+    padding: .4rem .68rem;
+    font-size: .88rem;
+  }
+
   .story-follow-control,
   .chapter-follow-control,
   .story-spark-control,
