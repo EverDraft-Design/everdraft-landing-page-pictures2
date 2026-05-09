@@ -285,11 +285,14 @@ Known limitations: no public comments, no ratings, no moderation dashboard, no n
 
 EverDraft route parents are intentionally simple so testers do not need the browser back button:
 
+- Public navigation stays grouped so the site can grow without crowding the header. Desktop uses top-level links for Home, Library, Journal, Account, an About dropdown, and Join the Waitlist. The About dropdown contains Beta Access, Contact, Writer Ownership, and Community Guidelines.
+- Mobile navigation uses one compact Menu disclosure with Home, Library, Journal, Beta Access, Contact, Writer Ownership, Community Guidelines, Account, and Join the Waitlist.
 - Account → My Stories / Pinboard. `/account/` links to `/my/stories/` and `/account/pinboard/`; both return to Account.
 - My Stories → Story Management. `/my/stories/` links to story creation and each owned story; story creation, story editing, and story management return to My Stories.
 - Story Management → Chapters. `/my/stories/:storyId/` links to chapter creation and editing; chapter forms return to Story Management.
 - Library → Story → Chapter. `/library/` links to public stories, stories return to Library, and chapters include Back to Story plus Return to Library.
 - Library → Writer. Public writer profiles return to Library.
+- Trust/support pages are available at `/contact/`, `/writer-ownership/`, and `/community-guidelines/`. These pages are support and expectation-setting pages, not legal documents.
 
 ## Signup Repair Notes
 
@@ -327,6 +330,8 @@ The public EverDraft site remains waitlist-first, but the current beta routes ar
 
 - `/beta/` is the testing hub for the current early platform tools.
 - `/contact/` gives early testers a simple way to send feedback by email. There is no contact form or email-sending backend yet.
+- `/writer-ownership/` explains EverDraft's writer ownership promise.
+- `/community-guidelines/` explains respectful community expectations for Reader Notes, feedback, and writer comfort.
 - `/signup/` creates a Supabase Auth account.
 - `/login/` signs in to an existing account.
 - `/account/` manages the basic profile and links to member beta tools.
