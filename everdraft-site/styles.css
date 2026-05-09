@@ -608,6 +608,18 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   margin: 1.5rem 0;
 }
 
+.beta-grid .story-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.beta-grid .story-card .auth-actions {
+  margin-top: auto;
+  justify-content: center;
+  align-items: center;
+}
+
 .beta-checklist,
 .beta-roadmap,
 .account-tools {
