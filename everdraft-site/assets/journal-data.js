@@ -13,6 +13,7 @@ export const featuredArticle = {
 export const journalArticles = [
   {
     category: 'EVERDRAFT NOTES',
+    categorySlug: 'everdraft-notes',
     title: 'Write, Grow, Connect',
     date: 'Month Day, Year',
     excerpt: 'Placeholder excerpt for the guiding pillars of EverDraft.',
@@ -20,6 +21,7 @@ export const journalArticles = [
   },
   {
     category: "THE WRITER'S LANTERN",
+    categorySlug: 'writers-lantern',
     title: 'Where Can I Find Support as a Writer?',
     date: 'Month Day, Year',
     excerpt: 'Placeholder excerpt for writer support article.',
@@ -27,6 +29,7 @@ export const journalArticles = [
   },
   {
     category: "THE WRITER'S LANTERN",
+    categorySlug: 'writers-lantern',
     title: 'Where Can I Share My Unfinished Story?',
     date: 'Month Day, Year',
     excerpt: 'Placeholder excerpt for SEO writer guidance article.',
@@ -34,6 +37,7 @@ export const journalArticles = [
   },
   {
     category: 'EVERDRAFT NOTES',
+    categorySlug: 'everdraft-notes',
     title: 'The First Draft of EverDraft',
     date: 'May 3, 2026',
     excerpt: 'Placeholder excerpt for founder/background article.',
@@ -41,6 +45,7 @@ export const journalArticles = [
   },
   {
     category: "THE WRITER'S LANTERN",
+    categorySlug: 'writers-lantern',
     title: 'How Do I Get Feedback on My Writing?',
     date: 'Month Day, Year',
     excerpt: 'Placeholder excerpt for feedback guidance article.',
@@ -48,6 +53,7 @@ export const journalArticles = [
   },
   {
     category: "THE WRITER'S LANTERN",
+    categorySlug: 'writers-lantern',
     title: 'What to Do With a Story Sitting in Google Docs',
     date: 'Month Day, Year',
     excerpt: 'Placeholder excerpt for writer encouragement article.',
@@ -69,6 +75,7 @@ function setHref(selector, value) {
 function createArticleCard(article) {
   const card = document.createElement('article');
   card.className = 'journal-card';
+  card.dataset.category = article.categorySlug;
 
   const category = document.createElement('p');
   category.className = 'journal-category';
@@ -111,7 +118,40 @@ function renderJournalGrid() {
   }
 }
 
+function filterJournalCards(selectedFilter) {
+  const cards = document.querySelectorAll('.journal-card');
+
+  for (const card of cards) {
+    card.hidden = selectedFilter !== 'all' && card.dataset.category !== selectedFilter;
+  }
+}
+
+function updateFilterButtonState(filterButton, isSelected) {
+  filterButton.classList.toggle('is-active', isSelected);
+  filterButton.classList.toggle('active', isSelected);
+}
+
+function setupJournalFilters() {
+  const filterButtons = document.querySelectorAll('[data-filter]');
+  if (!filterButtons.length) return;
+
+  for (const filterButton of filterButtons) {
+    filterButton.addEventListener('click', () => {
+      const selectedFilter = filterButton.dataset.filter;
+
+      // The active classes keep the selected button gold-filled.
+      for (const button of filterButtons) {
+        const isSelected = button === filterButton;
+        updateFilterButtonState(button, isSelected);
+      }
+
+      filterJournalCards(selectedFilter);
+    });
+  }
+}
+
 if (typeof document !== 'undefined') {
   renderFeaturedArticle();
   renderJournalGrid();
+  setupJournalFilters();
 }
