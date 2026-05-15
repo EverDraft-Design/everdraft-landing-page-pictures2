@@ -15,15 +15,15 @@ export const journalArticles = [
     category: 'EVERDRAFT NOTES',
     categorySlug: 'everdraft-notes',
     title: 'Write, Grow, Connect',
-    date: 'Month Day, Year',
-    excerpt: 'Placeholder excerpt for the guiding pillars of EverDraft.',
+    date: 'May, 2026',
+    excerpt: 'Why EverDraft?',
     url: '/journal/write-grow-connect'
   },
   {
     category: "THE WRITER'S LANTERN",
     categorySlug: 'writers-lantern',
     title: 'Where Can I Find Support as a Writer?',
-    date: 'Month Day, Year',
+    date: 'May 13, 2026',
     excerpt: 'Placeholder excerpt for writer support article.',
     url: '/journal/writer-support'
   },
@@ -55,8 +55,8 @@ export const journalArticles = [
     category: "THE WRITER'S LANTERN",
     categorySlug: 'writers-lantern',
     title: 'What to Do With a Story Sitting in Google Docs',
-    date: 'Month Day, Year',
-    excerpt: 'Placeholder excerpt for writer encouragement article.',
+    date: 'May 15, 2026',
+    excerpt: 'If Google Docs isn't enough for you? EverDraft',
     url: '/journal/story-sitting-in-google-docs'
   }
 ];
