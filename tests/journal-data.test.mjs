@@ -11,6 +11,9 @@ const { featuredArticle, journalArticles } = await import('../everdraft-site/ass
 
 assert.match(journalHtml, /id="journal-grid"/);
 assert.match(journalHtml, /type="module" src="\/assets\/journal-data\.js"/);
+assert.match(journalHtml, /data-filter="all"/);
+assert.match(journalHtml, /data-filter="everdraft-notes"/);
+assert.match(journalHtml, /data-filter="writers-lantern"/);
 assert.doesNotMatch(journalHtml, /<article class="journal-card">/);
 
 assert.match(journalDataSource, /ADD NEW JOURNAL ARTICLES BELOW THIS LINE/);
@@ -46,10 +49,29 @@ assert.deepEqual(
 
 for (const article of journalArticles) {
   assert.ok(article.category);
+  assert.ok(['everdraft-notes', 'writers-lantern'].includes(article.categorySlug));
   assert.ok(article.title);
   assert.ok(article.date);
   assert.ok(article.excerpt);
   assert.ok(article.url.startsWith('/journal/'));
 }
+
+assert.deepEqual(
+  journalArticles.map((article) => article.categorySlug),
+  [
+    'everdraft-notes',
+    'writers-lantern',
+    'writers-lantern',
+    'everdraft-notes',
+    'writers-lantern',
+    'writers-lantern'
+  ]
+);
+
+assert.match(journalDataSource, /card\.dataset\.category\s*=\s*article\.categorySlug/);
+assert.match(journalDataSource, /setupJournalFilters/);
+assert.match(journalDataSource, /filterButton\.classList\.toggle\('is-active'/);
+assert.match(journalDataSource, /filterButton\.classList\.toggle\('active'/);
+assert.match(journalDataSource, /card\.hidden\s*=\s*selectedFilter !== 'all'/);
 
 console.log('Journal data checks passed.');

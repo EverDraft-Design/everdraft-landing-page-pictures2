@@ -372,6 +372,7 @@ button:focus-visible {
   font-size: .92rem;
 }
 .journal-filter.is-active,
+.journal-filter.active,
 .journal-filter:hover,
 .journal-filter:focus-visible {
   color: #2f1b03;
