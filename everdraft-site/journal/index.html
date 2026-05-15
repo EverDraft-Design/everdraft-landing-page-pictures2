@@ -65,12 +65,12 @@
       <section class="journal-section journal-featured-section" aria-labelledby="featured-post-title">
         <article class="journal-featured-card">
           <div class="journal-card-body">
-            <p class="journal-category">FEATURED NOTE</p>
-            <h2 id="featured-post-title">Featured Article Title</h2>
-            <p class="journal-date">Month Day, Year</p>
-            <p>Short featured article excerpt placeholder.</p>
+            <p class="journal-category" data-featured-category>FEATURED NOTE</p>
+            <h2 id="featured-post-title" data-featured-title>Featured Article Title</h2>
+            <p class="journal-date" data-featured-date>Month Day, Year</p>
+            <p data-featured-excerpt>Short featured excerpt placeholder.</p>
           </div>
-          <a href="/journal/first-draft-of-everdraft/" class="button-link">Read more</a>
+          <a href="/journal/featured-article" class="button-link" data-featured-link>Read more</a>
         </article>
       </section>
 
@@ -88,50 +88,7 @@
 
       <section class="journal-section" aria-labelledby="articles-title">
         <h2 id="articles-title" class="sr-only">Journal Articles</h2>
-        <div class="journal-card-grid">
-          <article class="journal-card">
-            <p class="journal-category">EVERDRAFT NOTES</p>
-            <h3>Write, Grow, Connect</h3>
-            <p class="journal-date">Month Day, Year</p>
-            <p>Placeholder excerpt for the guiding pillars of EverDraft.</p>
-            <a href="/journal/write-grow-connect" class="journal-read-link">Read more</a>
-          </article>
-          <article class="journal-card">
-            <p class="journal-category">THE WRITER'S LANTERN</p>
-            <h3>Where Can I Find Support as a Writer?</h3>
-            <p class="journal-date">Month Day, Year</p>
-            <p>Placeholder excerpt for writer support article.</p>
-            <a href="/journal/writer-support" class="journal-read-link">Read more</a>
-          </article>
-          <article class="journal-card">
-            <p class="journal-category">THE WRITER'S LANTERN</p>
-            <h3>Where Can I Share My Unfinished Story?</h3>
-            <p class="journal-date">Month Day, Year</p>
-            <p>Placeholder excerpt for SEO writer guidance article.</p>
-            <a href="/journal/share-unfinished-story" class="journal-read-link">Read more</a>
-          </article>
-          <article class="journal-card">
-            <p class="journal-category">EVERDRAFT NOTES</p>
-            <h3>The First Draft of EverDraft</h3>
-            <p class="journal-date">May 3, 2026</p>
-            <p>Placeholder excerpt for founder/background article.</p>
-            <a href="/journal/first-draft-of-everdraft/" class="journal-read-link">Read more</a>
-          </article>
-          <article class="journal-card">
-            <p class="journal-category">THE WRITER'S LANTERN</p>
-            <h3>How Do I Get Feedback on My Writing?</h3>
-            <p class="journal-date">Month Day, Year</p>
-            <p>Placeholder excerpt for feedback guidance article.</p>
-            <a href="/journal/get-feedback-on-writing" class="journal-read-link">Read more</a>
-          </article>
-          <article class="journal-card">
-            <p class="journal-category">THE WRITER'S LANTERN</p>
-            <h3>What to Do With a Story Sitting in Google Docs</h3>
-            <p class="journal-date">Month Day, Year</p>
-            <p>Placeholder excerpt for writer encouragement article.</p>
-            <a href="/journal/story-in-google-docs" class="journal-read-link">Read more</a>
-          </article>
-        </div>
+        <div id="journal-grid" class="journal-card-grid"></div>
       </section>
 
       <section class="journal-cta" aria-labelledby="journal-cta-title">
@@ -156,5 +113,6 @@
       </nav>
       <img src="/assets/footer-logo.png" alt="EverDraft logo" class="footer-logo" />
     </footer>
+    <script type="module" src="/assets/journal-data.js"></script>
   </body>
 </html>
