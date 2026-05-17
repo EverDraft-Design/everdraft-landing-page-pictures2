@@ -10,6 +10,7 @@ export const featuredArticle = {
 
 // ADD NEW JOURNAL ARTICLES BELOW THIS LINE
 // Copy one article block, paste it underneath, then change the title/date/excerpt/url.
+// If your copy includes an apostrophe, use double quotes around that value.
 export const journalArticles = [
   {
     category: 'EVERDRAFT NOTES',
@@ -56,7 +57,7 @@ export const journalArticles = [
     categorySlug: 'writers-lantern',
     title: 'What to Do With a Story Sitting in Google Docs',
     date: 'May 15, 2026',
-    excerpt: 'If Google Docs isn't enough for you? EverDraft',
+    excerpt: "If Google Docs isn't enough for you? EverDraft",
     url: '/journal/story-sitting-in-google-docs'
   }
 ];
