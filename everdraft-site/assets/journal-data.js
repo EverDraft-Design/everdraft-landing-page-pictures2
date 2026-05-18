@@ -57,7 +57,7 @@ export const journalArticles = [
     categorySlug: 'writers-lantern',
     title: 'What to Do With a Story Sitting in Google Docs',
     date: 'May 15, 2026',
-    excerpt: "If Google Docs isn't enough for you? EverDraft",
+    excerpt: "If Google Docs is not enough for you? EverDraft",
     url: '/journal/story-sitting-in-google-docs'
   }
 ];
