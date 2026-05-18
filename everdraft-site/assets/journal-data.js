@@ -4,7 +4,7 @@ export const featuredArticle = {
   category: 'FEATURED NOTE',
   title: 'Featured Article Title',
   date: 'Month Day, Year',
-  excerpt: 'Short featured excerpt placeholder.',
+  excerpt: 'Featured article excerpt placeholder.',
   url: '/journal/featured-article'
 };
 
@@ -16,15 +16,23 @@ export const journalArticles = [
     category: 'EVERDRAFT NOTES',
     categorySlug: 'everdraft-notes',
     title: 'Write, Grow, Connect',
-    date: 'May, 2026',
-    excerpt: 'Why EverDraft?',
+    date: 'Month Day, Year',
+    excerpt: 'Placeholder excerpt for the guiding pillars of EverDraft.',
     url: '/journal/write-grow-connect'
   },
   {
     category: "THE WRITER'S LANTERN",
     categorySlug: 'writers-lantern',
+    title: 'What to Do With a Story Sitting in Google Docs',
+    date: 'Month Day, Year',
+    excerpt: 'Placeholder excerpt for a writer encouragement article.',
+    url: '/journal/story-sitting-in-google-docs'
+  },
+  {
+    category: "THE WRITER'S LANTERN",
+    categorySlug: 'writers-lantern',
     title: 'Where Can I Find Support as a Writer?',
-    date: 'May 13, 2026',
+    date: 'Month Day, Year',
     excerpt: 'Placeholder excerpt for writer support article.',
     url: '/journal/writer-support'
   },
@@ -37,14 +45,6 @@ export const journalArticles = [
     url: '/journal/share-unfinished-story'
   },
   {
-    category: 'EVERDRAFT NOTES',
-    categorySlug: 'everdraft-notes',
-    title: 'The First Draft of EverDraft',
-    date: 'May 3, 2026',
-    excerpt: 'Placeholder excerpt for founder/background article.',
-    url: '/journal/first-draft-of-everdraft'
-  },
-  {
     category: "THE WRITER'S LANTERN",
     categorySlug: 'writers-lantern',
     title: 'How Do I Get Feedback on My Writing?',
@@ -53,12 +53,12 @@ export const journalArticles = [
     url: '/journal/get-feedback-on-writing'
   },
   {
-    category: "THE WRITER'S LANTERN",
-    categorySlug: 'writers-lantern',
-    title: 'What to Do With a Story Sitting in Google Docs',
-    date: 'May 15, 2026',
-    excerpt: "If Google Docs is not enough for you? EverDraft",
-    url: '/journal/story-sitting-in-google-docs'
+    category: 'EVERDRAFT NOTES',
+    categorySlug: 'everdraft-notes',
+    title: 'The First Draft of EverDraft',
+    date: 'May 3, 2026',
+    excerpt: 'Placeholder excerpt for founder/background article.',
+    url: '/journal/first-draft-of-everdraft'
   }
 ];
 

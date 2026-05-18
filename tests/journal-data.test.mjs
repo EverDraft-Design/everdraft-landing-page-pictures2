@@ -27,11 +27,11 @@ assert.deepEqual(
   journalArticles.map((article) => article.title),
   [
     'Write, Grow, Connect',
+    'What to Do With a Story Sitting in Google Docs',
     'Where Can I Find Support as a Writer?',
     'Where Can I Share My Unfinished Story?',
-    'The First Draft of EverDraft',
     'How Do I Get Feedback on My Writing?',
-    'What to Do With a Story Sitting in Google Docs'
+    'The First Draft of EverDraft'
   ]
 );
 
@@ -39,11 +39,11 @@ assert.deepEqual(
   journalArticles.map((article) => article.url),
   [
     '/journal/write-grow-connect',
+    '/journal/story-sitting-in-google-docs',
     '/journal/writer-support',
     '/journal/share-unfinished-story',
-    '/journal/first-draft-of-everdraft',
     '/journal/get-feedback-on-writing',
-    '/journal/story-sitting-in-google-docs'
+    '/journal/first-draft-of-everdraft'
   ]
 );
 
@@ -62,9 +62,9 @@ assert.deepEqual(
     'everdraft-notes',
     'writers-lantern',
     'writers-lantern',
-    'everdraft-notes',
     'writers-lantern',
-    'writers-lantern'
+    'writers-lantern',
+    'everdraft-notes'
   ]
 );
 
