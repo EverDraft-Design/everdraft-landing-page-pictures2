@@ -55,7 +55,7 @@ function renderEmptyState() {
       <h2>The shelves are still being filled.</h2>
       <p>Stories will appear here as writers begin publishing chapters to EverDraft.</p>
       <div class="auth-actions">
-        <a class="button-link" href="/#waitlist">Keep Me in the Loop</a>
+        <a class="button-link" href="/signup/">Create Account</a>
         <a class="button-link secondary-link" href="/">Return Home</a>
       </div>
     </div>

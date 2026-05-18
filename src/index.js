@@ -1,7 +1,5 @@
 import { getSupabaseClient, hasSupabaseConfig } from './supabase.js';
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 function jsonResponse(body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -10,78 +8,6 @@ function jsonResponse(body, status = 200) {
       'Cache-Control': 'no-store'
     }
   });
-}
-
-function cleanText(value, maxLength) {
-  if (typeof value !== 'string') return '';
-  return value.trim().slice(0, maxLength);
-}
-
-async function saveWaitlistSignup(request, env) {
-  if (!env.DB) {
-    return jsonResponse({ error: 'Updates signup database is not configured.' }, 500);
-  }
-
-  let payload;
-  try {
-    payload = await request.json();
-  } catch {
-    return jsonResponse({ error: 'Invalid JSON body.' }, 400);
-  }
-
-  const email = cleanText(payload.email, 254).toLowerCase();
-  const name = cleanText(payload.name, 120);
-  const role = cleanText(payload.role, 24);
-  const genres = cleanText(payload.genres, 300);
-  const betaAccess = cleanText(payload.betaAccess, 12);
-  const notes = cleanText(payload.notes, 1000);
-
-  if (!EMAIL_PATTERN.test(email)) {
-    return jsonResponse({ error: 'A valid email address is required.' }, 400);
-  }
-
-  if (!name || !role || !betaAccess) {
-    return jsonResponse({ error: 'Name, role, and beta access are required.' }, 400);
-  }
-
-  try {
-    await env.DB.prepare(`
-      INSERT INTO waitlist_signups (
-        email,
-        name,
-        role,
-        genres,
-        beta_access,
-        notes,
-        user_agent,
-        created_at
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
-      ON CONFLICT(email) DO UPDATE SET
-        name = excluded.name,
-        role = excluded.role,
-        genres = excluded.genres,
-        beta_access = excluded.beta_access,
-        notes = excluded.notes,
-        user_agent = excluded.user_agent,
-        updated_at = datetime('now')
-    `)
-      .bind(
-        email,
-        name,
-        role,
-        genres,
-        betaAccess,
-        notes,
-        request.headers.get('User-Agent') || ''
-      )
-      .run();
-
-    return jsonResponse({ ok: true });
-  } catch (error) {
-    console.error('Failed to save updates signup', error);
-    return jsonResponse({ error: 'Unable to save updates signup.' }, 500);
-  }
 }
 
 async function checkSupabaseConnection(env) {
@@ -144,7 +70,7 @@ function storyEditPage() {
               <a href="/community-guidelines/">Community Guidelines</a>
             </div>
           </details>
-          <a href="/#waitlist" class="nav-link nav-link-primary">Keep Me in the Loop</a>
+          <a href="/signup/" class="nav-link nav-link-primary">Create Account</a>
         </div>
         <details class="mobile-nav">
           <summary class="nav-link">Menu</summary>
@@ -157,7 +83,7 @@ function storyEditPage() {
             <a href="/writer-ownership/">Writer Ownership</a>
             <a href="/community-guidelines/">Community Guidelines</a>
             <a href="/account/">Account</a>
-            <a href="/#waitlist" class="mobile-primary-link">Keep Me in the Loop</a>
+            <a href="/signup/" class="mobile-primary-link">Create Account</a>
           </div>
         </details>
       </nav>
@@ -247,7 +173,7 @@ function fallbackHtmlPage({ title, description, navLink, eyebrow, heading, headi
               <a href="/community-guidelines/">Community Guidelines</a>
             </div>
           </details>
-          <a href="/#waitlist" class="nav-link nav-link-primary">Keep Me in the Loop</a>
+          <a href="/signup/" class="nav-link nav-link-primary">Create Account</a>
         </div>
         <details class="mobile-nav">
           <summary class="nav-link">Menu</summary>
@@ -260,7 +186,7 @@ function fallbackHtmlPage({ title, description, navLink, eyebrow, heading, headi
             <a href="/writer-ownership/">Writer Ownership</a>
             <a href="/community-guidelines/">Community Guidelines</a>
             <a href="/account/">Account</a>
-            <a href="/#waitlist" class="mobile-primary-link">Keep Me in the Loop</a>
+            <a href="/signup/" class="mobile-primary-link">Create Account</a>
           </div>
         </details>
       </nav>
@@ -564,14 +490,6 @@ export default {
       }
 
       return checkSupabaseConnection(env);
-    }
-
-    if (url.pathname === '/api/signup') {
-      if (request.method !== 'POST') {
-        return jsonResponse({ error: 'Method not allowed.' }, 405);
-      }
-
-      return saveWaitlistSignup(request, env);
     }
 
     if (env.ASSETS) {

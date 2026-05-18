@@ -20,7 +20,7 @@ assert.match(libraryHtml, /The EverDraft Library/);
 assert.match(libraryHtml, /A quiet shelf for stories beginning to find their readers\./);
 assert.match(libraryHtml, /The Library is opening gradually as EverDraft’s story tools are built\./);
 assert.match(libraryHtml, /libraryList/);
-assert.match(libraryHtml, /Keep Me in the Loop/);
+assert.match(libraryHtml, /Create Account/);
 assert.doesNotMatch(libraryHtml, /comment|rating|badge|Storymark|payment|Writer's Nook|Publication Mode|KDP/i);
 
 const libraryJs = read('everdraft-site/library/library.js');
@@ -52,8 +52,7 @@ assert.doesNotMatch(storiesHelper, /email|service_role|profiles\.role in|auth\.u
 
 const homepage = read('everdraft-site/index.html');
 assert.match(homepage, /Explore the Library/);
-assert.match(homepage, /Create an Account/);
-assert.match(homepage, /Keep Me in the Loop/);
+assert.match(homepage, /Create your account/);
 assert.match(homepage, /href="\/library\/"/);
 assert.doesNotMatch(homepage, /story feed|latest stories|browse all stories/i);
 

@@ -6,7 +6,7 @@ EverDraft is currently an early beta website served by a Cloudflare Worker. The 
 
 - Static site assets live in `everdraft-site/`.
 - The Cloudflare Worker entrypoint is `src/index.js`.
-- The updates signup API is handled at `/api/signup` and stores submissions in the existing Cloudflare D1 waitlist table.
+- Public calls-to-action now lead visitors into the account creation flow at `/signup/`.
 - Wrangler configuration lives in `wrangler.jsonc`.
 
 ## Local Development
@@ -79,7 +79,7 @@ For live beta testing, leave `ENABLE_SUPABASE_DEV_CHECK=false` unless you intent
 
 ## Database Migrations
 
-The existing `migrations/0001_create_waitlist_signups.sql` file is for the current Cloudflare D1 waitlist database.
+The existing `migrations/0001_create_waitlist_signups.sql` file is a legacy Cloudflare D1 migration from the former updates signup flow.
 
 ## Step 2: Supabase Schema Plan
 
@@ -106,7 +106,7 @@ Phase 1A adds the first controlled Supabase Auth pages:
 - `/account/` for a protected basic profile page.
 - `/logout/` for signing out.
 
-These pages began as early account/profile testing surfaces. The current public homepage is no longer waitlist-first; it presents EverDraft as early beta, points visitors to the Library and account creation, and keeps an optional "Keep Me in the Loop" updates signup.
+These pages began as early account/profile testing surfaces. The current public homepage is account-first: it presents EverDraft as early beta, points visitors to the Library, and invites interested readers and writers to create an account.
 
 The browser auth helper lives at `everdraft-site/auth.js`. It loads the Supabase Project URL and anon/public key from the Worker endpoint `/api/supabase-config`, which reads:
 
@@ -216,7 +216,7 @@ Phase 2C adds the first public Library route:
 
 - `/library/` shows an early public shelf for readable stories.
 
-The homepage is now early-beta-first. The Library is a clear primary route from the homepage and navigation, while "Keep Me in the Loop" remains available as an optional updates signup.
+The homepage is now early-beta-first. The Library is a clear primary route from the homepage and navigation, while account creation is the main signup path.
 
 Library stories are selected from existing public story data. A story appears in the Library when it has:
 
@@ -285,8 +285,8 @@ Known limitations: no public comments, no ratings, no moderation dashboard, no n
 
 EverDraft route parents are intentionally simple so testers do not need the browser back button:
 
-- Public navigation stays grouped so the site can grow without crowding the header. Desktop uses top-level links for Home, Library, Journal, Account, an About dropdown, and Keep Me in the Loop. The About dropdown contains Beta Access, Contact, Writer Ownership, and Community Guidelines.
-- Mobile navigation uses one compact Menu disclosure with Home, Library, Journal, Beta Access, Contact, Writer Ownership, Community Guidelines, Account, and Keep Me in the Loop.
+- Public navigation stays grouped so the site can grow without crowding the header. Desktop uses top-level links for Home, Library, Journal, Account, an About dropdown, and Create Account. The About dropdown contains Beta Access, Contact, Writer Ownership, and Community Guidelines.
+- Mobile navigation uses one compact Menu disclosure with Home, Library, Journal, Beta Access, Contact, Writer Ownership, Community Guidelines, Account, and Create Account.
 - Account → My Stories / Pinboard. `/account/` links to `/my/stories/` and `/account/pinboard/`; both return to Account.
 - My Stories → Story Management. `/my/stories/` links to story creation and each owned story; story creation, story editing, and story management return to My Stories.
 - Story Management → Chapters. `/my/stories/:storyId/` links to chapter creation and editing; chapter forms return to Story Management.
@@ -412,4 +412,4 @@ Tester feedback:
 - The beta checklist and account page both point testers to this address.
 - `/contact/` uses `mailto:hello@everdraft.net` and does not include a contact form.
 
-The homepage now invites visitors to Explore the Library and Create an Account, with "Keep Me in the Loop" as an optional updates signup. EverDraft is still early beta, not fully launched; do not describe it as a crowded public platform or professional publishing service.
+The homepage now invites visitors to Explore the Library and Create an Account. EverDraft is still early beta, not fully launched; do not describe it as a crowded public platform or professional publishing service.

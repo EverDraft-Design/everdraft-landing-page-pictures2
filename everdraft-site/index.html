@@ -33,7 +33,7 @@
               <a href="/community-guidelines/">Community Guidelines</a>
             </div>
           </details>
-          <a href="/#waitlist" class="nav-link nav-link-primary">Keep Me in the Loop</a>
+          <a href="/signup/" class="nav-link nav-link-primary">Create Account</a>
         </div>
         <details class="mobile-nav">
           <summary class="nav-link">Menu</summary>
@@ -46,14 +46,14 @@
             <a href="/writer-ownership/">Writer Ownership</a>
             <a href="/community-guidelines/">Community Guidelines</a>
             <a href="/account/">Account</a>
-            <a href="/#waitlist" class="mobile-primary-link">Keep Me in the Loop</a>
+            <a href="/signup/" class="mobile-primary-link">Create Account</a>
           </div>
         </details>
       </nav>
     </header>
 
     <main>
-      <section id="waitlist" class="hero" aria-labelledby="hero-title">
+      <section class="hero" aria-labelledby="hero-title">
         <p class="eyebrow">EARLY BETA</p>
         <h1 id="hero-title">Where Stories Spark, Grow & Glow</h1>
         <p class="hero-copy">
@@ -63,16 +63,20 @@
         </p>
         <div class="hero-actions" aria-label="Explore EverDraft">
           <a class="button-link" href="/library/">Explore the Library</a>
-          <a class="button-link secondary-link" href="/signup/">Create an Account</a>
+          <a class="button-link secondary-link" href="/signup/">Create your account</a>
         </div>
-        <p class="updates-copy">
-          Want updates as EverDraft grows? Leave your email and we’ll keep you in the loop.
-        </p>
-        <form id="heroForm" class="hero-form" novalidate>
-          <label for="heroEmail" class="sr-only">Email address</label>
-          <input id="heroEmail" name="email" type="email" placeholder="Enter your email" required />
-          <button type="submit" id="notifyButton">Keep Me in the Loop</button>
-        </form>
+        <section class="account-cta" aria-labelledby="account-cta-title">
+          <h2 id="account-cta-title">Your place is waiting.</h2>
+          <p>
+            Create your EverDraft account, confirm your email, and settle in at your own pace.
+            You do not have to post a story straight away — you can explore, shape your profile,
+            and share when you are ready.
+          </p>
+          <div class="auth-actions">
+            <a class="button-link" href="/signup/">Create your account</a>
+            <a class="button-link secondary-link" href="/login/">Already have an account? Log in</a>
+          </div>
+        </section>
       </section>
 
       <section class="features" aria-label="Platform features">
@@ -123,7 +127,7 @@
         <a href="/">Home</a>
         <a href="/library/">Library</a>
         <a href="/journal/">Journal</a>
-        <a href="/#waitlist">Updates</a>
+        <a href="/signup/">Create Account</a>
         <a href="/account/">Account</a>
         <a href="/contact/">Contact</a>
         <a href="/writer-ownership/">Writer Ownership</a>
@@ -132,44 +136,5 @@
       <img src="/assets/footer-logo.png" alt="EverDraft logo" class="footer-logo" />
     </footer>
 
-    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
-      <div class="modal-panel">
-        <button type="button" class="close-btn" id="closeModal" aria-label="Close updates form">×</button>
-        <h2 id="modal-title">Keep Me in the Loop</h2>
-        <p class="modal-copy">Tell us a little about your writing journey and what you would like to follow as EverDraft grows.</p>
-
-        <form id="waitlistForm" class="waitlist-form">
-          <label for="name">Name</label>
-          <input id="name" name="name" type="text" required />
-
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" required />
-
-          <fieldset>
-            <legend>What brings you to EverDraft?</legend>
-            <label><input type="radio" name="role" value="Writer" required /> Drafting stories</label>
-            <label><input type="radio" name="role" value="Reader" /> Reading stories</label>
-            <label><input type="radio" name="role" value="Both" /> A bit of both</label>
-          </fieldset>
-
-          <label for="genres">Favourite genres</label>
-          <input id="genres" name="genres" type="text" placeholder="Fantasy, Mystery, Sci-Fi..." />
-
-          <fieldset>
-            <legend>Beta access</legend>
-            <label><input type="radio" name="betaAccess" value="Yes" required /> Yes</label>
-            <label><input type="radio" name="betaAccess" value="No" /> No</label>
-          </fieldset>
-
-          <label for="notes">Any thoughts on the site, concept so far?(optional)</label>
-          <textarea id="notes" name="notes" rows="3"></textarea>
-
-          <button type="submit" id="submitWaitlist">Keep Me in the Loop</button>
-          <p id="formStatus" class="form-status" aria-live="polite"></p>
-        </form>
-      </div>
-    </div>
-
-    <script src="script.js"></script>
   </body>
 </html>

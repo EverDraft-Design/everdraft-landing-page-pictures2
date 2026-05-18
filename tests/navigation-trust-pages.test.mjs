@@ -28,8 +28,8 @@ for (const file of headerPages) {
 const homepage = read('everdraft-site/index.html');
 assert.match(homepage, /EARLY BETA/);
 assert.match(homepage, /Explore the Library/);
-assert.match(homepage, /Create an Account/);
-assert.match(homepage, /Keep Me in the Loop/);
+assert.match(homepage, /Create your account/);
+assert.doesNotMatch(homepage, /Keep Me in the Loop|heroForm|waitlistForm/);
 assert.doesNotMatch(homepage, /LAUNCHING SOON/);
 assert.doesNotMatch(homepage, /Join the Waitlist/);
 assert.match(homepage, /<summary class="nav-link">About<\/summary>/);
