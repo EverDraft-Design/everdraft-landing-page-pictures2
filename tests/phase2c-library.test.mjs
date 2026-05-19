@@ -51,7 +51,7 @@ assert.match(storiesHelper, /status', 'published'/);
 assert.doesNotMatch(storiesHelper, /email|service_role|profiles\.role in|auth\.user|user\.id.*author_id|banner_url|bannerUrl/);
 
 const homepage = read('everdraft-site/index.html');
-assert.match(homepage, /Explore the Library/);
+assert.match(homepage, /Visit the Library/);
 assert.match(homepage, /Create your account/);
 assert.match(homepage, /href="\/library\/"/);
 assert.doesNotMatch(homepage, /story feed|latest stories|browse all stories/i);

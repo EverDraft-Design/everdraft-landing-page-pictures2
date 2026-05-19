@@ -79,7 +79,7 @@ For live beta testing, leave `ENABLE_SUPABASE_DEV_CHECK=false` unless you intent
 
 ## Database Migrations
 
-The existing `migrations/0001_create_waitlist_signups.sql` file is a legacy Cloudflare D1 migration from the former updates signup flow.
+The existing first Cloudflare D1 migration is legacy from the former updates signup flow.
 
 ## Step 2: Supabase Schema Plan
 
@@ -326,7 +326,7 @@ If old blank beta rows already exist in `public.profiles`, remove them manually 
 
 ## Beta Testing Pathway
 
-The public EverDraft site is now positioned as early beta rather than waitlist-first. Current beta routes are easier to find for manual testing:
+The public EverDraft site is now positioned around early beta account creation and Library exploration. Current beta routes are easier to find for manual testing:
 
 - `/beta/` is the testing hub for the current early platform tools.
 - `/contact/` gives early testers a simple way to send feedback by email. There is no contact form or email-sending backend yet.
@@ -412,4 +412,4 @@ Tester feedback:
 - The beta checklist and account page both point testers to this address.
 - `/contact/` uses `mailto:hello@everdraft.net` and does not include a contact form.
 
-The homepage now invites visitors to Explore the Library and Create an Account. EverDraft is still early beta, not fully launched; do not describe it as a crowded public platform or professional publishing service.
+The homepage now invites visitors to Create an Account, Visit the Library, and review Beta testing details. EverDraft is still early beta, not fully launched; do not describe it as a crowded public platform or professional publishing service.

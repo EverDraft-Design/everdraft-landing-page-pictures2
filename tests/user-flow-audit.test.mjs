@@ -10,16 +10,21 @@ const readme = read('README.md');
 assert.match(homepage, /Create your account/);
 assert.doesNotMatch(homepage, /Keep Me in the Loop|heroForm|waitlistForm/);
 assert.match(homepage, /EverDraft is in early beta/);
-assert.match(homepage, /Explore the Library/);
-assert.match(homepage, /Your place is waiting\./);
+assert.match(homepage, /Visit the Library/);
+assert.match(homepage, /Beta testing details/);
+assert.match(homepage, /Step into EverDraft\./);
 assert.match(homepage, /Already have an account\? Log in/);
 assert.doesNotMatch(homepage, /Join the Waitlist/);
 assert.doesNotMatch(homepage, /Are you a writer, reader, or both\?/i);
 
 assert.match(betaHtml, /Library/);
-assert.match(betaHtml, /Pinboard/);
-assert.match(betaHtml, /Sparks/);
-assert.match(betaHtml, /Reader Notes/);
+assert.match(betaHtml, /Beta Testing EverDraft/);
+assert.match(betaHtml, /A Short Test Flow/);
+assert.match(betaHtml, /Create an account/);
+assert.match(betaHtml, /Explore the Library/);
+assert.match(betaHtml, /Try a writer action/);
+assert.match(betaHtml, /Share what felt confusing/);
+assert.doesNotMatch(betaHtml, /Writer Test Flow|Reader Test Flow|Navigation Test|Mobile Test/);
 assert.doesNotMatch(betaHtml, /Coming Later[\s\S]*Follows/);
 assert.doesNotMatch(betaHtml, /Coming Later[\s\S]*Private Notes and Sparks/);
 
