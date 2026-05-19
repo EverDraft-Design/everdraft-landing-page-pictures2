@@ -12,8 +12,8 @@ assert.doesNotMatch(homepage, /Keep Me in the Loop|heroForm|waitlistForm/);
 assert.match(homepage, /EverDraft is in early beta/);
 assert.match(homepage, /Visit the Library/);
 assert.match(homepage, /Beta testing details/);
-assert.match(homepage, /Step into EverDraft\./);
-assert.match(homepage, /Already have an account\? Log in/);
+assert.match(homepage, /class="hero home-hero"/);
+assert.doesNotMatch(homepage, /class="account-cta"|Step into EverDraft\./);
 assert.doesNotMatch(homepage, /Join the Waitlist/);
 assert.doesNotMatch(homepage, /Are you a writer, reader, or both\?/i);
 
