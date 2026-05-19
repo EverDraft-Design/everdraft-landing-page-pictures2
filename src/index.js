@@ -54,7 +54,7 @@ function storyEditPage() {
     <header class="navbar">
       <a href="/" class="brand" aria-label="EverDraft home">
         <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
-        <span class="brand-word">EVERDRAFT</span>
+        <span class="brand-word">VERDRAFT</span>
       </a>
       <nav aria-label="Primary navigation" class="site-nav">
         <div class="desktop-nav">
@@ -158,7 +158,7 @@ function fallbackHtmlPage({ title, description, navLink, eyebrow, heading, headi
     <header class="navbar">
       <a href="/" class="brand" aria-label="EverDraft home">
         <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
-        <span class="brand-word">EVERDRAFT</span>
+        <span class="brand-word">VERDRAFT</span>
       </a>
       <nav aria-label="Primary navigation" class="site-nav">
         <div class="desktop-nav">
