@@ -54,14 +54,14 @@ body {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: .7rem;
+  gap: .28rem;
   line-height: 1;
 }
 
 .brand-logo {
   width: auto;
-  height: 102px;
-  margin-block: -27px;
+  height: 74px;
+  margin-block: -14px;
   object-fit: contain;
   border-radius: 999px;
   display: block;
@@ -71,9 +71,9 @@ body {
 .brand-word {
   color: var(--gold-soft);
   font-family: "Cinzel", "Georgia", "Times New Roman", serif;
-  font-size: clamp(1.25rem, 2vw, 1.45rem);
+  font-size: clamp(1.35rem, 2vw, 1.55rem);
   font-weight: 700;
-  letter-spacing: .16em;
+  letter-spacing: .15em;
   text-transform: uppercase;
   text-shadow: 0 0 18px rgba(212, 175, 55, .16);
   white-space: nowrap;
@@ -1651,18 +1651,18 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   }
 
   .brand {
-    gap: .55rem;
+    gap: .18rem;
   }
 
   .brand-logo {
     width: auto;
-    height: 56px;
-    margin-block: -6px;
+    height: 52px;
+    margin-block: -5px;
   }
 
   .brand-word {
-    font-size: 1rem;
-    letter-spacing: .12em;
+    font-size: 1.08rem;
+    letter-spacing: .1em;
   }
 
   @media (max-width: 420px) {

@@ -21,7 +21,7 @@ for (const file of headerPages) {
   const html = readFileSync(file, 'utf8');
   if (!html.includes('<header class="navbar">')) continue;
   assert.match(html, /class="site-nav"/, `${file} should use grouped site nav`);
-  assert.match(html, /class="brand-word">EVERDRAFT<\/span>/, `${file} should include the header wordmark`);
+  assert.match(html, /class="brand-word">VERDRAFT<\/span>/, `${file} should include the header wordmark`);
   assert.match(html, /<summary class="nav-link">About<\/summary>/, `${file} should include About dropdown`);
   assert.match(html, /class="mobile-nav"/, `${file} should include compact mobile menu`);
 }
@@ -54,10 +54,12 @@ assert.match(guidelines, /href="\/contact\/">Contact EverDraft/);
 const styles = read('everdraft-site/styles.css');
 assert.match(styles, /@import url\("https:\/\/fonts\.googleapis\.com\/css2\?family=Cinzel/);
 assert.match(styles, /\.brand-word\s*\{[\s\S]*font-family:\s*"Cinzel"/);
-assert.match(styles, /\.brand-word\s*\{[\s\S]*letter-spacing:\s*\.16em/);
-assert.match(styles, /\.brand-logo\s*\{[\s\S]*height:\s*102px/);
-assert.match(styles, /\.brand-logo\s*\{[\s\S]*margin-block:\s*-27px/);
-assert.match(styles, /@media\s*\(max-width:\s*640px\)[\s\S]*\.brand-logo\s*\{[\s\S]*height:\s*56px/);
+assert.match(styles, /\.brand\s*\{[\s\S]*gap:\s*\.28rem/);
+assert.match(styles, /\.brand-word\s*\{[\s\S]*letter-spacing:\s*\.15em/);
+assert.match(styles, /\.brand-logo\s*\{[\s\S]*height:\s*74px/);
+assert.match(styles, /\.brand-logo\s*\{[\s\S]*margin-block:\s*-14px/);
+assert.match(styles, /@media\s*\(max-width:\s*640px\)[\s\S]*\.brand-logo\s*\{[\s\S]*height:\s*52px/);
+assert.match(styles, /@media\s*\(max-width:\s*640px\)[\s\S]*\.brand\s*\{[\s\S]*gap:\s*\.18rem/);
 assert.match(styles, /@media\s*\(max-width:\s*420px\)[\s\S]*\.brand-word\s*\{[\s\S]*display:\s*none/);
 assert.match(styles, /\.nav-dropdown-menu/);
 assert.match(styles, /\.mobile-nav-panel/);
