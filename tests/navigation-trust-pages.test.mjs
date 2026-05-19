@@ -27,7 +27,7 @@ for (const file of headerPages) {
 
 const homepage = read('everdraft-site/index.html');
 assert.match(homepage, /EARLY BETA/);
-assert.match(homepage, /Explore the Library/);
+assert.match(homepage, /Visit the Library/);
 assert.match(homepage, /Create your account/);
 assert.doesNotMatch(homepage, /Keep Me in the Loop|heroForm|waitlistForm/);
 assert.doesNotMatch(homepage, /LAUNCHING SOON/);

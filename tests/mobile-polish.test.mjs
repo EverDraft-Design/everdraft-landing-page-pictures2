@@ -22,7 +22,9 @@ assert.match(styles, /\.journal-featured-card\s+\.button-link\s*\{[\s\S]*justify
 
 assert.doesNotMatch(beta, /Profile Onboarding/);
 assert.doesNotMatch(beta, /href="\/onboarding\/"/);
-assert.match(beta, /Open Account/);
+assert.match(beta, /Create your account/);
+assert.match(beta, /Visit the Library/);
+assert.match(beta, /Give feedback \/ Contact/);
 
 assert.doesNotMatch(account, /Review Onboarding/);
 assert.doesNotMatch(account, /href="\/onboarding\/"/);

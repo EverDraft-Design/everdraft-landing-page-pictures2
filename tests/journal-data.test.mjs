@@ -17,7 +17,9 @@ assert.match(journalHtml, /data-filter="writers-lantern"/);
 assert.doesNotMatch(journalHtml, /<article class="journal-card">/);
 
 assert.match(journalDataSource, /ADD NEW JOURNAL ARTICLES BELOW THIS LINE/);
-assert.match(journalDataSource, /Copy one article block, paste it underneath/);
+assert.match(journalDataSource, /Copy one full article block, paste it underneath/);
+assert.match(journalDataSource, /VALID_CATEGORY_SLUGS/);
+assert.match(journalDataSource, /isValidArticle/);
 
 assert.equal(featuredArticle.category, 'FEATURED NOTE');
 assert.equal(featuredArticle.url, '/journal/featured-article');
@@ -72,6 +74,7 @@ assert.match(journalDataSource, /card\.dataset\.category\s*=\s*article\.category
 assert.match(journalDataSource, /setupJournalFilters/);
 assert.match(journalDataSource, /filterButton\.classList\.toggle\('is-active'/);
 assert.match(journalDataSource, /filterButton\.classList\.toggle\('active'/);
+assert.match(journalDataSource, /aria-pressed/);
 assert.match(journalDataSource, /card\.hidden\s*=\s*selectedFilter !== 'all'/);
 
 console.log('Journal data checks passed.');

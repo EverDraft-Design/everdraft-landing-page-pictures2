@@ -1,68 +1,70 @@
 // EDIT THE FEATURED JOURNAL ARTICLE HERE.
-// Change the title/date/excerpt/url values between the quote marks.
+// Change only the text between the quote marks unless you are comfortable editing JavaScript.
 export const featuredArticle = {
-  category: 'FEATURED NOTE',
-  title: 'Featured Article Title',
-  date: 'Month Day, Year',
-  excerpt: 'Featured article excerpt placeholder.',
-  url: '/journal/featured-article'
+  category: "FEATURED NOTE",
+  title: "Featured Article Title",
+  date: "Month Day, Year",
+  excerpt: "Featured article excerpt placeholder.",
+  url: "/journal/featured-article"
 };
 
 // ADD NEW JOURNAL ARTICLES BELOW THIS LINE
-// Copy one article block, paste it underneath, then change the title/date/excerpt/url.
-// If your copy includes an apostrophe, use double quotes around that value.
+// Copy one full article block, paste it underneath, then change the category/title/date/excerpt/url.
+// Keep the commas between article blocks. Keep categorySlug as either "everdraft-notes" or "writers-lantern".
 export const journalArticles = [
   {
-    category: 'EVERDRAFT NOTES',
-    categorySlug: 'everdraft-notes',
-    title: 'Write, Grow, Connect',
-    date: 'Month Day, Year',
-    excerpt: 'Placeholder excerpt for the guiding pillars of EverDraft.',
-    url: '/journal/write-grow-connect'
+    category: "EVERDRAFT NOTES",
+    categorySlug: "everdraft-notes",
+    title: "Write, Grow, Connect",
+    date: "Month Day, Year",
+    excerpt: "Placeholder excerpt for the guiding pillars of EverDraft.",
+    url: "/journal/write-grow-connect"
   },
   {
     category: "THE WRITER'S LANTERN",
-    categorySlug: 'writers-lantern',
-    title: 'What to Do With a Story Sitting in Google Docs',
-    date: 'Month Day, Year',
-    excerpt: 'Placeholder excerpt for a writer encouragement article.',
-    url: '/journal/story-sitting-in-google-docs'
+    categorySlug: "writers-lantern",
+    title: "What to Do With a Story Sitting in Google Docs",
+    date: "Month Day, Year",
+    excerpt: "Placeholder excerpt for a writer encouragement article.",
+    url: "/journal/story-sitting-in-google-docs"
   },
   {
     category: "THE WRITER'S LANTERN",
-    categorySlug: 'writers-lantern',
-    title: 'Where Can I Find Support as a Writer?',
-    date: 'Month Day, Year',
-    excerpt: 'Placeholder excerpt for writer support article.',
-    url: '/journal/writer-support'
+    categorySlug: "writers-lantern",
+    title: "Where Can I Find Support as a Writer?",
+    date: "Month Day, Year",
+    excerpt: "Placeholder excerpt for writer support article.",
+    url: "/journal/writer-support"
   },
   {
     category: "THE WRITER'S LANTERN",
-    categorySlug: 'writers-lantern',
-    title: 'Where Can I Share My Unfinished Story?',
-    date: 'Month Day, Year',
-    excerpt: 'Placeholder excerpt for SEO writer guidance article.',
-    url: '/journal/share-unfinished-story'
+    categorySlug: "writers-lantern",
+    title: "Where Can I Share My Unfinished Story?",
+    date: "Month Day, Year",
+    excerpt: "Placeholder excerpt for SEO writer guidance article.",
+    url: "/journal/share-unfinished-story"
   },
   {
     category: "THE WRITER'S LANTERN",
-    categorySlug: 'writers-lantern',
-    title: 'How Do I Get Feedback on My Writing?',
-    date: 'Month Day, Year',
-    excerpt: 'Placeholder excerpt for feedback guidance article.',
-    url: '/journal/get-feedback-on-writing'
+    categorySlug: "writers-lantern",
+    title: "How Do I Get Feedback on My Writing?",
+    date: "Month Day, Year",
+    excerpt: "Placeholder excerpt for feedback guidance article.",
+    url: "/journal/get-feedback-on-writing"
   },
   {
-    category: 'EVERDRAFT NOTES',
-    categorySlug: 'everdraft-notes',
-    title: 'The First Draft of EverDraft',
-    date: 'May 3, 2026',
-    excerpt: 'Placeholder excerpt for founder/background article.',
-    url: '/journal/first-draft-of-everdraft'
+    category: "EVERDRAFT NOTES",
+    categorySlug: "everdraft-notes",
+    title: "The First Draft of EverDraft",
+    date: "May 3, 2026",
+    excerpt: "Placeholder excerpt for founder/background article.",
+    url: "/journal/first-draft-of-everdraft"
   }
 ];
 
 // Page rendering code lives below. You usually should not need to edit this section.
+const VALID_CATEGORY_SLUGS = new Set(["everdraft-notes", "writers-lantern"]);
+
 function setText(selector, value) {
   const element = document.querySelector(selector);
   if (element) element.textContent = value;
@@ -71,6 +73,18 @@ function setText(selector, value) {
 function setHref(selector, value) {
   const element = document.querySelector(selector);
   if (element) element.href = value;
+}
+
+function isValidArticle(article) {
+  return Boolean(
+    article &&
+      VALID_CATEGORY_SLUGS.has(article.categorySlug) &&
+      article.category &&
+      article.title &&
+      article.date &&
+      article.excerpt &&
+      article.url
+  );
 }
 
 function createArticleCard(article) {
@@ -113,8 +127,9 @@ function renderJournalGrid() {
   const grid = document.getElementById('journal-grid');
   if (!grid) return;
 
+  const validArticles = journalArticles.filter(isValidArticle);
   grid.innerHTML = '';
-  for (const article of journalArticles) {
+  for (const article of validArticles) {
     grid.append(createArticleCard(article));
   }
 }
@@ -130,6 +145,7 @@ function filterJournalCards(selectedFilter) {
 function updateFilterButtonState(filterButton, isSelected) {
   filterButton.classList.toggle('is-active', isSelected);
   filterButton.classList.toggle('active', isSelected);
+  filterButton.setAttribute('aria-pressed', String(isSelected));
 }
 
 function setupJournalFilters() {
