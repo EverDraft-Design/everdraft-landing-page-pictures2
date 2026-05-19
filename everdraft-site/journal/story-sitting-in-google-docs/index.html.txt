@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>What to do With a Story Sitting in Google Docs</title>
+    <meta
+      name="description"
+      content="Nervous about sharing your story online? You are not alone. Here is why your draft deserves readers, feedback, and somewhere softer to begin."
+    />
+    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="site-bg" aria-hidden="true"></div>
+
+    <header class="navbar">
+      <a href="/" class="brand" aria-label="EverDraft home">
+        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+        <span class="brand-word">EVERDRAFT</span>
+      </a>
+      <nav aria-label="Primary navigation" class="site-nav">
+        <div class="desktop-nav">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/library/" class="nav-link">Library</a>
+          <a href="/journal/" class="nav-link">Journal</a>
+          <a href="/account/" class="nav-link">Account</a>
+          <details class="nav-dropdown">
+            <summary class="nav-link">About</summary>
+            <div class="nav-dropdown-menu">
+              <a href="/beta/">Beta Access</a>
+              <a href="/contact/">Contact</a>
+              <a href="/writer-ownership/">Writer Ownership</a>
+              <a href="/community-guidelines/">Community Guidelines</a>
+            </div>
+          </details>
+          <a href="/signup/" class="nav-link nav-link-primary">Create Account</a>
+        </div>
+        <details class="mobile-nav">
+          <summary class="nav-link">Menu</summary>
+          <div class="mobile-nav-panel">
+            <a href="/">Home</a>
+            <a href="/library/">Library</a>
+            <a href="/journal/">Journal</a>
+            <a href="/beta/">Beta Access</a>
+            <a href="/contact/">Contact</a>
+            <a href="/writer-ownership/">Writer Ownership</a>
+            <a href="/community-guidelines/">Community Guidelines</a>
+            <a href="/account/">Account</a>
+            <a href="/signup/" class="mobile-primary-link">Create Account</a>
+          </div>
+        </details>
+      </nav>
+    </header>
+
+    <main class="journal-main">
+      <article class="journal-entry" aria-labelledby="article-title">
+        <header class="journal-entry-header">
+          <p class="journal-category">"WRITER'S LANTERN"</p>
+          <h1 id="article-title">What to do With a Story Sitting in Google Docs</h1>
+          <p class="journal-date">May 20, 2026</p>
+        </header>
+
+        <div class="journal-entry-content">
+<p>If you do this, you are not alone.</p>
+
+<p>It’s okay — truly — to feel intimidated when you think about posting your story online.</p>
+
+<p>For some of us, myself included, comparison creeps in before the story ever gets a chance. I look at other writers, other books, other worlds that seem so polished, so clever, so finished, and suddenly the idea of sharing my own work feels impossible. My story never measures up.</p>
+
+<p>So the story stays where it is.</p>
+
+<p>Sitting in Google Docs.</p>
+
+<p>Opened. Edited. Closed. Hidden again.</p>
+
+<p>It is a normal symptom of the human condition that we constantly seek connection, understanding, and validation. The act of creation through writing is personal. Even the wildest character, the cruelest villain, the softest love interest, or the strangest magical creature has a little piece of you inside them.</p>
+
+<p>Even if a character is your complete opposite, you are still the tool of measurement.</p>
+
+<p>And then there is validation.</p>
+
+<p>It is okay to want someone to say, “I read this, and I felt something.”</p>
+
+<p>It is okay to want a reader to care about the world you built. It is okay to want encouragement. It is okay to want proof that the story taking up space in your mind might also matter to someone else.</p>
+
+<p>And yes, clicking the publish button is thrilling.</p>
+
+<p>It truly is.</p>
+
+<p>No one can take that feeling away from you, wherever you decide to build a home for your story.</p>
+
+<p>But if your story is still sitting in Google Docs, maybe it does not need to stay hidden forever.</p>
+
+<p>Maybe it just needs its first reader.</p>
+
+<p>When we keep our stories tucked away forever, we also keep ourselves from something incredibly valuable: feedback.</p>
+
+<p>The kind of feedback that helps us grow. The kind that shows us where a scene is working, where a character needs more room, where the plot has a structural issue that is glaringly obvious to someone else — but completely invisible to us because we are standing too close to the work.</p>
+
+<p>Sometimes those issues are practically smacking us upside the head with their obviousness, and still we can’t see them.</p>
+
+<p>That is the annoyingly magical aspect of outside perspective.</p>
+
+<p>I believe the real problem is not that the story is unfinished. It is not that the idea is rough, or the wording needs work, or the structure still needs tightening.</p>
+
+<p>The real problem is that you — and I — feel intimidated to post our stories at all.</p>
+
+<p>Your words matter.</p>
+
+<p>So where does your story belong, if not in Google Docs?</p>
+
+<p>EverDraft.</p>
+        </div>
+
+        <footer class="journal-article-footer">
+          <a href="/journal/" class="button-link secondary-link">Back to Journal</a>
+          <a href="/signup/" class="button-link">Create your account</a>
+        </footer>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <nav aria-label="Footer navigation" class="footer-nav">
+        <a href="/">Home</a>
+        <a href="/library/">Library</a>
+        <a href="/journal/">Journal</a>
+        <a href="/signup/">Create Account</a>
+        <a href="/account/">Account</a>
+        <a href="/contact/">Contact</a>
+        <a href="/writer-ownership/">Writer Ownership</a>
+        <a href="/community-guidelines/">Community Guidelines</a>
+      </nav>
+      <img src="/assets/footer-logo.png" alt="EverDraft logo" class="footer-logo" />
+    </footer>
+  </body>
+</html>
