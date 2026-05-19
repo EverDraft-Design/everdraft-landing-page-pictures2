@@ -25,7 +25,7 @@ export const journalArticles = [
     categorySlug: "writers-lantern",
     title: "What to Do With a Story Sitting in Google Docs",
     date: "Month Day, Year",
-    excerpt: "Placeholder excerpt for a writer encouragement article.",
+    excerpt: "For the story you keep opening, editing, closing, and hiding again",
     url: "/journal/story-sitting-in-google-docs"
   },
   {
@@ -57,7 +57,7 @@ export const journalArticles = [
     categorySlug: "everdraft-notes",
     title: "The First Draft of EverDraft",
     date: "May 3, 2026",
-    excerpt: "Placeholder excerpt for founder/background article.",
+    excerpt: "Why EverDraft? Why not?",
     url: "/journal/first-draft-of-everdraft"
   }
 ];
