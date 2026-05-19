@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap");
 
 :root {
   --bg-dark: #07030f;
@@ -48,8 +49,34 @@ body {
   gap: .75rem;
   padding: 1.2rem 0;
 }
-.brand { color: var(--gold-soft); text-decoration: none; display:flex; align-items:center; line-height:0; }
-.brand-logo { width: 96px; height: 96px; object-fit: contain; border-radius: 999px; display:block; }
+.brand {
+  color: var(--gold-soft);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  line-height: 1;
+}
+
+.brand-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 999px;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.brand-word {
+  color: var(--gold-soft);
+  font-family: "Cinzel", "Georgia", "Times New Roman", serif;
+  font-size: clamp(1.25rem, 2vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(212, 175, 55, .16);
+  white-space: nowrap;
+}
 .site-nav {
   display: flex;
   justify-content: flex-end;
@@ -1620,6 +1647,26 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   .nav-link {
     padding: .4rem .68rem;
     font-size: .88rem;
+  }
+
+  .brand {
+    gap: .55rem;
+  }
+
+  .brand-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .brand-word {
+    font-size: 1rem;
+    letter-spacing: .12em;
+  }
+
+  @media (max-width: 420px) {
+    .brand-word {
+      display: none;
+    }
   }
 
   .home-hero {

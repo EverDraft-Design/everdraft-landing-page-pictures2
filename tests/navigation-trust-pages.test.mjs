@@ -21,6 +21,7 @@ for (const file of headerPages) {
   const html = readFileSync(file, 'utf8');
   if (!html.includes('<header class="navbar">')) continue;
   assert.match(html, /class="site-nav"/, `${file} should use grouped site nav`);
+  assert.match(html, /class="brand-word">EVERDRAFT<\/span>/, `${file} should include the header wordmark`);
   assert.match(html, /<summary class="nav-link">About<\/summary>/, `${file} should include About dropdown`);
   assert.match(html, /class="mobile-nav"/, `${file} should include compact mobile menu`);
 }
@@ -51,6 +52,11 @@ assert.match(guidelines, /Not Welcome on EverDraft/);
 assert.match(guidelines, /href="\/contact\/">Contact EverDraft/);
 
 const styles = read('everdraft-site/styles.css');
+assert.match(styles, /@import url\("https:\/\/fonts\.googleapis\.com\/css2\?family=Cinzel/);
+assert.match(styles, /\.brand-word\s*\{[\s\S]*font-family:\s*"Cinzel"/);
+assert.match(styles, /\.brand-word\s*\{[\s\S]*letter-spacing:\s*\.16em/);
+assert.match(styles, /\.brand-logo\s*\{[\s\S]*width:\s*48px/);
+assert.match(styles, /@media\s*\(max-width:\s*420px\)[\s\S]*\.brand-word\s*\{[\s\S]*display:\s*none/);
 assert.match(styles, /\.nav-dropdown-menu/);
 assert.match(styles, /\.mobile-nav-panel/);
 assert.match(styles, /@media \(max-width: 640px\)[\s\S]*\.desktop-nav\s*\{[\s\S]*display:\s*none/);
