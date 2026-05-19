@@ -59,8 +59,9 @@ body {
 }
 
 .brand-logo {
-  width: 48px;
-  height: 48px;
+  width: auto;
+  height: 102px;
+  margin-block: -27px;
   object-fit: contain;
   border-radius: 999px;
   display: block;
@@ -1654,8 +1655,9 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   }
 
   .brand-logo {
-    width: 44px;
-    height: 44px;
+    width: auto;
+    height: 56px;
+    margin-block: -6px;
   }
 
   .brand-word {
