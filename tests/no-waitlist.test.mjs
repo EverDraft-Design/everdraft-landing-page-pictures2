@@ -14,11 +14,10 @@ const allHtml = [
 ].map(read).join('\n');
 
 assert.doesNotMatch(homepage, /heroForm|waitlistForm|submitWaitlist|Keep Me in the Loop/);
-assert.match(homepage, /Step into EverDraft\./);
 assert.match(homepage, /href="\/signup\/"[^>]*>Create your account/);
 assert.match(homepage, /href="\/library\/"[^>]*>Visit the Library/);
 assert.match(homepage, /href="\/beta\/"[^>]*>Beta testing details/);
-assert.match(homepage, /Already have an account\? Log in/);
+assert.doesNotMatch(homepage, /class="account-cta"|Step into EverDraft\./);
 assert.doesNotMatch(allHtml, /href="\/#waitlist"/);
 assert.equal(existsSync(new URL('../everdraft-site/script.js', import.meta.url)), false);
 assert.equal(existsSync(new URL('../functions/api/signup.js', import.meta.url)), false);

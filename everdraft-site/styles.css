@@ -204,6 +204,53 @@ h1 { font-size: clamp(2rem, 7vw, 4rem); margin: .25rem 0 1rem; }
   gap: .75rem;
   margin: 0 auto 1.35rem;
 }
+
+.home-hero {
+  width: 100vw;
+  min-height: max(720px, 85vh);
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding: clamp(5rem, 10vw, 8rem) max(4vw, calc((100vw - 1120px) / 2 + 2rem));
+  display: flex;
+  align-items: center;
+  text-align: left;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(10, 0, 20, 0.88) 0%,
+      rgba(10, 0, 20, 0.68) 38%,
+      rgba(10, 0, 20, 0.25) 70%,
+      rgba(10, 0, 20, 0.45) 100%
+    ),
+    linear-gradient(180deg, rgba(7, 3, 15, 0.08), rgba(7, 3, 15, 0.82)),
+    url("/assets/everdraft-forest-hero.png") center center / cover no-repeat,
+    linear-gradient(135deg, var(--bg-deep), var(--bg-dark));
+  box-shadow: inset 0 -90px 120px rgba(7, 3, 15, .82);
+}
+
+.home-hero-content {
+  width: min(640px, 100%);
+}
+
+.home-hero h1 {
+  max-width: 11ch;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, .52);
+}
+
+.home-hero .hero-copy {
+  max-width: 620px;
+  margin-left: 0;
+  margin-right: 0;
+  color: #f0e5c6;
+  text-shadow: 0 3px 18px rgba(0, 0, 0, .58);
+}
+
+.home-hero .hero-actions {
+  justify-content: flex-start;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 input, textarea, select, button {
   font: inherit; border-radius: .7rem; border:1px solid var(--border);
 }
@@ -503,25 +550,6 @@ button:focus-visible {
   height: auto;
   display: block;
   margin: 0 auto;
-}
-.account-cta {
-  max-width: 760px;
-  margin: 1.8rem auto 0;
-  display: grid;
-  justify-items: center;
-  gap: .8rem;
-}
-
-.account-cta h2 {
-  margin: 0;
-  font-size: clamp(1.55rem, 4vw, 2.2rem);
-}
-
-.account-cta p {
-  max-width: 680px;
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.7;
 }
 fieldset { border:1px solid var(--border); border-radius:.6rem; padding: .7rem; display:flex; gap:1rem; flex-wrap:wrap; }
 legend { color: var(--gold-soft); padding: 0 .3rem; }
@@ -1592,6 +1620,27 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   .nav-link {
     padding: .4rem .68rem;
     font-size: .88rem;
+  }
+
+  .home-hero {
+    min-height: 680px;
+    padding: 5rem 6vw 4.5rem;
+    background:
+      linear-gradient(180deg, rgba(10, 0, 20, .86) 0%, rgba(10, 0, 20, .7) 48%, rgba(10, 0, 20, .86) 100%),
+      url("/assets/everdraft-forest-hero.png") center top / cover no-repeat,
+      linear-gradient(135deg, var(--bg-deep), var(--bg-dark));
+  }
+
+  .home-hero h1 {
+    max-width: 12ch;
+  }
+
+  .home-hero .hero-actions {
+    align-items: stretch;
+  }
+
+  .home-hero .button-link {
+    width: 100%;
   }
 
   .reading-content {
