@@ -24,7 +24,7 @@ export const journalArticles = [
     category: "THE WRITER'S LANTERN",
     categorySlug: "writers-lantern",
     title: "What to Do With a Story Sitting in Google Docs",
-    date: "Month Day, Year",
+    date: "May 20, 2026",
     excerpt: "For the story you keep opening, editing, closing, and hiding again",
     url: "/journal/story-sitting-in-google-docs"
   },
