@@ -3,12 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EverDraft — Early Beta</title>
+    <title>EverDraft — A Home for Stories Still Being Written</title>
     <meta
       name="description"
-      content="EverDraft is in early beta — a soft place for writers to share chapters, gather Sparks, and receive private Reader Notes."
+      content="Share stories chapter by chapter, find new reads, send private Notes, and grow an audience around works in progress on EverDraft."
     />
-    <link rel="icon" type="image/png" href="/favicon/favicon.png" />
+    <link rel="icon" type="image/png" href="favicon/favicon.png" />
+    <link rel="preload" as="image" href="assets/home/hero-writing-desk.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -16,7 +17,7 @@
 
     <header class="navbar">
       <a href="/" class="brand" aria-label="EverDraft home">
-        <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
+        <img src="favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
         <span class="brand-word">EVERDRAFT</span>
       </a>
       <nav aria-label="Primary navigation" class="site-nav">
@@ -53,64 +54,138 @@
       </nav>
     </header>
 
-    <main>
+    <main class="home-main">
       <section class="hero home-hero" aria-labelledby="hero-title">
         <div class="home-hero-content">
-          <p class="eyebrow">EARLY BETA</p>
-          <h1 id="hero-title">Where Stories Spark, Grow & Glow</h1>
+          <p class="eyebrow">WELCOME TO EVERDRAFT</p>
+          <h1 id="hero-title">A home for stories still being written.</h1>
           <p class="hero-copy">
-            EverDraft is in early beta: a quiet writing space where early members can create
-            story pages, publish chapters, gather Sparks, and receive private Reader Notes.
-            The site is still growing, but the Library is open to explore.
+            EverDraft is a writing platform for authors who want to share works-in-progress,
+            post chapter by chapter, receive private reader Notes, and grow an audience around
+            their story before it is finished.
           </p>
           <div class="hero-actions" aria-label="Explore EverDraft">
-            <a class="button-link" href="/signup/">Create your account</a>
-            <a class="button-link secondary-link" href="/library/">Visit the Library</a>
-            <a class="button-link secondary-link" href="/beta/">Beta testing details</a>
+            <a class="button-link" href="/signup/">Create your free account</a>
+            <a class="button-link secondary-link" href="/library/">Browse the Library</a>
           </div>
+          <ul class="hero-detail-list" aria-label="EverDraft details">
+            <li>For writers and readers</li>
+            <li>Free to join</li>
+            <li>Stories at every stage</li>
+          </ul>
         </div>
       </section>
 
-      <section class="features" aria-label="Platform features">
-        <article class="feature-card">
-          <div class="feature-icon">
-  <img src="/assets/icons/write.png" alt="Write icon" />
-</div>
-          <h2>WRITE</h2>
-          <p>Create story pages and publish chapters in a space made for storytellers.</p>
-        </article>
-        <article class="feature-card">
-         <div class="feature-icon">
-  <img src="/assets/icons/grow.png" alt="Grow icon" />
-</div>
-          <h2>GROW</h2>
-          <p>Gather Sparks and private Reader Notes as your drafts begin to find readers.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon">
-  <img src="/assets/icons/connect.png" alt="Connect icon" />
-</div>
-          <h2>CONNECT</h2>
-          <p>Share your sparks, send encouraging notes and follow writers</p>
-        </article>
+      <section class="home-section home-library-section" aria-labelledby="home-library-title">
+        <div class="home-section-heading">
+          <p class="eyebrow">FROM THE LIBRARY</p>
+          <h2 id="home-library-title">Stories are already finding their first readers.</h2>
+          <p>
+            Discover stories in progress, new chapters, early drafts, and hidden gems from
+            writers building their worlds one update at a time.
+          </p>
+        </div>
+        <div id="homeLibraryList" class="home-library-grid" aria-live="polite">
+          <div class="home-library-loading">Opening the Library...</div>
+        </div>
+        <p id="homeLibraryStatus" class="form-status home-library-status" aria-live="polite"></p>
+        <div class="home-section-actions">
+          <a class="button-link secondary-link" href="/library/">Browse the Library</a>
+        </div>
       </section>
 
-      <section class="beta-note" aria-labelledby="beta-note-title">
-        <p class="eyebrow">EARLY BETA</p>
-        <h2 id="beta-note-title">Open to explore, still building</h2>
+      <section class="home-section" aria-labelledby="platform-features-title">
+        <div class="home-section-heading">
+          <p class="eyebrow">TOOLS FOR THE STORY</p>
+          <h2 id="platform-features-title">Made for works in progress.</h2>
+        </div>
+        <div class="home-feature-grid">
+          <article class="home-feature-card">
+            <div class="home-feature-art">
+              <img src="assets/home/icon-sparks.png" alt="" loading="lazy" onerror="this.hidden=true" />
+            </div>
+            <h3>Sparks</h3>
+            <p>A simple way for readers to show they are enjoying a story or chapter.</p>
+          </article>
+          <article class="home-feature-card">
+            <div class="home-feature-art">
+              <img src="assets/home/icon-private-notes.png" alt="" loading="lazy" onerror="this.hidden=true" />
+            </div>
+            <h3>Private Notes</h3>
+            <p>
+              Feedback goes directly to the author, keeping story pages focused on the work itself.
+            </p>
+          </article>
+          <article class="home-feature-card">
+            <div class="home-feature-art">
+              <img src="assets/home/icon-pinboard.png" alt="" loading="lazy" onerror="this.hidden=true" />
+            </div>
+            <h3>Pinboard</h3>
+            <p>Authors can collect reader Notes in one place and return to them while editing.</p>
+          </article>
+          <article class="home-feature-card">
+            <div class="home-feature-art">
+              <img src="assets/home/icon-story-follows.png" alt="" loading="lazy" onerror="this.hidden=true" />
+            </div>
+            <h3>Story Follows</h3>
+            <p>Readers can follow the stories they want to keep reading.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="home-section home-path-section" aria-labelledby="home-path-title">
+        <div class="home-section-heading">
+          <p class="eyebrow">BUILD YOUR STORY HERE</p>
+          <h2 id="home-path-title">Write. Grow. Connect.</h2>
+        </div>
+        <div class="home-path-grid">
+          <article class="feature-card">
+            <div class="feature-icon">
+              <img src="assets/icons/write.png" alt="" loading="lazy" />
+            </div>
+            <h3>Write</h3>
+            <p>Post your story chapter by chapter.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">
+              <img src="assets/icons/grow.png" alt="" loading="lazy" />
+            </div>
+            <h3>Grow</h3>
+            <p>Learn what readers respond to and keep building confidence in the work.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">
+              <img src="assets/icons/connect.png" alt="" loading="lazy" />
+            </div>
+            <h3>Connect</h3>
+            <p>Find readers who want to follow the story from the beginning.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="home-section home-invitation" aria-labelledby="reader-invitation-title">
+        <div class="home-invitation-content">
+          <p class="eyebrow">FOR READERS</p>
+          <h2 id="reader-invitation-title">You don’t have to be a writer to belong here.</h2>
+          <p>
+            Browse the Library, follow stories, send Sparks, and leave thoughtful Notes for
+            writers who welcome feedback.
+          </p>
+          <a class="button-link" href="/library/">Start reading</a>
+        </div>
+      </section>
+
+      <section class="home-section home-final-cta" aria-labelledby="final-cta-title">
+        <p class="eyebrow">YOUR STORY CAN BEGIN TODAY</p>
+        <h2 id="final-cta-title">Start with one chapter.</h2>
         <p>
-          Writers can begin testing story creation, chapters, Sparks, private Reader Notes,
-          and the growing Library. Some corners are still being polished, and thoughtful feedback is welcome.
+          You do not need a finished book to join EverDraft. Add your story, share a chapter,
+          and let readers find you from the beginning.
         </p>
-      </section>
-
-      <section class="progress" aria-labelledby="progress-title">
-        <h2 id="progress-title">We’re working hard behind the scenes.</h2>
-        <ol class="progress-list">
-          <li class="active">Building Now</li>
-          <li>Testing With Early Members</li>
-          <li>Last Polish</li>
-        </ol>
+        <div class="hero-actions">
+          <a class="button-link" href="/signup/">Create your account</a>
+          <a class="button-link secondary-link" href="/library/">Explore the Library</a>
+        </div>
       </section>
     </main>
 
@@ -128,5 +203,6 @@
       <img src="/assets/footer-logo.png" alt="EverDraft logo" class="footer-logo" />
     </footer>
 
+    <script type="module" src="/home.js"></script>
   </body>
 </html>

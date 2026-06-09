@@ -1739,3 +1739,396 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   height: auto;
   display: block;
   margin: 0 auto; }
+
+/* Homepage */
+.home-main {
+  width: 100%;
+  max-width: none;
+  overflow: hidden;
+}
+
+.home-main h2 {
+  margin: .25rem 0 .85rem;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1.12;
+}
+
+.home-main h3 {
+  margin: 0;
+  color: var(--gold-soft);
+  font-size: 1.35rem;
+}
+
+.home-hero {
+  min-height: clamp(650px, 72vw, 820px);
+  padding:
+    clamp(5rem, 9vw, 8rem)
+    max(5vw, calc((100vw - 1120px) / 2));
+  background:
+    linear-gradient(
+      90deg,
+      rgba(7, 3, 15, .96) 0%,
+      rgba(10, 3, 18, .86) 31%,
+      rgba(10, 3, 18, .42) 56%,
+      rgba(7, 3, 15, .08) 78%
+    ),
+    linear-gradient(180deg, rgba(7, 3, 15, .08), rgba(7, 3, 15, .84)),
+    url("assets/home/hero-writing-desk.png") center / cover no-repeat,
+    linear-gradient(135deg, var(--bg-deep), var(--bg-dark));
+  box-shadow:
+    inset 0 -100px 130px rgba(7, 3, 15, .92),
+    0 30px 80px rgba(0, 0, 0, .24);
+}
+
+.home-hero-content {
+  width: min(610px, 100%);
+}
+
+.home-hero h1 {
+  max-width: 12ch;
+  font-size: clamp(2.8rem, 6vw, 5.25rem);
+  line-height: 1.02;
+}
+
+.hero-detail-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .65rem;
+  padding: 0;
+  margin: 1.5rem 0 0;
+  list-style: none;
+}
+
+.hero-detail-list li {
+  padding: .55rem .85rem;
+  border: 1px solid rgba(247, 223, 138, .35);
+  border-radius: 999px;
+  color: #f7edcf;
+  background: rgba(14, 6, 25, .7);
+  box-shadow: inset 0 0 14px rgba(212, 175, 55, .06);
+  font-size: .92rem;
+}
+
+.home-section {
+  width: min(1180px, 90%);
+  margin-inline: auto;
+  padding: clamp(4rem, 8vw, 7rem) 0;
+}
+
+.home-section + .home-section {
+  border-top: 1px solid rgba(247, 223, 138, .1);
+}
+
+.home-section-heading {
+  width: min(760px, 100%);
+  margin: 0 auto clamp(2rem, 5vw, 3.25rem);
+  text-align: center;
+}
+
+.home-section-heading > p:last-child,
+.home-invitation-content > p,
+.home-final-cta > p {
+  color: var(--muted);
+  line-height: 1.75;
+  font-size: 1.05rem;
+}
+
+.home-library-grid,
+.home-feature-grid,
+.home-path-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.15rem;
+}
+
+.home-library-loading,
+.home-library-empty {
+  grid-column: 1 / -1;
+  padding: 2.5rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  color: var(--muted);
+  background: rgba(10, 5, 18, .76);
+  text-align: center;
+}
+
+.home-library-empty h3 {
+  margin-bottom: .65rem;
+}
+
+.home-library-empty .button-link {
+  margin-top: .75rem;
+}
+
+.home-library-card {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  border: 1px solid rgba(247, 223, 138, .28);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(24, 9, 39, .95), rgba(9, 4, 17, .94));
+  box-shadow: 0 20px 48px rgba(0, 0, 0, .28);
+  text-align: left;
+}
+
+.home-library-cover-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.home-library-cover {
+  aspect-ratio: 4 / 5;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(212, 175, 55, .16), transparent 45%),
+    linear-gradient(145deg, #231031, #0b0512);
+}
+
+.home-library-cover img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.home-library-cover-placeholder span {
+  display: grid;
+  place-items: center;
+  width: 42%;
+  aspect-ratio: 1;
+  border: 1px solid rgba(247, 223, 138, .4);
+  border-radius: 999px;
+  color: var(--gold-soft);
+  background: rgba(212, 175, 55, .08);
+  font-size: clamp(2.5rem, 8vw, 4rem);
+}
+
+.home-library-card-body {
+  display: grid;
+  align-content: start;
+  gap: .75rem;
+  padding: 1.25rem;
+}
+
+.home-library-card .eyebrow {
+  margin: 0;
+  font-size: .7rem;
+}
+
+.home-library-card h3 a,
+.home-library-byline a,
+.home-story-link {
+  color: var(--gold-soft);
+  text-decoration: none;
+}
+
+.home-library-card h3 a:hover,
+.home-library-card h3 a:focus-visible,
+.home-library-byline a:hover,
+.home-library-byline a:focus-visible,
+.home-story-link:hover,
+.home-story-link:focus-visible {
+  color: var(--gold);
+  text-decoration: underline;
+}
+
+.home-library-byline {
+  margin: 0;
+  color: var(--muted);
+}
+
+.home-library-meta {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: .75rem;
+  margin: .2rem 0;
+}
+
+.home-library-meta div {
+  min-width: 0;
+}
+
+.home-library-meta dt {
+  color: var(--muted);
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.home-library-meta dd {
+  margin: .18rem 0 0;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.home-story-link {
+  align-self: end;
+  width: fit-content;
+  margin-top: .25rem;
+  font-weight: 700;
+}
+
+.home-library-status {
+  min-height: 1.3em;
+  margin: 1rem auto 0;
+  text-align: center;
+}
+
+.home-section-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.home-feature-card,
+.home-path-grid .feature-card {
+  padding: 1.35rem;
+  border: 1px solid rgba(247, 223, 138, .25);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgba(24, 9, 39, .9), rgba(10, 5, 18, .84));
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .22);
+}
+
+.home-feature-card {
+  text-align: left;
+}
+
+.home-feature-card p,
+.home-path-grid .feature-card p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.home-feature-art {
+  aspect-ratio: 3 / 2;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  margin: -1.35rem -1.35rem 1.25rem;
+  border-bottom: 1px solid rgba(247, 223, 138, .2);
+  background:
+    radial-gradient(circle at center, rgba(212, 175, 55, .15), transparent 58%),
+    #0d0618;
+}
+
+.home-feature-art img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.home-path-grid .feature-card {
+  text-align: center;
+}
+
+.home-path-grid .feature-card h3 {
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+
+.home-invitation {
+  width: min(1120px, 90%);
+}
+
+.home-invitation-content {
+  width: min(780px, 100%);
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4.5rem);
+  border: 1px solid rgba(247, 223, 138, .35);
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(212, 175, 55, .14), transparent 34%),
+    linear-gradient(135deg, rgba(35, 12, 52, .96), rgba(11, 5, 19, .94));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .32);
+  text-align: left;
+}
+
+.home-invitation-content .button-link {
+  margin-top: .6rem;
+}
+
+.home-final-cta {
+  width: min(900px, 90%);
+  padding-bottom: clamp(5rem, 9vw, 8rem);
+  text-align: center;
+}
+
+.home-final-cta > p {
+  width: min(690px, 100%);
+  margin: 0 auto 1.75rem;
+}
+
+.home-final-cta .hero-actions {
+  margin-bottom: 0;
+}
+
+@media (min-width: 700px) {
+  .home-library-grid,
+  .home-feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-path-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1080px) {
+  .home-library-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .home-feature-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 699px) {
+  .home-hero {
+    min-height: 720px;
+    padding: 5rem 6vw 4.5rem;
+    background:
+      linear-gradient(180deg, rgba(7, 3, 15, .9), rgba(7, 3, 15, .68) 48%, rgba(7, 3, 15, .96)),
+      url("/assets/home/hero-writing-desk.png") 62% center / cover no-repeat,
+      linear-gradient(135deg, var(--bg-deep), var(--bg-dark));
+  }
+
+  .home-hero-content {
+    padding: 1.25rem;
+    border: 1px solid rgba(247, 223, 138, .18);
+    border-radius: 1rem;
+    background: rgba(7, 3, 15, .7);
+    backdrop-filter: blur(3px);
+  }
+
+  .home-hero h1 {
+    max-width: 11ch;
+    font-size: clamp(2.65rem, 13vw, 4rem);
+  }
+
+  .home-hero .hero-actions {
+    align-items: stretch;
+  }
+
+  .home-hero .button-link,
+  .home-final-cta .button-link {
+    width: 100%;
+  }
+
+  .hero-detail-list {
+    display: grid;
+  }
+
+  .hero-detail-list li {
+    text-align: center;
+  }
+
+  .home-invitation-content {
+    text-align: center;
+  }
+}
