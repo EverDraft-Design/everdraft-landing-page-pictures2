@@ -63,7 +63,7 @@ function fillProfile(profile) {
   bioInput.value = profile.bio || '';
   notesEnabledInput.checked = profile.notes_enabled !== false;
   avatarUrl.textContent = profile.avatar_url || 'Not set';
-  profileState.textContent = isProfileComplete(profile) ? 'Ready for early testing' : 'Needs a few details';
+  profileState.textContent = isProfileComplete(profile) ? 'Profile ready' : 'Needs a few details';
   memberTools.hidden = false;
   form.hidden = false;
 }

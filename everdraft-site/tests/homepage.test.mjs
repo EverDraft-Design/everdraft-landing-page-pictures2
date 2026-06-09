@@ -16,11 +16,11 @@ test('homepage presents EverDraft as a live writing platform', () => {
 });
 
 test('homepage uses the supplied artwork and platform icons', () => {
-  assert.match(html, /\/assets\/home\/hero-writing-desk\.png/);
-  assert.match(html, /\/assets\/home\/icon-sparks\.png/);
-  assert.match(html, /\/assets\/home\/icon-private-notes\.png/);
-  assert.match(html, /\/assets\/home\/icon-pinboard\.png/);
-  assert.match(html, /\/assets\/home\/icon-story-follows\.png/);
+  assert.match(html, /\/?assets\/home\/hero-writing-desk\.png/);
+  assert.match(html, /\/?assets\/home\/icon-sparks\.png/);
+  assert.match(html, /\/?assets\/home\/icon-private-notes\.png/);
+  assert.match(html, /\/?assets\/home\/icon-pinboard\.png/);
+  assert.match(html, /\/?assets\/home\/icon-story-follows\.png/);
 });
 
 test('visitor calls to action use signup and Library routes', () => {
