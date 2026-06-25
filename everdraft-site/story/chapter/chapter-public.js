@@ -3,6 +3,7 @@ import { mountFollowControls } from '/follow-controls.js';
 import { getCurrentProfile, getCurrentSession } from '/auth.js';
 import { createChapterNote, friendlyEngagementError } from '/engagement.js';
 import { mountChapterSparkControl } from '/spark-controls.js';
+import { normalizeChapterContent, sanitizeChapterHtml } from '/components/chapter-content.js';
 
 const backToStoryLink = document.getElementById('backToStoryLink');
 const storyTitle = document.getElementById('storyTitle');
@@ -37,15 +38,6 @@ function escapeHtml(value) {
     '"': '&quot;',
     "'": '&#39;'
   })[character]);
-}
-
-function renderParagraphs(content) {
-  const paragraphs = String(content || '')
-    .split(/\n{2,}/)
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean);
-
-  return paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph).replace(/\n/g, '<br />')}</p>`).join('');
 }
 
 async function setupNotePanel(story, chapter) {
@@ -146,7 +138,7 @@ async function loadChapter() {
     });
     await mountChapterSparkControl(chapterSparkControl, story, chapter);
     await mountFollowControls(chapterFollowControls, story, { compact: true, mode: 'story' });
-    chapterContent.innerHTML = renderParagraphs(chapter.content);
+    chapterContent.innerHTML = sanitizeChapterHtml(normalizeChapterContent(chapter.content));
     chapterContent.hidden = false;
     await setupNotePanel(story, chapter);
     setNavLink(previousChapterLink, story, previousChapter, 'Previous Chapter');

@@ -69,7 +69,8 @@ assert.match(editChapterJs, /params\.get\('chapterId'\)/);
 assert.match(editChapterJs, /chapter\.status === 'published'/);
 assert.match(editChapterJs, /window\.location\.assign\(`\/my\/stories\/\$\{storyId\}\/`\)/);
 for (const source of [newChapterHtml, editChapterHtml]) {
-  assert.match(source, /chapter-editor/);
+  assert.match(source, /chapterEditorMount/);
+  assert.match(source, /chapter-editor-field/);
   assert.match(source, /wordCount/);
   assert.match(source, /Last saved/);
   assert.match(source, /Save Draft/);

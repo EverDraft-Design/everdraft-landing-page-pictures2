@@ -1,6 +1,7 @@
 import { getSupabaseBrowserClient } from '/auth.js';
 import { getFriendlyErrorMessage } from '/errors.js';
 import { friendlyStoryError, getStoryByIdForAuthor, requireMemberProfile } from '/stories.js';
+import { chapterContentHasText, normalizeChapterContent } from '/components/chapter-content.js';
 
 const CHAPTER_SELECT = 'id, story_id, title, chapter_number, content, status, published_at, created_at, updated_at';
 const PUBLIC_STORY_SELECT = 'id, author_id, title, slug, blurb, genre, status, cover_url, is_readable, created_at, updated_at';
@@ -80,7 +81,7 @@ export async function getChapterForAuthor(chapterId, storyId = '') {
 function cleanChapterPayload(input, existingChapter = null) {
   const chapterNumber = Number.parseInt(String(input.chapterNumber || input.chapter_number || ''), 10);
   const title = String(input.title || '').trim();
-  const content = String(input.content || '').trim();
+  const content = normalizeChapterContent(input.content);
   const status = String(input.status || 'draft').trim() || 'draft';
 
   if (!Number.isInteger(chapterNumber) || chapterNumber < 1) {
@@ -92,7 +93,7 @@ function cleanChapterPayload(input, existingChapter = null) {
   if (!VALID_CHAPTER_STATUSES.has(status)) {
     throw new Error('Please choose a valid chapter status.');
   }
-  if (status === 'published' && !content) {
+  if (status === 'published' && !chapterContentHasText(content)) {
     throw new Error('Chapter content is required before publishing.');
   }
 

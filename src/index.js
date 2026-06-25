@@ -243,7 +243,8 @@ function chapterNewPage() {
     eyebrow: 'NEW CHAPTER',
     heading: 'Create Chapter Draft',
     copy: 'Draft content for your story.',
-    body: `<div class="auth-actions top-return-actions">
+    body: `<link rel="modulepreload" href="/components/ChapterEditor.bundle.js" />
+        <div class="auth-actions top-return-actions">
           <a id="backToStoryLink" class="button-link secondary-link" href="/my/stories/" hidden>Back to Story</a>
           <a id="storyManagementLink" class="button-link secondary-link" href="/my/stories/">Back to Story Management</a>
         </div>
@@ -267,12 +268,14 @@ function chapterNewPage() {
           <label for="title">Title</label>
           <input id="title" name="title" type="text" required />
           <label for="content">Content</label>
-          <textarea id="content" name="content" rows="18" class="chapter-editor" placeholder="Begin the chapter here..."></textarea>
+          <div id="chapterEditorMount"></div>
+          <textarea id="content" name="content" class="chapter-editor-field" hidden></textarea>
           <div class="editor-meta">
             <span id="wordCount">0 words</span>
             <span id="lastSaved">Last saved: not yet</span>
           </div>
-          <p class="field-note editor-note">Plain text is safest for this beta editor. Line breaks and paragraph spacing will be preserved on public reading pages.</p>
+          <p class="field-note editor-note">Your browser may underline spelling suggestions while you write.</p>
+          <p class="field-note editor-note">Formatting is saved with your chapter and shown safely on public reading pages.</p>
           <button type="submit" id="saveChapterButton">Save Draft</button>
           <p id="chapterStatus" class="form-status" aria-live="polite"></p>
         </form>`,
@@ -288,7 +291,8 @@ function chapterEditPage() {
     eyebrow: 'CHAPTER DRAFT',
     heading: 'Edit Chapter',
     copy: 'Loading chapter...',
-    body: `<div class="auth-actions top-return-actions">
+    body: `<link rel="modulepreload" href="/components/ChapterEditor.bundle.js" />
+        <div class="auth-actions top-return-actions">
           <a id="backToStoryLink" class="button-link secondary-link" href="/my/stories/" hidden>Back to Story</a>
           <a id="storyManagementLink" class="button-link secondary-link" href="/my/stories/">Back to Story Management</a>
         </div>
@@ -312,12 +316,14 @@ function chapterEditPage() {
           <label for="title">Title</label>
           <input id="title" name="title" type="text" required />
           <label for="content">Content</label>
-          <textarea id="content" name="content" rows="18" class="chapter-editor" placeholder="Continue the chapter here..."></textarea>
+          <div id="chapterEditorMount"></div>
+          <textarea id="content" name="content" class="chapter-editor-field" hidden></textarea>
           <div class="editor-meta">
             <span id="wordCount">0 words</span>
             <span id="lastSaved">Last saved: not yet</span>
           </div>
-          <p class="field-note editor-note">Plain text is safest for this beta editor. Line breaks and paragraph spacing will be preserved on public reading pages.</p>
+          <p class="field-note editor-note">Your browser may underline spelling suggestions while you write.</p>
+          <p class="field-note editor-note">Formatting is saved with your chapter and shown safely on public reading pages.</p>
           <div class="auth-actions">
             <button type="submit" id="saveChapterButton">Save Draft</button>
             <button type="button" id="archiveChapterButton" class="secondary-button">Archive Chapter</button>

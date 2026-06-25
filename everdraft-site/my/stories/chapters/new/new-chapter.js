@@ -1,9 +1,12 @@
 import { friendlyAuthError, requireSession } from '/auth.js';
 import { createChapter, friendlyChapterError, getChaptersForAuthorStory } from '/chapters.js';
+import { mountChapterEditor } from '/components/ChapterEditor.bundle.js';
+import { chapterContentToText } from '/components/chapter-content.js';
 
 const form = document.getElementById('chapterForm');
 const chapterNumberInput = document.getElementById('chapterNumber');
 const contentInput = document.getElementById('content');
+const chapterEditorMount = document.getElementById('chapterEditorMount');
 const backToStoryLink = document.getElementById('backToStoryLink');
 const storyManagementLink = document.getElementById('storyManagementLink');
 const storySummary = document.getElementById('storySummary');
@@ -14,6 +17,11 @@ const wordCount = document.getElementById('wordCount');
 const lastSaved = document.getElementById('lastSaved');
 
 let hasUnsavedChanges = false;
+const chapterEditor = mountChapterEditor({
+  textarea: contentInput,
+  container: chapterEditorMount,
+  placeholder: 'Begin the chapter here…'
+});
 
 function getStoryId() {
   const match = window.location.pathname.match(/^\/my\/stories\/([^/]+)\/chapters\/new\/?$/);
@@ -27,7 +35,7 @@ function countWords(value) {
 }
 
 function updateWordCount() {
-  const count = countWords(contentInput.value);
+  const count = countWords(chapterContentToText(contentInput.value));
   wordCount.textContent = `${count} ${count === 1 ? 'word' : 'words'}`;
 }
 
@@ -59,6 +67,7 @@ async function loadNewChapter() {
     storySummary.textContent = `Adding a chapter to ${story.title || 'Untitled story'}.`;
     const maxChapter = chapters.reduce((max, chapter) => Math.max(max, Number(chapter.chapter_number) || 0), 0);
     chapterNumberInput.value = String(maxChapter + 1);
+    chapterEditor.setContent(contentInput.value);
     form.hidden = false;
     updateWordCount();
   } catch (error) {

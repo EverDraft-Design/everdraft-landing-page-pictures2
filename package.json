@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "build": "wrangler deploy --dry-run",
+    "build:editor": "esbuild everdraft-site/components/ChapterEditor.js --bundle --format=esm --platform=browser --loader:.js=jsx --define:process.env.NODE_ENV='\"production\"' --minify --outfile=everdraft-site/components/ChapterEditor.bundle.js",
+    "test": "node --test tests/*.test.mjs everdraft-site/tests/*.test.mjs",
+    "build": "npm run build:editor && wrangler deploy --dry-run",
     "deploy": "wrangler deploy"
   },
   "dependencies": {
@@ -16,6 +18,7 @@
     "@tiptap/starter-kit": "^3.27.1"
   },
   "devDependencies": {
+    "esbuild": "^0.27.3",
     "wrangler": "^4.87.0"
   }
 }

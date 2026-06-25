@@ -1,10 +1,13 @@
 import { friendlyAuthError, requireSession } from '/auth.js';
 import { archiveChapter, friendlyChapterError, getChapterForAuthor, updateChapter } from '/chapters.js';
+import { mountChapterEditor } from '/components/ChapterEditor.bundle.js';
+import { chapterContentToText } from '/components/chapter-content.js';
 
 const form = document.getElementById('chapterForm');
 const chapterNumberInput = document.getElementById('chapterNumber');
 const titleInput = document.getElementById('title');
 const contentInput = document.getElementById('content');
+const chapterEditorMount = document.getElementById('chapterEditorMount');
 const statusInput = document.getElementById('status');
 const backToStoryLink = document.getElementById('backToStoryLink');
 const storyManagementLink = document.getElementById('storyManagementLink');
@@ -17,6 +20,11 @@ const wordCount = document.getElementById('wordCount');
 const lastSaved = document.getElementById('lastSaved');
 
 let hasUnsavedChanges = false;
+const chapterEditor = mountChapterEditor({
+  textarea: contentInput,
+  container: chapterEditorMount,
+  placeholder: 'Continue the chapter here…'
+});
 
 function getIds() {
   const match = window.location.pathname.match(/^\/my\/stories\/([^/]+)\/chapters\/([^/]+)\/edit\/?$/);
@@ -33,7 +41,7 @@ function countWords(value) {
 }
 
 function updateWordCount() {
-  const count = countWords(contentInput.value);
+  const count = countWords(chapterContentToText(contentInput.value));
   wordCount.textContent = `${count} ${count === 1 ? 'word' : 'words'}`;
 }
 
@@ -47,6 +55,7 @@ function fillChapter(story, chapter) {
   chapterNumberInput.value = chapter.chapter_number || 1;
   titleInput.value = chapter.title || '';
   contentInput.value = chapter.content || '';
+  chapterEditor.setContent(chapter.content || '');
   statusInput.value = chapter.status || 'draft';
   form.hidden = false;
   updateWordCount();
