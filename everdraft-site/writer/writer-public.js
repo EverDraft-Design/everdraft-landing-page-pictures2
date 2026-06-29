@@ -1,11 +1,14 @@
 import { friendlyFollowError, getDisplayName, getPublicWriterProfileByUsername } from '/follows.js';
 import { mountFollowControls } from '/follow-controls.js';
+import { getJourneyStatsForAuthor } from '/journey.js';
 
 const writerTitle = document.getElementById('writer-title');
 const writerMeta = document.getElementById('writerMeta');
 const writerFollowControls = document.getElementById('writerFollowControls');
 const writerBio = document.getElementById('writerBio');
 const writerStoriesList = document.getElementById('writerStoriesList');
+const writerJourneyStats = document.getElementById('writerJourneyStats');
+const writerJourneyStatsList = document.getElementById('writerJourneyStatsList');
 const writerStatus = document.getElementById('writerStatus');
 
 function getUsername() {
@@ -27,6 +30,31 @@ function snippet(value, maxLength = 180) {
   const text = String(value || '').trim();
   if (!text) return 'No blurb has been added yet.';
   return text.length > maxLength ? `${text.slice(0, maxLength).trim()}...` : text;
+}
+
+
+function formatStat(value) {
+  return new Intl.NumberFormat().format(Number(value) || 0);
+}
+
+function renderJourneyStats(stats) {
+  if (!writerJourneyStats || !writerJourneyStatsList) return;
+  const items = [
+    ['Stories created', stats.storiesCreated],
+    ['Journey Milestones', stats.journeyMilestonesCreated],
+    ['Current published words', stats.totalWordsCurrentlyPublished],
+    ['Words across snapshots', stats.totalWordsWrittenAcrossSnapshots],
+    ['Sparks received', stats.totalSparksReceived],
+    ['Notes received', stats.totalNotesReceived]
+  ];
+
+  writerJourneyStatsList.innerHTML = items.map(([label, value]) => `
+    <div class="journey-stat-card">
+      <strong>${formatStat(value)}</strong>
+      <span>${escapeHtml(label)}</span>
+    </div>
+  `).join('');
+  writerJourneyStats.hidden = false;
 }
 
 function renderStories(stories) {
@@ -72,6 +100,11 @@ async function loadWriter() {
       writerStatus.textContent = event.detail;
     });
     await mountFollowControls(writerFollowControls, { author_id: writer.id }, { mode: 'writer' });
+    try {
+      renderJourneyStats(await getJourneyStatsForAuthor(writer.id));
+    } catch (statsError) {
+      writerJourneyStats.hidden = true;
+    }
     renderStories(stories);
   } catch (error) {
     writerStatus.textContent = friendlyFollowError(error);

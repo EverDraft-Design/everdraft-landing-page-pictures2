@@ -3,14 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Stories — EverDraft</title>
-    <meta name="description" content="Manage your private EverDraft story drafts." />
+    <title>Edit Chapter — EverDraft</title>
+    <meta name="description" content="Edit a private EverDraft chapter draft." />
     <link rel="icon" type="image/png" href="/favicon/favicon.png" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <div class="site-bg" aria-hidden="true"></div>
-
     <header class="navbar">
       <a href="/" class="brand" aria-label="EverDraft home">
         <img src="/favicon/favicon.png" alt="EverDraft logo" class="brand-logo" />
@@ -49,32 +48,50 @@
         </details>
       </nav>
     </header>
-
     <main class="auth-main story-main">
-      <section class="auth-panel story-panel" aria-labelledby="stories-title">
-        <p class="eyebrow">DRAFT SHELF</p>
-        <h1 id="stories-title">My Stories</h1>
-        <p class="hero-copy">
-          A private draft shelf for story metadata. Chapters and public discovery are not open yet.
-        </p>
+      <section class="auth-panel story-panel" aria-labelledby="edit-chapter-title">
+        <p class="eyebrow">CHAPTER DRAFT</p>
+        <h1 id="edit-chapter-title">Edit Chapter</h1>
+        <p id="storySummary" class="hero-copy">Loading chapter...</p>
         <div class="auth-actions top-return-actions">
-          <a class="button-link secondary-link" href="/account/">Back to Account</a>
+          <a id="backToStoryLink" class="button-link secondary-link" href="/my/stories/" hidden>Back to Story</a>
+          <a id="storyManagementLink" class="button-link secondary-link" href="/my/stories/">Back to Story Management</a>
         </div>
-
-        <div id="readerNotice" class="notice-panel" hidden>
-          Please sign in and complete your profile to continue.
-        </div>
-
-        <div id="storyActions" class="story-actions" hidden>
-          <a class="button-link" href="/my/stories/new/">Create New Story</a>
-          <a class="button-link secondary-link" href="/library/">View Library</a>
-        </div>
-
-        <div id="storyList" class="story-list" aria-live="polite"></div>
-        <p id="storiesStatus" class="form-status" aria-live="polite"></p>
+        <div id="readerNotice" class="notice-panel" hidden>This chapter was not found, or it does not belong to your story.</div>
+        <form id="chapterForm" class="auth-form story-form" hidden>
+          <div class="form-grid">
+            <div>
+              <label for="chapterNumber">Chapter number</label>
+              <input id="chapterNumber" name="chapterNumber" type="number" min="1" step="1" required />
+            </div>
+            <div>
+              <label for="status">Status</label>
+              <select id="status" name="status">
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+                <option value="hidden">Hidden</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+          </div>
+          <label for="title">Title</label>
+          <input id="title" name="title" type="text" required />
+          <label for="content">Content</label>
+          <textarea id="content" name="content" rows="18" class="chapter-editor" spellcheck="true" placeholder="Begin writing your chapter…"></textarea>
+          <div class="editor-meta">
+            <span id="wordCount">0 words</span>
+            <span id="lastSaved">Last saved: not yet</span>
+          </div>
+          <p class="field-note editor-note">Your browser may underline spelling suggestions while you write.</p>
+          <p class="field-note editor-note">Use the toolbar for gentle formatting. Your chapter will be saved as safe HTML for public reading pages.</p>
+          <div class="auth-actions">
+            <button type="submit" id="saveChapterButton">Save Draft</button>
+            <button type="button" id="archiveChapterButton" class="secondary-button">Archive Chapter</button>
+          </div>
+          <p id="chapterStatus" class="form-status" aria-live="polite"></p>
+        </form>
       </section>
     </main>
-
-    <script type="module" src="/my/stories/stories-index.js"></script>
+    <script type="module" src="/my/stories/chapters/edit/edit-chapter.js"></script>
   </body>
 </html>

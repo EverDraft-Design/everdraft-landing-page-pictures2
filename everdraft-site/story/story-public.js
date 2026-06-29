@@ -1,6 +1,7 @@
 import { friendlyChapterError, getPublicPublishedChaptersForStory, getPublicStoryBySlug } from '/chapters.js';
 import { mountFollowControls } from '/follow-controls.js';
 import { mountStorySparkControl } from '/spark-controls.js';
+import { friendlyJourneyError, getPublicMilestonesForStory } from '/journey.js';
 
 const title = document.getElementById('story-title');
 const byline = document.getElementById('storyByline');
@@ -11,6 +12,8 @@ const chapterList = document.getElementById('chapterList');
 const status = document.getElementById('storyStatus');
 const storyFollowControls = document.getElementById('storyFollowControls');
 const storySparkControl = document.getElementById('storySparkControl');
+const journeyPanel = document.getElementById('storyJourney');
+const journeyList = document.getElementById('journeyList');
 
 function getSlug() {
   const match = window.location.pathname.match(/^\/story\/([^/]+)\/?$/);
@@ -36,6 +39,33 @@ function renderImage(wrap, url, alt, className) {
 function renderAuthorByline(author, authorName) {
   if (!author?.username) return `By ${escapeHtml(authorName)}`;
   return `By <a href="/writer/${escapeHtml(author.username)}/">${escapeHtml(authorName)}</a> · @${escapeHtml(author.username)}`;
+}
+
+
+function formatDate(value) {
+  if (!value) return 'Unknown date';
+  return new Date(value).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function formatCount(value, singular, plural = `${singular}s`) {
+  const count = Number(value) || 0;
+  return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function renderJourneyMilestones(milestones) {
+  if (!journeyPanel || !journeyList || !milestones.length) return;
+  journeyPanel.hidden = false;
+  journeyList.innerHTML = milestones.map((milestone) => `
+    <article class="journey-card public-journey-card">
+      <p class="eyebrow">${escapeHtml(milestone.title)}</p>
+      ${milestone.reflection ? `<p>${escapeHtml(milestone.reflection)}</p>` : '<p class="muted-copy">A preserved moment from this story’s growth.</p>'}
+      <dl class="story-meta">
+        <div><dt>Created</dt><dd>${formatDate(milestone.created_at)}</dd></div>
+        <div><dt>Snapshot</dt><dd>${formatCount(milestone.snapshot?.chapters?.length || 0, 'chapter')}</dd></div>
+        <div><dt>Words</dt><dd>${formatCount(milestone.word_count, 'word')}</dd></div>
+      </dl>
+    </article>
+  `).join('');
 }
 
 function renderChapters(story, chapters) {
@@ -84,6 +114,11 @@ async function loadStory() {
     });
     await mountStorySparkControl(storySparkControl, story);
     await mountFollowControls(storyFollowControls, story, { mode: 'story', compact: true });
+    try {
+      renderJourneyMilestones(await getPublicMilestonesForStory(story.id));
+    } catch (journeyError) {
+      journeyPanel.hidden = true;
+    }
 
     if (!story.is_readable) {
       unreadableNotice.hidden = false;
@@ -93,7 +128,7 @@ async function loadStory() {
 
     renderChapters(story, await getPublicPublishedChaptersForStory(story.id));
   } catch (error) {
-    status.textContent = friendlyChapterError(error);
+    status.textContent = error.message.includes('Journey') ? friendlyJourneyError(error) : friendlyChapterError(error);
   }
 }
 
