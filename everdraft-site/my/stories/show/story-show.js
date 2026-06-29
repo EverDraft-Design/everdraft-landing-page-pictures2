@@ -1,6 +1,7 @@
 import { friendlyAuthError, requireSession } from '/auth.js';
 import { friendlyChapterError, getChaptersForAuthorStory } from '/chapters.js';
 import { friendlyEngagementError, getNoteSummaryForStory } from '/engagement.js';
+import { createJourneyMilestone, friendlyJourneyError, getMilestonesForAuthorStory, updateJourneyMilestoneVisibility } from '/journey.js';
 
 const title = document.getElementById('story-title');
 const summary = document.getElementById('storySummary');
@@ -10,6 +11,10 @@ const addChapterLink = document.getElementById('addChapterLink');
 const editStoryLink = document.getElementById('editStoryLink');
 const publicStoryLink = document.getElementById('publicStoryLink');
 const chapterList = document.getElementById('chapterList');
+const journeyPanel = document.querySelector('.journey-author-panel');
+const journeyForm = document.getElementById('journeyForm');
+const journeyList = document.getElementById('journeyList');
+const saveJourneyButton = document.getElementById('saveJourneyButton');
 const status = document.getElementById('storyStatus');
 
 function getStoryId() {
@@ -31,6 +36,68 @@ function escapeHtml(value) {
     '"': '&quot;',
     "'": '&#39;'
   })[character]);
+}
+
+function formatCount(value, singular, plural = `${singular}s`) {
+  const count = Number(value) || 0;
+  return `${count} ${count === 1 ? singular : plural}`;
+}
+
+function renderJourneyMilestones(milestones) {
+  if (!journeyList) return;
+  if (!milestones.length) {
+    journeyList.innerHTML = '<div class="empty-state">No Story Journey milestones yet. Create one when this story reaches a meaningful discovery, rewrite, or transformation.</div>';
+    return;
+  }
+
+  journeyList.innerHTML = milestones.map((milestone) => `
+    <article class="journey-card" data-milestone-id="${escapeHtml(milestone.id)}">
+      <div>
+        <p class="eyebrow">${escapeHtml(milestone.visibility === 'public' ? 'Public Milestone' : 'Private Milestone')}</p>
+        <h3>${escapeHtml(milestone.title)}</h3>
+        ${milestone.reflection ? `<p>${escapeHtml(milestone.reflection)}</p>` : '<p class="muted-copy">No reflection added yet.</p>'}
+      </div>
+      <dl class="story-meta">
+        <div><dt>Snapshot</dt><dd>${formatCount(milestone.snapshot?.chapters?.length || 0, 'chapter')}</dd></div>
+        <div><dt>Words</dt><dd>${formatCount(milestone.word_count, 'word')}</dd></div>
+        <div><dt>Created</dt><dd>${formatDate(milestone.created_at)}</dd></div>
+      </dl>
+      <label class="journey-visibility-toggle">
+        <span>Visibility</span>
+        <select data-visibility-select>
+          <option value="private" ${milestone.visibility === 'private' ? 'selected' : ''}>Private</option>
+          <option value="public" ${milestone.visibility === 'public' ? 'selected' : ''}>Public</option>
+        </select>
+      </label>
+    </article>
+  `).join('');
+
+  journeyList.querySelectorAll('[data-visibility-select]').forEach((select) => {
+    select.addEventListener('change', async (event) => {
+      const card = event.target.closest('[data-milestone-id]');
+      if (!card) return;
+      status.textContent = '';
+      event.target.disabled = true;
+      try {
+        await updateJourneyMilestoneVisibility(card.dataset.milestoneId, event.target.value);
+        status.textContent = 'Milestone visibility updated.';
+        await refreshJourney();
+      } catch (error) {
+        status.textContent = friendlyJourneyError(error);
+      } finally {
+        event.target.disabled = false;
+      }
+    });
+  });
+}
+
+async function refreshJourney() {
+  try {
+    const { milestones } = await getMilestonesForAuthorStory(getStoryId());
+    renderJourneyMilestones(milestones);
+  } catch (error) {
+    journeyList.innerHTML = '<div class="empty-state">Story Journey is ready in the app, but the database migration needs to be applied before milestones can be saved.</div>';
+  }
 }
 
 function renderChapters(storyId, chapters, noteSummary = new Map()) {
@@ -81,12 +148,35 @@ async function loadStory() {
     editStoryLink.href = `/my/stories/${story.id}/edit/`;
     publicStoryLink.href = story.slug ? `/story/${story.slug}/` : '/my/stories/';
     storyActions.hidden = false;
+    journeyPanel.hidden = false;
+    await refreshJourney();
     renderChapters(story.id, chapters, await getNoteSummaryForStory(story.id));
   } catch (error) {
     status.textContent = error.message.includes('profile')
       ? friendlyAuthError(error)
       : (error.message.includes('Spark') || error.message.includes('Note') ? friendlyEngagementError(error) : friendlyChapterError(error));
   }
+}
+
+if (journeyForm) {
+  journeyForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    status.textContent = '';
+    saveJourneyButton.disabled = true;
+    saveJourneyButton.textContent = 'Saving milestone...';
+
+    try {
+      await createJourneyMilestone(getStoryId(), Object.fromEntries(new FormData(journeyForm).entries()));
+      journeyForm.reset();
+      status.textContent = 'Journey Milestone created.';
+      await refreshJourney();
+    } catch (error) {
+      status.textContent = friendlyJourneyError(error);
+    } finally {
+      saveJourneyButton.disabled = false;
+      saveJourneyButton.textContent = 'Create Journey Milestone';
+    }
+  });
 }
 
 loadStory();
