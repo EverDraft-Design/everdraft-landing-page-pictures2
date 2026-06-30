@@ -500,7 +500,16 @@ export default {
       return checkSupabaseConnection(env);
     }
 
-    if (env.ASSETS) {
+    if (
+  env.ASSETS
+  && !isPublicChapterRoute
+  && !isPublicStoryRoute
+  && !isWriterRoute
+  && !isChapterEditRoute
+  && !isChapterNewRoute
+  && !isStoryEditRoute
+  && !isStoryManageRoute
+) {
       if (isPinboardRoute) {
         return env.ASSETS.fetch(rewriteAssetRequest(request, '/account/pinboard/index.html'));
       }
