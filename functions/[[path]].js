@@ -11,39 +11,39 @@ export async function onRequest(context) {
   const pathname = url.pathname;
 
   const routes = [
-    {
-      matches: /^\/account\/pinboard\/?$/,
-      file: '/account/pinboard/index.html'
-    },
-    {
-      matches: /^\/story\/[^/]+\/chapter\/[^/]+\/?$/,
-      file: '/story/chapter/index.html'
-    },
-    {
-      matches: /^\/story\/[^/]+\/?$/,
-      file: '/story/index.html'
-    },
-    {
-      matches: /^\/writer\/[^/]+\/?$/,
-      file: '/writer/index.html'
-    },
-    {
-      matches: /^\/my\/stories\/[^/]+\/chapters\/new\/?$/,
-      file: '/my/stories/chapters/new/index.html'
-    },
-    {
-      matches: /^\/my\/stories\/[^/]+\/chapters\/[^/]+\/edit\/?$/,
-      file: '/my/stories/chapters/edit/index.html'
-    },
-    {
-      matches: /^\/my\/stories\/[^/]+\/edit\/?$/,
-      file: '/my/stories/edit/index.html'
-    },
-    {
-      matches: /^\/my\/stories\/[^/]+\/?$/,
-      file: '/my/stories/show/index.html'
-    }
-  ];
+  {
+    matches: /^\/account\/pinboard\/?$/,
+    file: '/account/pinboard/'
+  },
+  {
+    matches: /^\/story\/[^/]+\/chapter\/[^/]+\/?$/,
+    file: '/story/chapter/'
+  },
+  {
+    matches: /^\/story\/[^/]+\/?$/,
+    file: '/story/'
+  },
+  {
+    matches: /^\/writer\/[^/]+\/?$/,
+    file: '/writer/'
+  },
+  {
+    matches: /^\/my\/stories\/[^/]+\/chapters\/new\/?$/,
+    file: '/my/stories/chapters/new/'
+  },
+  {
+    matches: /^\/my\/stories\/[^/]+\/chapters\/[^/]+\/edit\/?$/,
+    file: '/my/stories/chapters/edit/'
+  },
+  {
+    matches: /^\/my\/stories\/[^/]+\/edit\/?$/,
+    file: '/my/stories/edit/'
+  },
+  {
+    matches: /^\/my\/stories\/[^/]+\/?$/,
+    file: '/my/stories/show/'
+  }
+];
 
   const matchedRoute = routes.find((route) => route.matches.test(pathname));
 
@@ -53,5 +53,5 @@ export async function onRequest(context) {
     );
   }
 
-  return env.ASSETS.fetch(request);
+  return context.next();
 }
