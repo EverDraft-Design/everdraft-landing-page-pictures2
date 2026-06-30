@@ -16,10 +16,6 @@ export async function onRequest(context) {
       file: '/account/pinboard/index.html'
     },
     {
-      matches: /^\/library\/?$/,
-      file: '/library/index.html'
-    },
-    {
       matches: /^\/story\/[^/]+\/chapter\/[^/]+\/?$/,
       file: '/story/chapter/index.html'
     },
