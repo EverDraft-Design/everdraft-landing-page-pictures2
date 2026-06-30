@@ -13,7 +13,7 @@ export async function onRequest(context) {
   const isStaticFile = /\.[a-z0-9]+$/i.test(pathname);
 
 if (isStaticFile) {
-  return context.next();
+  return env.ASSETS.fetch(request);
 }
 
   const routes = [
