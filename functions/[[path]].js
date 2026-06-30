@@ -10,6 +10,12 @@ export async function onRequest(context) {
   const url = new URL(request.url);
   const pathname = url.pathname;
 
+  const isStaticFile = /\.[a-z0-9]+$/i.test(pathname);
+
+if (isStaticFile) {
+  return context.next();
+}
+
   const routes = [
   {
     matches: /^\/account\/pinboard\/?$/,
