@@ -482,6 +482,7 @@ export default {
     const isChapterEditRoute = /^\/my\/stories\/[^/]+\/chapters\/[^/]+\/edit\/?$/.test(url.pathname);
     const isPublicChapterRoute = /^\/story\/[^/]+\/chapter\/[^/]+\/?$/.test(url.pathname);
     const isPublicStoryRoute = /^\/story\/[^/]+\/?$/.test(url.pathname);
+    const isPublicStoryBaseRoute = /^\/story\/?$/.test(url.pathname);
     const isWriterRoute = /^\/writer\/[^/]+\/?$/.test(url.pathname);
 
     if (url.pathname === '/api/supabase-config') {
@@ -498,6 +499,16 @@ export default {
       }
 
       return checkSupabaseConnection(env);
+    }
+
+    if (isPublicStoryBaseRoute) {
+      return new Response('Not found', {
+        status: 404,
+        headers: {
+          'Content-Type': 'text/plain; charset=UTF-8',
+          'Cache-Control': 'no-store'
+        }
+      });
     }
 
     if (
