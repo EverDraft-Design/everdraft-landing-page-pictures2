@@ -21,8 +21,15 @@ assert.match(journalDataSource, /Copy one full article block, paste it underneat
 assert.match(journalDataSource, /VALID_CATEGORY_SLUGS/);
 assert.match(journalDataSource, /isValidArticle/);
 
-assert.equal(featuredArticle.category, 'FEATURED NOTE');
-assert.equal(featuredArticle.url, '/journal/featured-article');
+assert.equal(featuredArticle.category, 'EVERDRAFT NOTES');
+assert.equal(featuredArticle.title, 'A Direct Line to Your Readers');
+assert.equal(featuredArticle.date, 'September 21, 2026');
+assert.equal(featuredArticle.url, '/journal/a-direct-line-to-your-readers');
+
+const featuredArticleHtml = read('everdraft-site/journal/a-direct-line-to-your-readers/index.html');
+assert.match(featuredArticleHtml, /<h1 id="article-title">A Direct Line to Your Readers<\/h1>/);
+assert.match(featuredArticleHtml, /<h2>What’s new\?<\/h2>/);
+assert.match(featuredArticleHtml, /new Reader Note waiting/);
 
 assert.equal(journalArticles.length, 6);
 assert.deepEqual(

@@ -1,11 +1,11 @@
 // EDIT THE FEATURED JOURNAL ARTICLE HERE.
 // Change only the text between the quote marks unless you are comfortable editing JavaScript.
 export const featuredArticle = {
-  category: "FEATURED NOTE",
-  title: "Featured Article Title",
-  date: "Month Day, Year",
-  excerpt: "Featured article excerpt placeholder.",
-  url: "/journal/featured-article"
+  category: "EVERDRAFT NOTES",
+  title: "A Direct Line to Your Readers",
+  date: "September 21, 2026",
+  excerpt: "A thank-you to EverDraft’s first writers and readers — and a new way for writers to reply to meaningful Reader Notes.",
+  url: "/journal/a-direct-line-to-your-readers"
 };
 
 // ADD NEW JOURNAL ARTICLES BELOW THIS LINE
