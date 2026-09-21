@@ -1577,6 +1577,41 @@ legend { color: var(--gold-soft); padding: 0 .3rem; }
   border-top: 1px solid rgba(247, 223, 138, .18);
 }
 
+.pinboard-reply-summary {
+  margin-top: 1rem;
+  padding: .9rem 1rem;
+  border: 1px solid rgba(247, 223, 138, .28);
+  border-radius: .75rem;
+  background: rgba(212, 175, 55, .08);
+}
+
+.pinboard-reply-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .55rem;
+}
+
+.pinboard-reply-summary p {
+  margin: .65rem 0 0;
+  white-space: pre-wrap;
+}
+
+.reply-status-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  padding: .25rem .65rem;
+  color: var(--gold-soft);
+  background: rgba(212, 175, 55, .14);
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
 .pinboard-reply-copy,
 .writer-reply p:last-child {
   white-space: pre-wrap;

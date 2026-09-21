@@ -28,6 +28,11 @@ function formatDate(value) {
   return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(value));
 }
 
+function replyPreview(value, maxLength = 220) {
+  const text = String(value || '').trim();
+  return text.length > maxLength ? `${text.slice(0, maxLength).trimEnd()}…` : text;
+}
+
 function renderEmpty() {
   pinboardList.innerHTML = '<div class="empty-state">No Notes yet. When readers leave thoughts on your chapters, they’ll appear here.</div>';
 }
@@ -59,9 +64,18 @@ function renderNotes(notes) {
         <p class="muted-copy">${escapeHtml(chapterNumber)} · ${escapeHtml(chapterTitle)}</p>
         <blockquote>${escapeHtml(pin.note)}</blockquote>
         <p class="muted-copy">From ${escapeHtml(readerName)}</p>
+        ${reply ? `
+          <div class="pinboard-reply-summary">
+            <div class="pinboard-reply-summary-header">
+              <span class="reply-status-badge">Replied</span>
+              <span class="muted-copy">${escapeHtml(formatDate(reply.updated_at || reply.created_at))}</span>
+            </div>
+            <p>${escapeHtml(replyPreview(reply.reply))}</p>
+          </div>
+        ` : ''}
         <div class="pinboard-reply">
-          <p class="eyebrow">YOUR REPLY</p>
-          ${reply ? `<p class="pinboard-reply-copy">${escapeHtml(reply.reply)}</p>` : '<p class="muted-copy">Reply privately to the reader who left this Note.</p>'}
+          <p class="eyebrow">${reply ? 'EDIT YOUR REPLY' : 'YOUR REPLY'}</p>
+          ${reply ? '' : '<p class="muted-copy">Reply privately to the reader who left this Note.</p>'}
           <form class="pinboard-reply-form" data-note-id="${escapeHtml(pin.id)}">
             <label for="reply-${escapeHtml(pin.id)}" class="sr-only">Reply to this Reader Note</label>
             <textarea id="reply-${escapeHtml(pin.id)}" name="reply" rows="3" maxlength="2000" required>${escapeHtml(reply?.reply || '')}</textarea>

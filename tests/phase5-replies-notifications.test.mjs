@@ -53,6 +53,8 @@ assert.match(pinboard, /deleteNoteReply/);
 assert.match(pinboard, /markPinboardNotificationsRead/);
 assert.match(pinboard, /Update Reply/);
 assert.match(pinboard, /Send Reply/);
+assert.match(pinboard, /replyPreview/);
+assert.match(pinboard, /reply-status-badge">Replied/);
 
 const accountHtml = read('everdraft-site/account/index.html');
 const accountJs = read('everdraft-site/account/account.js');
@@ -70,6 +72,8 @@ assert.match(chapterJs, /The writer has not replied yet/);
 const styles = read('everdraft-site/styles.css');
 assert.match(styles, /\.notification-count/);
 assert.match(styles, /\.pinboard-reply/);
+assert.match(styles, /\.pinboard-reply-summary/);
+assert.match(styles, /\.reply-status-badge/);
 assert.match(styles, /\.reader-note-history/);
 assert.match(styles, /\.writer-reply/);
 
