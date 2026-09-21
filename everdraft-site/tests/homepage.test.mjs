@@ -16,7 +16,7 @@ test('homepage presents EverDraft as a live writing platform', () => {
 });
 
 test('homepage uses the supplied artwork and platform icons', () => {
-  assert.match(html, /\/?assets\/home\/hero-writing-desk\.png/);
+  assert.match(html, /\/?assets\/home\/hero-writing-desk\.jpg/);
   assert.match(html, /\/?assets\/home\/icon-sparks\.png/);
   assert.match(html, /\/?assets\/home\/icon-private-notes\.png/);
   assert.match(html, /\/?assets\/home\/icon-pinboard\.png/);
@@ -47,7 +47,7 @@ test('homepage module renders a resilient four-story Library preview', async () 
 });
 
 test('homepage styles use the desk hero and responsive card grids', () => {
-  assert.match(css, /url\("\/assets\/home\/hero-writing-desk\.png"\)/);
+  assert.match(css, /url\("\/assets\/home\/hero-writing-desk\.jpg"\)/);
   assert.match(css, /\.home-feature-grid[\s\S]*grid-template-columns:\s*repeat\(4,/);
   assert.match(css, /@media \(min-width:\s*700px\)[\s\S]*\.home-feature-grid[\s\S]*repeat\(2,/);
   assert.match(css, /@media \(min-width:\s*1080px\)[\s\S]*\.home-library-grid[\s\S]*repeat\(4,/);

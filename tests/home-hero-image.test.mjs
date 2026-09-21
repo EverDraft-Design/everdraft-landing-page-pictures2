@@ -18,7 +18,7 @@ assert.doesNotMatch(homepage, /class="account-cta"/);
 assert.doesNotMatch(homepage, /codex\/repair-journal-account-beta/);
 assert.doesNotMatch(styles, /codex\/repair-journal-account-beta/);
 
-assert.match(styles, /\.home-hero\s*\{[\s\S]*url\("\/assets\/everdraft-forest-hero\.png"\)/);
+assert.match(styles, /\.home-hero\s*\{[\s\S]*url\("\/assets\/everdraft-forest-hero\.jpg"\)/);
 assert.match(styles, /\.home-hero\s*\{[\s\S]*min-height:\s*max\(760px,\s*calc\(100vh - 120px\)\)/);
 assert.match(styles, /\.home-hero\s*\{[\s\S]*text-align:\s*left/);
 assert.match(styles, /\.home-hero\s*\{[\s\S]*center top \/ cover no-repeat/);

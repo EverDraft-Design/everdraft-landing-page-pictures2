@@ -126,8 +126,10 @@ async function loadLibrary() {
   try {
     const stories = await getLibraryStories();
     renderStories(stories);
-    await mountLibrarySparkControls(stories);
-    await mountLibraryFollowControls(stories);
+    await Promise.all([
+      mountLibrarySparkControls(stories),
+      mountLibraryFollowControls(stories)
+    ]);
   } catch (error) {
     status.textContent = friendlyStoryError(error);
     renderEmptyState();

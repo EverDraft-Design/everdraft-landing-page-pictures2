@@ -82,16 +82,22 @@ async function loadStory() {
     storySparkControl.addEventListener('sparkerror', (event) => {
       status.textContent = event.detail;
     });
-    await mountStorySparkControl(storySparkControl, story);
-    await mountFollowControls(storyFollowControls, story, { mode: 'story', compact: true });
-
     if (!story.is_readable) {
       unreadableNotice.hidden = false;
       chapterList.innerHTML = '';
+      await Promise.all([
+        mountStorySparkControl(storySparkControl, story),
+        mountFollowControls(storyFollowControls, story, { mode: 'story', compact: true })
+      ]);
       return;
     }
 
-    renderChapters(story, await getPublicPublishedChaptersForStory(story.id));
+    const [chapters] = await Promise.all([
+      getPublicPublishedChaptersForStory(story.id),
+      mountStorySparkControl(storySparkControl, story),
+      mountFollowControls(storyFollowControls, story, { mode: 'story', compact: true })
+    ]);
+    renderChapters(story, chapters);
   } catch (error) {
     status.textContent = friendlyChapterError(error);
   }

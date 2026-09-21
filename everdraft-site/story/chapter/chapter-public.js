@@ -166,13 +166,15 @@ async function loadChapter() {
     chapterSparkControl.addEventListener('sparkerror', (event) => {
       status.textContent = event.detail;
     });
-    await mountChapterSparkControl(chapterSparkControl, story, chapter);
-    await mountFollowControls(chapterFollowControls, story, { compact: true, mode: 'story' });
     chapterContent.innerHTML = sanitizeChapterHtml(normalizeChapterContent(chapter.content));
     chapterContent.hidden = false;
-    await setupNotePanel(story, chapter);
     setNavLink(previousChapterLink, story, previousChapter, 'Previous Chapter');
     setNavLink(nextChapterLink, story, nextChapter, 'Next Chapter');
+    await Promise.all([
+      mountChapterSparkControl(chapterSparkControl, story, chapter),
+      mountFollowControls(chapterFollowControls, story, { compact: true, mode: 'story' }),
+      setupNotePanel(story, chapter)
+    ]);
   } catch (error) {
     status.textContent = friendlyChapterError(error);
   }

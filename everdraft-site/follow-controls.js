@@ -143,15 +143,15 @@ export async function mountFollowControls(container, story, options = {}) {
   const writerCount = container.querySelector('[data-follow-count="writer"]');
 
   try {
-    const [storyFollowers, writerFollowers] = await Promise.all([
+    const [storyFollowers, writerFollowers, currentProfile] = await Promise.all([
       needsStory ? getStoryFollowerCount(story.id) : 0,
-      needsWriter ? getWriterFollowerCount(story.author_id) : 0
+      needsWriter ? getWriterFollowerCount(story.author_id) : 0,
+      getViewerProfile()
     ]);
 
     if (storyCount) storyCount.textContent = formatStoryFollowers(storyFollowers);
     if (writerCount) writerCount.textContent = formatWriterFollowers(writerFollowers);
 
-    const currentProfile = await getViewerProfile();
     if (!currentProfile) {
       setSignedOutPrompt(container, mode);
       return;
@@ -162,8 +162,10 @@ export async function mountFollowControls(container, story, options = {}) {
       return;
     }
 
-    let followingStory = needsStory ? await isFollowingStory(story.id) : false;
-    let followingWriter = needsWriter ? await isFollowingWriter(story.author_id) : false;
+    let [followingStory, followingWriter] = await Promise.all([
+      needsStory ? isFollowingStory(story.id) : false,
+      needsWriter ? isFollowingWriter(story.author_id) : false
+    ]);
 
     if (storyButton) setButton(storyButton, followingStory, 'Follow Story', 'Unfollow Story');
     if (writerButton) setButton(writerButton, followingWriter, 'Follow Writer', 'Unfollow Writer');

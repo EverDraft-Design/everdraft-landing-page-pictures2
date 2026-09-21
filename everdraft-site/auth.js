@@ -2,6 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.105.1';
 import { getFriendlyErrorMessage } from '/errors.js';
 
 let clientPromise;
+let currentProfilePromise;
 const PROFILE_SELECT_BASE = 'id, user_id, username, display_name, pen_name, role, bio, avatar_url, created_at, updated_at';
 const PROFILE_SELECT = `${PROFILE_SELECT_BASE}, notes_enabled`;
 const USERNAME_PATTERN = /^[a-z0-9_-]{3,30}$/;
@@ -185,7 +186,7 @@ export async function logOut() {
   if (error) throw error;
 }
 
-export async function getCurrentProfile() {
+async function loadCurrentProfile() {
   const supabase = await getSupabaseBrowserClient();
   const user = await getCurrentUser();
 
@@ -210,6 +211,16 @@ export async function getCurrentProfile() {
 
   if (error) throw error;
   return withNotesEnabledDefault(data);
+}
+
+export async function getCurrentProfile() {
+  if (!currentProfilePromise) {
+    currentProfilePromise = loadCurrentProfile().finally(() => {
+      currentProfilePromise = null;
+    });
+  }
+
+  return currentProfilePromise;
 }
 
 export async function createProfileForAuthUser({

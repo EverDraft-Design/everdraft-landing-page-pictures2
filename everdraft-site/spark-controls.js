@@ -43,6 +43,15 @@ function renderSpark(container, { count, sparked, disabled, label, prompt }) {
   `;
 }
 
+function updateSparkButton(button, count, sparked) {
+  button.classList.toggle('sparked', sparked);
+  button.setAttribute('aria-label', sparked ? 'Remove Spark' : 'Add Spark');
+  const icon = button.querySelector('.spark-icon');
+  const countLabel = button.querySelector('.spark-count');
+  if (icon) icon.textContent = sparked ? '✦' : '✧';
+  if (countLabel) countLabel.textContent = formatCount(count);
+}
+
 async function mountSparkControl(container, subject, {
   getCount,
   hasSparked,
@@ -93,13 +102,21 @@ async function mountSparkControl(container, subject, {
       prompt: ''
     });
 
+    let renderedCount = count;
+    let renderedSparked = sparked;
     container.querySelector('.spark-control')?.addEventListener('click', async () => {
       const button = container.querySelector('.spark-control');
+      const nextSparked = !renderedSparked;
+      const nextCount = Math.max(0, renderedCount + (nextSparked ? 1 : -1));
       button.disabled = true;
+      updateSparkButton(button, nextCount, nextSparked);
       try {
         await toggleSpark(subject.id);
-        await mountSparkControl(container, subject, { getCount, hasSparked, toggleSpark, ownerId, ownerPrompt });
+        renderedSparked = nextSparked;
+        renderedCount = nextCount;
+        button.disabled = false;
       } catch (error) {
+        updateSparkButton(button, renderedCount, renderedSparked);
         container.dispatchEvent(new CustomEvent('sparkerror', { detail: friendlyEngagementError(error, 'spark') }));
         button.disabled = false;
       }
