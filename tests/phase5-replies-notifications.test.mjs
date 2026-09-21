@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 const read = (path) => readFileSync(path, 'utf8');
 const requiredFiles = [
   'supabase/migrations/011_pinboard_replies_notifications.sql',
+  'supabase/migrations/012_make_note_replies_final.sql',
   'everdraft-site/engagement.js',
   'everdraft-site/account/index.html',
   'everdraft-site/account/account.js',
@@ -46,13 +47,22 @@ for (const helper of [
 assert.match(engagement, /\.from\('note_replies'\)/);
 assert.match(engagement, /\.from\('notifications'\)/);
 assert.match(engagement, /notification_type', 'pinboard_note'/);
+assert.match(engagement, /\.from\('note_replies'\)[\s\S]*\.insert\(/);
+assert.doesNotMatch(engagement, /\.from\('note_replies'\)[\s\S]*\.upsert\(/);
+
+const finalReplyMigration = read('supabase/migrations/012_make_note_replies_final.sql');
+assert.match(finalReplyMigration, /revoke update on table public\.note_replies from authenticated/i);
+assert.match(finalReplyMigration, /drop policy if exists "Writers can update their Note replies"/i);
+assert.doesNotMatch(finalReplyMigration, /drop table|truncate|delete from/i);
 
 const pinboard = read('everdraft-site/account/pinboard/pinboard.js');
 assert.match(pinboard, /saveNoteReply/);
 assert.match(pinboard, /deleteNoteReply/);
 assert.match(pinboard, /markPinboardNotificationsRead/);
-assert.match(pinboard, /Update Reply/);
 assert.match(pinboard, /Send Reply/);
+assert.match(pinboard, /Remove Reply/);
+assert.match(pinboard, /can be removed but not edited/);
+assert.doesNotMatch(pinboard, /Update Reply|EDIT YOUR REPLY/);
 assert.match(pinboard, /replyPreview/);
 assert.match(pinboard, /reply-status-badge">Replied/);
 

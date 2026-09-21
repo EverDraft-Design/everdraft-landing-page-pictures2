@@ -71,21 +71,24 @@ function renderNotes(notes) {
               <span class="muted-copy">${escapeHtml(formatDate(reply.updated_at || reply.created_at))}</span>
             </div>
             <p>${escapeHtml(replyPreview(reply.reply))}</p>
+            <div class="pinboard-reply-actions">
+              <button type="button" class="secondary-button" data-delete-reply-id="${escapeHtml(reply.id)}">Remove Reply</button>
+            </div>
           </div>
-        ` : ''}
-        <div class="pinboard-reply">
-          <p class="eyebrow">${reply ? 'EDIT YOUR REPLY' : 'YOUR REPLY'}</p>
-          ${reply ? '' : '<p class="muted-copy">Reply privately to the reader who left this Note.</p>'}
+        ` : `
+          <div class="pinboard-reply">
+          <p class="eyebrow">YOUR REPLY</p>
+          <p class="muted-copy">Reply privately to the reader who left this Note. Once sent, a reply can be removed but not edited.</p>
           <form class="pinboard-reply-form" data-note-id="${escapeHtml(pin.id)}">
             <label for="reply-${escapeHtml(pin.id)}" class="sr-only">Reply to this Reader Note</label>
-            <textarea id="reply-${escapeHtml(pin.id)}" name="reply" rows="3" maxlength="2000" required>${escapeHtml(reply?.reply || '')}</textarea>
+            <textarea id="reply-${escapeHtml(pin.id)}" name="reply" rows="3" maxlength="2000" required></textarea>
             <div class="pinboard-reply-actions">
-              <button type="submit">${reply ? 'Update Reply' : 'Send Reply'}</button>
-              ${reply ? `<button type="button" class="secondary-button" data-delete-reply-id="${escapeHtml(reply.id)}">Remove Reply</button>` : ''}
+              <button type="submit">Send Reply</button>
             </div>
             <p class="form-status" data-reply-status aria-live="polite"></p>
           </form>
-        </div>
+          </div>
+        `}
         ${story.slug ? `<a class="button-link secondary-link" href="/story/${escapeHtml(story.slug)}/">Open Story</a>` : ''}
       </article>
     `;

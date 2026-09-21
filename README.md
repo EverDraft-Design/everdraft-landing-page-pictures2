@@ -288,7 +288,8 @@ Phase 5 adds a private conversation loop without turning Reader Notes into publi
 - Each new Reader Note creates an in-app notification for the writer.
 - The Account page shows a subtle gold unread count linking directly to the Pinboard.
 - Opening the Pinboard marks new Note notifications as read.
-- A writer can send, update, or remove one private reply on each Note.
+- A writer can send or remove one private reply on each Note.
+- Once sent, a reply cannot be edited; the writer may remove it and send a new reply if a genuine correction is needed.
 - The reader who left the Note can return to that chapter and see the writer's reply alongside their original Note.
 - Replies are visible only to the Note's writer and reader under Supabase Row Level Security.
 - Existing Notes are preserved and are not backfilled as unread notifications.
@@ -296,6 +297,8 @@ Phase 5 adds a private conversation loop without turning Reader Notes into publi
 Apply `supabase/migrations/011_pinboard_replies_notifications.sql` manually in the Supabase SQL Editor after migration 010. It creates `public.note_replies` and `public.notifications`, their private access policies, and a database trigger that creates one writer notification whenever a new Note is inserted. It does not delete or rewrite existing Notes, stories, chapters, Sparks, or follows.
 
 Email and browser push notifications remain intentionally out of scope. The first notification version is entirely in-app and uses the existing Supabase project.
+
+Apply `supabase/migrations/012_make_note_replies_final.sql` after migration 011 to revoke reply-update permission. This makes the no-edit boundary a database rule rather than only an interface choice.
 
 ## Navigation flow
 
@@ -326,8 +329,9 @@ A safety migration is available at:
 - `supabase/migrations/009_phase4_notes_sparks.sql`
 - `supabase/migrations/010_add_notes_enabled_to_profiles.sql`
 - `supabase/migrations/011_pinboard_replies_notifications.sql`
+- `supabase/migrations/012_make_note_replies_final.sql`
 
-Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, if Auth users are being created without profile rows, or if story/chapter/follow saves fail with a permission/RLS error. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. Migration 005 keeps `profiles.role` as a legacy/internal field, prevents browser self-service role changes, removes the original story creation role gate, and updates the Auth trigger so new profiles no longer depend on intended-role metadata. Migration 006 recreates story metadata policies around profile ownership instead of legacy role values. Migration 007 recreates chapter policies around parent story ownership and published/readable public access. Migration 008 refreshes follow policies for public counts and member-owned follow/unfollow writes. Migration 009 adds private Notes, the Pinboard data path, public Sparks, and removes old public comment policies without deleting data. Migration 010 adds the writer-controlled Reader Notes setting and enforces it for new Notes. Migration 011 adds private one-to-one Note replies and in-app Note notifications. None of these migrations delete existing data.
+Review and apply these manually in the Supabase SQL Editor if your live project may have older or edited profile RLS policies, if Auth users are being created without profile rows, or if story/chapter/follow saves fail with a permission/RLS error. Migration 002 recreates the profile insert/update policies using `user_id = auth.uid()` and adds a non-destructive check to stop future blank display names. Migration 003 creates profiles automatically from `auth.users` when email confirmation prevents the browser from receiving an immediate session. Migration 004 adds the locked `username` field and updates the Auth signup trigger so new profiles include usernames. Migration 005 keeps `profiles.role` as a legacy/internal field, prevents browser self-service role changes, removes the original story creation role gate, and updates the Auth trigger so new profiles no longer depend on intended-role metadata. Migration 006 recreates story metadata policies around profile ownership instead of legacy role values. Migration 007 recreates chapter policies around parent story ownership and published/readable public access. Migration 008 refreshes follow policies for public counts and member-owned follow/unfollow writes. Migration 009 adds private Notes, the Pinboard data path, public Sparks, and removes old public comment policies without deleting data. Migration 010 adds the writer-controlled Reader Notes setting and enforces it for new Notes. Migration 011 adds private one-to-one Note replies and in-app Note notifications. Migration 012 makes replies final by revoking update permission while preserving removal. None of these migrations delete existing data.
 
 To test locked usernames:
 

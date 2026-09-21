@@ -347,11 +347,11 @@ export async function saveNoteReply(noteId, value) {
 
   const { data, error } = await supabase
     .from('note_replies')
-    .upsert({
+    .insert({
       note_id: cleanNoteId,
       writer_profile_id: profile.id,
       reply: cleanReply(value)
-    }, { onConflict: 'note_id' })
+    })
     .select(NOTE_REPLY_SELECT)
     .single();
 
