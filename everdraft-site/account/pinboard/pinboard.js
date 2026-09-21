@@ -81,19 +81,21 @@ function renderNotes(notes) {
 async function loadPinboard() {
   try {
     pinboardList.innerHTML = '<div class="empty-state">Gathering your Pinboard...</div>';
-    const [profile, notes] = await Promise.all([
-      getCurrentProfile(),
-      getMyPinboardNotes()
-    ]);
+    const profile = await getCurrentProfile();
+    const notes = await getMyPinboardNotes(profile);
     pinboardNotesSetting.textContent = profile?.notes_enabled === false
       ? 'Reader Notes are currently turned off.'
       : '';
     renderNotes(notes);
-    await markPinboardNotificationsRead();
-    document.querySelectorAll('[data-notification-count]').forEach((badge) => {
-      badge.hidden = true;
-      badge.textContent = '';
-    });
+    try {
+      await markPinboardNotificationsRead(profile);
+      document.querySelectorAll('[data-notification-count]').forEach((badge) => {
+        badge.hidden = true;
+        badge.textContent = '';
+      });
+    } catch (notificationError) {
+      console.warn('EverDraft could not mark Pinboard notifications as read.', notificationError);
+    }
   } catch (error) {
     pinboardStatus.textContent = friendlyEngagementError(error);
     renderEmpty();

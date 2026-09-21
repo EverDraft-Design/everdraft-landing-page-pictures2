@@ -289,9 +289,9 @@ export async function createChapterNote({ story, chapter, noteType, note }) {
   return data;
 }
 
-export async function getMyPinboardNotes() {
+export async function getMyPinboardNotes(currentProfile = null) {
   const supabase = await getSupabaseBrowserClient();
-  const profile = await requireEngagementProfile();
+  const profile = currentProfile || await requireEngagementProfile();
 
   const { data: notes, error } = await supabase
     .from('notes')
@@ -401,9 +401,9 @@ export async function getMyNotesForChapter(chapterId) {
   }));
 }
 
-export async function getUnreadPinboardNotificationCount() {
+export async function getUnreadPinboardNotificationCount(currentProfile = null) {
   const supabase = await getSupabaseBrowserClient();
-  const profile = await requireEngagementProfile();
+  const profile = currentProfile || await requireEngagementProfile();
   const { count, error } = await supabase
     .from('notifications')
     .select('id', { count: 'exact', head: true })
@@ -415,9 +415,9 @@ export async function getUnreadPinboardNotificationCount() {
   return count || 0;
 }
 
-export async function markPinboardNotificationsRead() {
+export async function markPinboardNotificationsRead(currentProfile = null) {
   const supabase = await getSupabaseBrowserClient();
-  const profile = await requireEngagementProfile();
+  const profile = currentProfile || await requireEngagementProfile();
   const { error } = await supabase
     .from('notifications')
     .update({ read_at: new Date().toISOString() })

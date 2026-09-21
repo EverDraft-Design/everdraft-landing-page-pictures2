@@ -145,11 +145,11 @@ async function loadFollowing() {
   }
 }
 
-async function loadPinboardSummary() {
+async function loadPinboardSummary(profile) {
   try {
     const [notes, unreadCount] = await Promise.all([
-      getMyPinboardNotes(),
-      getUnreadPinboardNotificationCount()
+      getMyPinboardNotes(profile),
+      getUnreadPinboardNotificationCount(profile)
     ]);
     const count = notes.length;
     document.querySelectorAll('[data-notification-count]').forEach((badge) => {
@@ -198,7 +198,7 @@ async function loadAccount() {
     }
 
     fillProfile(profile);
-    await loadPinboardSummary();
+    await loadPinboardSummary(profile);
     await loadFollowing();
   } catch (error) {
     status.textContent = friendlyAuthError(error, 'profile');
