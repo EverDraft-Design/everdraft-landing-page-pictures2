@@ -59,9 +59,9 @@ body {
 }
 
 .brand-logo {
-  width: 72px;
-  height: 72px;
-  margin-block: -12px;
+  width: auto;
+  height: 102px;
+  margin-block: -27px;
   object-fit: contain;
   border-radius: 999px;
   display: block;
