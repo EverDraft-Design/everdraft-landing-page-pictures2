@@ -9,7 +9,8 @@ import {
 } from '/auth.js';
 import {
   friendlyEngagementError,
-  getMyPinboardNotes
+  getMyPinboardNotes,
+  getUnreadPinboardNotificationCount
 } from '/engagement.js';
 import {
   friendlyFollowError,
@@ -146,10 +147,17 @@ async function loadFollowing() {
 
 async function loadPinboardSummary() {
   try {
-    const notes = await getMyPinboardNotes();
+    const [notes, unreadCount] = await Promise.all([
+      getMyPinboardNotes(),
+      getUnreadPinboardNotificationCount()
+    ]);
     const count = notes.length;
+    document.querySelectorAll('[data-notification-count]').forEach((badge) => {
+      badge.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
+      badge.hidden = unreadCount === 0;
+    });
     pinboardSummary.textContent = count
-      ? `${count} ${count === 1 ? 'private Note is' : 'private Notes are'} waiting on your Pinboard.`
+      ? `${count} ${count === 1 ? 'private Note is' : 'private Notes are'} on your Pinboard.${unreadCount ? ` ${unreadCount} new.` : ''}`
       : 'Reader Notes will appear on your Pinboard when they arrive.';
   } catch (error) {
     pinboardSummary.textContent = friendlyEngagementError(error);

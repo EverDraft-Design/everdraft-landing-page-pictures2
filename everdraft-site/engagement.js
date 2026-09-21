@@ -4,6 +4,7 @@ import { getFriendlyErrorMessage } from '/errors.js';
 const STORY_SPARK_SELECT = 'id, story_id, profile_id, created_at';
 const CHAPTER_SPARK_SELECT = 'id, chapter_id, story_id, profile_id, created_at';
 const NOTE_SELECT = 'id, chapter_id, story_id, from_profile_id, writer_profile_id, note_type, note, created_at, updated_at';
+const NOTE_REPLY_SELECT = 'id, note_id, writer_profile_id, reply, created_at, updated_at';
 const NOTE_TYPES = new Set([
   'encouragement',
   'reader_reaction',
@@ -305,26 +306,127 @@ export async function getMyPinboardNotes() {
   const chapterIds = [...new Set(notes.map((note) => note.chapter_id).filter(Boolean))];
   const readerIds = [...new Set(notes.map((note) => note.from_profile_id).filter(Boolean))];
 
-  const [{ data: stories, error: storyError }, { data: chapters, error: chapterError }, { data: readers, error: readerError }] = await Promise.all([
+  const noteIds = notes.map((note) => note.id);
+  const [{ data: stories, error: storyError }, { data: chapters, error: chapterError }, { data: readers, error: readerError }, { data: replies, error: replyError }] = await Promise.all([
     supabase.from('stories').select('id, title, slug, author_id').in('id', storyIds),
     supabase.from('chapters').select('id, title, chapter_number, story_id').in('id', chapterIds),
-    supabase.from('profiles').select('id, username, display_name, pen_name').in('id', readerIds)
+    supabase.from('profiles').select('id, username, display_name, pen_name').in('id', readerIds),
+    supabase.from('note_replies').select(NOTE_REPLY_SELECT).in('note_id', noteIds)
   ]);
 
   if (storyError) throw storyError;
   if (chapterError) throw chapterError;
   if (readerError) throw readerError;
+  if (replyError) throw replyError;
 
   const storiesById = new Map((stories || []).map((story) => [story.id, story]));
   const chaptersById = new Map((chapters || []).map((chapter) => [chapter.id, chapter]));
   const readersById = new Map((readers || []).map((reader) => [reader.id, reader]));
+  const repliesByNoteId = new Map((replies || []).map((reply) => [reply.note_id, reply]));
 
   return notes.map((pin) => ({
     ...pin,
     story: storiesById.get(pin.story_id) || null,
     chapter: chaptersById.get(pin.chapter_id) || null,
-    from_profile: readersById.get(pin.from_profile_id) || null
+    from_profile: readersById.get(pin.from_profile_id) || null,
+    reply: repliesByNoteId.get(pin.id) || null
   }));
+}
+
+function cleanReply(value) {
+  const reply = String(value || '').trim();
+  if (!reply) throw new Error('A reply needs a few words before it can be sent.');
+  if (reply.length > 2000) throw new Error('Please keep your reply under 2,000 characters.');
+  return reply;
+}
+
+export async function saveNoteReply(noteId, value) {
+  const supabase = await getSupabaseBrowserClient();
+  const profile = await requireEngagementProfile();
+  const cleanNoteId = requireId(noteId, 'Note');
+
+  const { data, error } = await supabase
+    .from('note_replies')
+    .upsert({
+      note_id: cleanNoteId,
+      writer_profile_id: profile.id,
+      reply: cleanReply(value)
+    }, { onConflict: 'note_id' })
+    .select(NOTE_REPLY_SELECT)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteNoteReply(replyId) {
+  const supabase = await getSupabaseBrowserClient();
+  await requireEngagementProfile();
+
+  const { error } = await supabase
+    .from('note_replies')
+    .delete()
+    .eq('id', requireId(replyId, 'Reply'));
+
+  if (error) throw error;
+  return true;
+}
+
+export async function getMyNotesForChapter(chapterId) {
+  const supabase = await getSupabaseBrowserClient();
+  const profile = await requireEngagementProfile();
+  const cleanChapterId = requireId(chapterId, 'Chapter');
+
+  const { data: notes, error } = await supabase
+    .from('notes')
+    .select(NOTE_SELECT)
+    .eq('chapter_id', cleanChapterId)
+    .eq('from_profile_id', profile.id)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  if (!notes?.length) return [];
+
+  const { data: replies, error: replyError } = await supabase
+    .from('note_replies')
+    .select(NOTE_REPLY_SELECT)
+    .in('note_id', notes.map((note) => note.id));
+
+  if (replyError) throw replyError;
+  const repliesByNoteId = new Map((replies || []).map((reply) => [reply.note_id, reply]));
+
+  return notes.map((note) => ({
+    ...note,
+    reply: repliesByNoteId.get(note.id) || null
+  }));
+}
+
+export async function getUnreadPinboardNotificationCount() {
+  const supabase = await getSupabaseBrowserClient();
+  const profile = await requireEngagementProfile();
+  const { count, error } = await supabase
+    .from('notifications')
+    .select('id', { count: 'exact', head: true })
+    .eq('recipient_profile_id', profile.id)
+    .eq('notification_type', 'pinboard_note')
+    .is('read_at', null);
+
+  if (error) throw error;
+  return count || 0;
+}
+
+export async function markPinboardNotificationsRead() {
+  const supabase = await getSupabaseBrowserClient();
+  const profile = await requireEngagementProfile();
+  const { error } = await supabase
+    .from('notifications')
+    .update({ read_at: new Date().toISOString() })
+    .eq('recipient_profile_id', profile.id)
+    .eq('notification_type', 'pinboard_note')
+    .is('read_at', null);
+
+  if (error) throw error;
+  return true;
 }
 
 export async function getNoteSummaryForStory(storyId) {

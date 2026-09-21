@@ -1,7 +1,7 @@
 import { friendlyChapterError, getPublicChapterBySlugAndNumber } from '/chapters.js';
 import { mountFollowControls } from '/follow-controls.js';
 import { getCurrentProfile, getCurrentSession } from '/auth.js';
-import { createChapterNote, friendlyEngagementError } from '/engagement.js';
+import { createChapterNote, friendlyEngagementError, getMyNotesForChapter, NOTE_TYPE_LABELS } from '/engagement.js';
 import { mountChapterSparkControl } from '/spark-controls.js';
 import { normalizeChapterContent, sanitizeChapterHtml } from '/components/chapter-content.js';
 
@@ -16,6 +16,7 @@ const chapterContent = document.getElementById('chapterContent');
 const notePanel = document.getElementById('notePanel');
 const noteForm = document.getElementById('noteForm');
 const noteStatus = document.getElementById('noteStatus');
+const noteHistory = document.getElementById('noteHistory');
 const leaveNoteButton = document.getElementById('leaveNoteButton');
 const previousChapterLink = document.getElementById('previousChapterLink');
 const chapterBackToStoryLink = document.getElementById('chapterBackToStoryLink');
@@ -43,12 +44,6 @@ function escapeHtml(value) {
 async function setupNotePanel(story, chapter) {
   notePanel.hidden = false;
 
-  if (story.author?.notes_enabled === false) {
-    noteForm.hidden = true;
-    noteStatus.textContent = 'This writer is not receiving Notes right now.';
-    return;
-  }
-
   const session = await getCurrentSession();
   if (!session) {
     noteForm.hidden = true;
@@ -69,6 +64,14 @@ async function setupNotePanel(story, chapter) {
     return;
   }
 
+  await renderMyNoteHistory(chapter.id);
+
+  if (story.author?.notes_enabled === false) {
+    noteForm.hidden = true;
+    noteStatus.textContent = 'This writer is not receiving Notes right now.';
+    return;
+  }
+
   noteForm.hidden = false;
   noteForm.onsubmit = async (event) => {
     event.preventDefault();
@@ -86,6 +89,7 @@ async function setupNotePanel(story, chapter) {
       });
       noteForm.reset();
       noteStatus.textContent = 'Your Note has been pinned to the writer’s Pinboard, with a Spark attached.';
+      await renderMyNoteHistory(chapter.id);
       await mountChapterSparkControl(chapterSparkControl, story, chapter);
     } catch (error) {
       noteStatus.textContent = friendlyEngagementError(error, 'note');
@@ -94,6 +98,32 @@ async function setupNotePanel(story, chapter) {
       leaveNoteButton.textContent = 'Leave Note';
     }
   };
+}
+
+async function renderMyNoteHistory(chapterId) {
+  const notes = await getMyNotesForChapter(chapterId);
+  if (!notes.length) {
+    noteHistory.hidden = true;
+    noteHistory.innerHTML = '';
+    return;
+  }
+
+  noteHistory.hidden = false;
+  noteHistory.innerHTML = `
+    <h3>Your private Notes</h3>
+    ${notes.map((note) => `
+      <article class="reader-note-thread">
+        <p class="eyebrow">${escapeHtml(NOTE_TYPE_LABELS[note.note_type] || 'Note')}</p>
+        <blockquote>${escapeHtml(note.note)}</blockquote>
+        ${note.reply ? `
+          <div class="writer-reply">
+            <p class="eyebrow">WRITER REPLY</p>
+            <p>${escapeHtml(note.reply.reply)}</p>
+          </div>
+        ` : '<p class="muted-copy">The writer has not replied yet.</p>'}
+      </article>
+    `).join('')}
+  `;
 }
 
 function setNavLink(link, story, chapter, text) {

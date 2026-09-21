@@ -416,6 +416,7 @@ function publicChapterPage() {
             <button type="submit" id="leaveNoteButton">Leave Note</button>
           </form>
           <p id="noteStatus" class="form-status" aria-live="polite"></p>
+          <div id="noteHistory" class="reader-note-history" aria-live="polite" hidden></div>
         </section>
         <nav class="reader-nav" aria-label="Chapter navigation">
           <a id="previousChapterLink" class="button-link secondary-link" href="#" hidden>Previous Chapter</a>
@@ -465,6 +466,7 @@ function pinboardPage() {
     body: `<div class="auth-actions pinboard-top-actions">
           <a class="button-link secondary-link" href="/account/">Back to Account</a>
         </div>
+        <p id="pinboardNotesSetting" class="field-note" aria-live="polite"></p>
         <div id="pinboardList" class="pinboard-list" aria-live="polite"></div>
         <p id="pinboardStatus" class="form-status" aria-live="polite"></p>`,
     script: '/account/pinboard/pinboard.js'
